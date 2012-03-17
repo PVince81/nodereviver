@@ -15,6 +15,7 @@ class KeyMap:
 class Config:
     def __init__(self):
         self.fullScreen = False
-        self.screenSize = (800, 600)
+        self.screenSize = (640, 480)
         self.fps = 60
         self.keymap = KeyMap()
+        self.dataPath = "data/"

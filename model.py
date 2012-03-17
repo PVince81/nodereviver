@@ -236,51 +236,6 @@ class World(object):
     def hasAllEdgesMarked(self):
         return self.markedEdges == len(self.edges)
 
-    @staticmethod
-    def getWorld(worldNum):
-        world = World()
-        
-        if worldNum == 0:
-            node1 = world.createNode((100, 100))
-            node2 = world.createNode((200, 100))
-            node3 = world.createNode((140, 160))
-            node4 = world.createNode((140, 200))
-            node5 = world.createNode((220, 220))
-            node6 = world.createNode((70, 180))
-            node7 = world.createNode((260, 200))
-            node8 = world.createNode((260, 80))
-            node9 = world.createNode((140, 50))
-            
-            # TODO: should figure out the direction based on coordinates
-            world.connectNodeWithJoint(node1, node2)
-            world.connectNodeWithJoint(node1, node3)
-            world.connectNodeWithJoint(node2, node3)
-            world.connectNodeWithJoint(node3, node4)
-            world.connectNodeWithJoint(node4, node5)
-            world.connectNodeWithJoint(node2, node5, 1)
-            world.connectNodeWithJoint(node4, node6, 1)
-            world.connectNodeWithJoint(node6, node1)
-            world.connectNodeWithJoint(node4, node7)
-            world.connectNodeWithJoint(node7, node5)
-            world.connectNodeWithJoint(node7, node8)
-            world.connectNodeWithJoint(node2, node8)
-            world.connectNodeWithJoint(node9, node8, 1)
-            world.connectNodeWithJoint(node9, node1, 1)
-            world.connectNodeWithJoint(node9, node3, 1)
-
-            world.startNode = node4
-            world.createSimpleFoe(node1)
-            world.createTrackingFoe(node2)
-            world.createTrackingFoe(node9)
-        else:
-            node1 = world.createNode((100, 100))
-            node2 = world.createNode((200, 200))
-            world.connectNodeWithJoint(node1, node2)
-            world.connectNodeWithJoint(node1, node2, 1)
-            world.startNode = node1
-            
-        return world
-
 class Entity(object):
     entityType = -1
     def __init__(self, currentNode = None):
@@ -394,13 +349,16 @@ class TrackingFoe(Foe):
         self.speed = 1
         self._trackedEntity = trackedEntity
         self._path = []
+        self._sleepTicks = 0
 
     def track(self, trackedEntity):
         self._trackedEntity = trackedEntity
         self._path = []
 
     def update(self):
-        if self.moving:
+        if self._sleepTicks > 0:
+            self._sleepTicks -= 1
+        elif self.moving:
             Foe.update(self)
         else:
             # find path to player
@@ -408,6 +366,9 @@ class TrackingFoe(Foe):
                 nextEdge = self._path[0]
                 self._path = self._path[1:]
                 self.moveAlong(nextEdge)
+            elif random.randint(0, 5) == 0:
+                # sleep for a second
+                self._sleepTicks = 60
             elif self._trackedEntity and ( self._trackedEntity.currentNode != self.currentNode or self._trackedEntity.currentNode != self.targetNode):
                 targetNode = self._trackedEntity.currentNode
                 if self._trackedEntity.moving:

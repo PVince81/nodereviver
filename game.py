@@ -9,7 +9,7 @@ import pygame
 import model
 import view
 from config import Config
-
+from WorldLoader import WorldLoader
 
 class Game:
     def __init__(self, config):
@@ -19,9 +19,10 @@ class Game:
         self._terminated = False
         self._display = None
         self._world = None
-        self._worldNum = 0
+        self._worldNum = 1
         self._player = None
-        
+        self._worldLoader = WorldLoader(self._config.dataPath) 
+
     def _init(self):
         pygame.init()
         flags = 0
@@ -36,7 +37,7 @@ class Game:
         
     def _quit(self):
         pygame.quit()
-        
+
     def _movePlayer(self, direction):
         if self._player.moving:
             return
@@ -70,13 +71,13 @@ class Game:
             self._initWorld(self._worldNum)
     
     def _initWorld(self, worldNum):
-        self._world = model.World.getWorld(worldNum)
+        self._world = self._worldLoader.loadWorld(worldNum)
         self._player = model.Player()
         self._player.setCurrentNode(self._world.startNode)
         self._display.setWorld(self._world)
         self._display.addEntityView( view.PlayerView(self._player) )
         self._world.addEntity(self._player)
-        
+
         # set tracking foes to track the player
         for entity in self._world.entities:
             if entity.entityType == 1 and entity.foeType == 1:

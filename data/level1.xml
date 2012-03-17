@@ -1,0 +1,36 @@
+<level>
+	<nodes>
+		<node id="1" x="100" y="100" />
+		<node id="2" x="200" y="100" />
+		<node id="3" x="140" y="160" />
+		<node id="4" x="140" y="200" />
+		<node id="5" x="220" y="220" />
+		<node id="6" x="70" y="180" />
+		<node id="7" x="260" y="200" />
+		<node id="8" x="260" y="80" />
+		<node id="9" x="140" y="50" />
+	</nodes>
+	<edges>
+		<edge source="1" dest="2" />
+		<edge source="1" dest="3" />
+		<edge source="2" dest="3" />
+		<edge source="3" dest="4" />
+		<edge source="4" dest="5" />
+		<edge source="2" dest="5" reverse="true"/>
+		<edge source="4" dest="6" reverse="true"/>
+		<edge source="6" dest="1" />
+		<edge source="4" dest="7" />
+		<edge source="7" dest="5" />
+		<edge source="7" dest="8" />
+		<edge source="2" dest="8" />
+		<edge source="9" dest="8" reverse="true"/>
+		<edge source="9" dest="1" reverse="true"/>
+		<edge source="9" dest="3" reverse="true"/>
+	</edges>
+	<entities>
+		<player node="4"/>
+		<foe type="simple" node="1"/>
+		<foe type="tracking" node="2"/>
+		<foe type="tracking" node="9"/>
+	</entities>
+</level>
