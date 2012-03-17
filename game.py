@@ -16,10 +16,10 @@ class Game:
         self._config = config
         self._screen = None
         self._clock = None
-        self._player = model.Player()
         self._terminated = False
         self._display = None
         self._world = None
+        self._worldNum = 0
         
     def _init(self):
         pygame.init()
@@ -32,7 +32,6 @@ class Game:
         self._screen = pygame.display.get_surface()        
         self._clock = pygame.time.Clock()
         self._display = view.Display(self._screen)
-        self._display.addEntity( view.PlayerView(self._player) )
         
     def _quit(self):
         pygame.quit()
@@ -46,7 +45,7 @@ class Game:
         # Check whether player is allowed to move to this direction
         edge = self._player.currentNode.getEdge(movement)
         if edge:
-            self._player.moveTo(edge.getOther(self._player.currentNode))
+            self._player.moveAlong(edge)
 
     def _handleInput(self):
         for event in pygame.event.get():
@@ -65,15 +64,21 @@ class Game:
 
     def _handleLogic(self):
         self._player.update()
+        if self._world.hasAllEdgesMarked():
+            self._worldNum += 1
+            self._initWorld(self._worldNum)
     
     def _initWorld(self, worldNum):
         self._world = model.World.getWorld(worldNum)
         self._display.setWorld(self._world)
+        self._player = model.Player()
         self._player.setCurrentNode(self._world.startNode)
+        self._display.clear()
+        self._display.addEntity( view.PlayerView(self._player) )
         
     def run(self):
         self._init()
-        self._initWorld(0)
+        self._initWorld(self._worldNum)
         while not self._terminated:
             self._handleInput()
             self._handleLogic()
@@ -83,9 +88,6 @@ class Game:
             
         self._quit()
         
-
-print model.Node()
-
 if __name__ == '__main__':
     game = Game(Config())
     game.run()
