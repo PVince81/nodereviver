@@ -1,6 +1,7 @@
 '''
 @author: Vincent Petry <PVince81@yahoo.fr>
 '''
+import random
 
 def unitVector(vector):
     if vector[0] != 0:
@@ -15,11 +16,70 @@ def vectorDiff(vector1, vector2):
 def vectorMult(vector1, vector2):
     return (vector1[0] * vector2[0], vector1[1] * vector2[1])
 
+
+class PathFinder:
+    def __init__(self):
+        self.path = None
+        self.shortestPath = None
+        self.edges = None
+        self.shortestPathEdges = None
+        self.sourceNode = None
+        self.targetNode = None
+
+    def findShortestPath(self, sourceNode, targetNode):
+        '''
+        Finds the shortest path from sourceNode to targetNode.
+        @return: array of node's starting edges to follow to reach the target
+        '''
+        self.path = list()
+        self.edges = list()
+        self.shortestPath = None
+        self.shortestPathEdges = []
+        self.sourceNode = sourceNode
+        self.targetNode = targetNode
+        self.path.append(sourceNode)
+        self._exploreNode(sourceNode)
+
+        return self.shortestPathEdges
+
+    def _exploreNode(self, node):
+        if self.shortestPath and len(self.path) > len(self.shortestPath):
+            return False
+
+        if node == self.targetNode:
+            self.shortestPath = list(self.path)
+            self.shortestPathEdges = list(self.edges)
+            return True
+
+        for edge in node.edges:
+            nextNode = node.getNextNode(edge)
+            if not nextNode in self.path:
+                self.path.append(nextNode)
+                self.edges.append(edge)
+                self._exploreNode(nextNode)
+                self.edges.pop()
+                self.path.pop()
+        return False
+    
+    def printPath(self, sourceNode, edges):
+        node = sourceNode
+        for edge in edges:
+            print node
+            print edge
+            node = edge.getOther(node)
+        print node
+
+pathFinder = PathFinder()
+
+_nextNodeId = 1
 class Node(object):
     SQUARE = 0
     JOINT = 1
     
     def __init__(self, world, pos = (0, 0), nodeType = SQUARE):
+        global _nextNodeId
+        self.id = _nextNodeId
+        _nextNodeId += 1
         self.world = world
         self.type = nodeType
         self.pos = pos
@@ -48,28 +108,46 @@ class Node(object):
                 return edge
         return None
     
-    def getOtherEdge(self, direction):
-        '''
-        Returns the edge NOT going in the given direction or None if none found,
-        assuming that this node is a JOINT (they only have two edges)
-        @param direction: direction vector 
-        '''
+    def getOtherEdge(self, sourceEdge):
         for edge in self.edges:
-            destNode = edge.getOther(self)
-            diff = unitVector(vectorDiff(destNode.pos, self.pos))
-            if direction != diff:
+            if edge != sourceEdge:
                 return edge
         return None
+        
+    def getNextNode(self, edge):
+        '''
+        Returns the next node following the path along the given edge.
+        @param edge edge to use as direction 
+        '''
+        nextNode = edge.getOther(self)
+        while nextNode.type == Node.JOINT and nextNode != self:
+            nextNode = nextNode.getNextNode(nextNode.getOtherEdge(edge))
+
+        return nextNode
     
     def __str__(self):
-        return "Node{pos=" + self.pos.__str__() + "}"
+        typeString = "S"
+        if self.type == Node.JOINT:
+            typeString = "J"
+        return "Node{id=%i,pos=%s,type=%s}" % (self.id, self.pos.__str__(), typeString)
 
+_nextEdgeId = 1
 class Edge(object):
+    _nextId = 1
+
     def __init__(self, world, source, destination):
+        global _nextEdgeId
+        self.id = _nextEdgeId
+        _nextEdgeId += 1
         self.world = world
         self.source = source
         self.destination = destination
         self.marked = False
+        diff = vectorDiff(source.pos, destination.pos)
+        if diff[0] != 0:
+            self.length = abs(diff[0])
+        else:
+            self.length = abs(diff[1])
 
     def getOther(self, source):
         if source == self.source:
@@ -86,7 +164,7 @@ class Edge(object):
             self.world.dirty = True
 
     def __str__(self):
-        return "Edge{source=" + self.source.__str__()  + ",destination=" + self.destination.__str__()  + "}"
+        return "Edge{id=%i,src=%s,dst=%s,len=%i}" % (self.id, self.source.__str__(), self.destination.__str__(), self.length)
 
 class World(object):
     '''
@@ -100,9 +178,25 @@ class World(object):
     def __init__(self):
         self.nodes = []
         self.edges = []
+        self.entities = []
         self.startNode = None
         self.dirty = False
         self.markedEdges = 0
+    
+    def update(self):
+        for entity in self.entities:
+            entity.update()
+        
+    def addEntity(self, entity):
+        self.entities.append(entity)
+
+    def createSimpleFoe(self, startNode):
+        foe = SimpleFoe(startNode)
+        self.entities.append(foe)
+
+    def createTrackingFoe(self, startNode):
+        foe = TrackingFoe(startNode)
+        self.entities.append(foe)
 
     def createNode(self, pos = (0, 0), nodeType = Node.SQUARE):
         node = Node(self, pos, nodeType)
@@ -160,6 +254,8 @@ class World(object):
             world.connectNodeWithJoint(node9, node3, 1)
 
             world.startNode = node4
+            world.createSimpleFoe(node1)
+            world.createTrackingFoe(node2)
         else:
             node1 = world.createNode((100, 100))
             node2 = world.createNode((200, 200))
@@ -170,6 +266,7 @@ class World(object):
         return world
 
 class Entity(object):
+    entityType = -1
     def __init__(self, currentNode = None):
         self.pos = (0, 0)
         self.currentNode = None
@@ -193,7 +290,7 @@ class Entity(object):
     def move(self, movement = (0, 0)):
         self.movement = movement
         self.moving = ( movement != (0, 0) )
-        
+
     def update(self):
         if self.moving:
             self.pos = ( self.pos[0] + self.movement[0] * self.speed, self.pos[1] + self.movement[1] * self.speed )
@@ -201,16 +298,26 @@ class Entity(object):
             if ( self.movement[0] != 0 and abs(distance[0]) < self.speed ) or ( self.movement[1] != 0 and abs(distance[1]) < self.speed ):
                 self.pos = self.targetNode.pos
                 self.currentNode = self.targetNode
-                self.currentEdge.setMarked(True)
+                self.onEdgeComplete(self.currentEdge)
                 if self.currentNode.type == Node.JOINT:
                     # need to continue along the next edge
-                    edge = self.currentNode.getOtherEdge((-self.movement[0], -self.movement[1]))
+                    edge = self.currentNode.getOtherEdge(self.currentEdge)
                     self.moveAlong( edge )
                 else:                                   
                     self.moving = False
                     self.movement = (0, 0)
                     self.targetNode = None
                     self.currentEdge = None
+
+    def getFinalTargetNode(self):
+        if not self.moving:
+            return None
+        if self.targetNode.type == Node.JOINT:
+            return self.currentNode.getNextNode(self.currentEdge)
+        return self.targetNode
+        
+    def onEdgeComplete(self, edge):
+        pass
 
     def setCurrentNode(self, currentNode = None):
         self.currentNode = currentNode
@@ -220,6 +327,75 @@ class Entity(object):
             self.pos = (0, 0)
 
 class Player(Entity):
+    entityType = 0
     def __init__(self, currentNode = None):
         Entity.__init__(self, currentNode)
         self.speed = 2
+        
+    def onEdgeComplete(self, edge):
+        edge.setMarked(True)
+
+class Foe(Entity):
+    entityType = 1
+    def __init__(self, currentNode = None):
+        Entity.__init__(self, currentNode)
+
+class SimpleFoe(Foe):
+    '''
+    Simple foe that randomly changes direction.
+    '''
+    foeType = 0
+    def __init__(self, currentNode = None):
+        Foe.__init__(self, currentNode)
+        self.speed = 1
+        self.lastEdge = None
+
+    def update(self):
+        if self.moving:
+            Foe.update(self)
+        else:
+            # find path
+            index = random.randint(0, len(self.currentNode.edges) - 1)
+            nextEdge = self.currentNode.edges[index]
+            if nextEdge == self.lastEdge:
+                if index >= len(self.currentNode.edges) - 1:
+                    nextEdge = self.currentNode.edges[0]
+                else:
+                    nextEdge = self.currentNode.edges[index + 1]
+            self.moveAlong(nextEdge)  
+
+    def onEdgeComplete(self, edge):
+        self.lastEdge = edge
+
+class TrackingFoe(Foe):
+    '''
+    Foe that tracks another entity (the player) and finds the shortest path.
+    '''
+    foeType = 1
+
+    def __init__(self, currentNode = None, trackedEntity = None):
+        Foe.__init__(self, currentNode)
+        self.speed = 1
+        self._trackedEntity = trackedEntity
+        self._path = []
+
+    def track(self, trackedEntity):
+        self._trackedEntity = trackedEntity
+        self._path = []
+
+    def update(self):
+        if self.moving:
+            Foe.update(self)
+        else:
+            # find path to player
+            if len(self._path) > 0:
+                nextEdge = self._path[0]
+                self._path = self._path[1:]
+                self.moveAlong(nextEdge)
+            elif self._trackedEntity and ( self._trackedEntity.currentNode != self.currentNode or self._trackedEntity.currentNode != self.targetNode):
+                targetNode = self._trackedEntity.currentNode
+                if self._trackedEntity.moving:
+                    # directly go to that entity's target
+                    targetNode = self._trackedEntity.getFinalTargetNode()
+                if targetNode != self.currentNode:
+                    self._path = pathFinder.findShortestPath(self.currentNode, targetNode)

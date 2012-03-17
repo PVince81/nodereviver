@@ -20,6 +20,7 @@ class Game:
         self._display = None
         self._world = None
         self._worldNum = 0
+        self._player = None
         
     def _init(self):
         pygame.init()
@@ -63,22 +64,28 @@ class Game:
                     self._terminated = True
 
     def _handleLogic(self):
-        self._player.update()
+        self._world.update()
         if self._world.hasAllEdgesMarked():
             self._worldNum += 1
             self._initWorld(self._worldNum)
     
     def _initWorld(self, worldNum):
         self._world = model.World.getWorld(worldNum)
-        self._display.setWorld(self._world)
         self._player = model.Player()
         self._player.setCurrentNode(self._world.startNode)
-        self._display.clear()
-        self._display.addEntity( view.PlayerView(self._player) )
+        self._display.setWorld(self._world)
+        self._display.addEntityView( view.PlayerView(self._player) )
+        self._world.addEntity(self._player)
+        
+        # set tracking foes to track the player
+        for entity in self._world.entities:
+            if entity.entityType == 1 and entity.foeType == 1:
+                entity.track(self._player)
         
     def run(self):
         self._init()
         self._initWorld(self._worldNum)
+
         while not self._terminated:
             self._handleInput()
             self._handleLogic()

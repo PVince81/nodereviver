@@ -5,6 +5,8 @@
 import pygame
 import model
 
+debug = True
+
 class Display(object):
     def __init__(self, screen):
         self._screen = screen
@@ -12,16 +14,20 @@ class Display(object):
         self._worldView = None
         
     def setWorld(self, world):
+        self.clear()
         world.dirty = True
         self._worldView = WorldView(self._screen, world)
+        for entity in world.entities:
+            # entities are all foes for now (except player)
+            self.addEntityView(FoeView(entity))
         
     def render(self):
         self._worldView.render()
         for entity in self._entities:
             entity.render(self._screen)
 
-    def addEntity(self, entity):
-        self._entities.append(entity)
+    def addEntityView(self, entityView):
+        self._entities.append(entityView)
         
     def clear(self):
         self._entities = []
@@ -36,6 +42,9 @@ class WorldView(object):
         self._background = self._screen.copy()
         self._background.fill((0, 0, 0))
         self._worldSurface = self._screen.copy()
+        
+        if debug:
+            self._font = pygame.font.SysFont('serif', 10)
         
     def _rerender(self):
         surface = self._worldSurface
@@ -56,6 +65,9 @@ class WorldView(object):
             if node.type == model.Node.SQUARE:
                 rect = (node.pos[0] - d, node.pos[1] - d, d * 2, d * 2)
                 pygame.draw.rect(surface, color, rect )
+                if debug:
+                    textSurface = self._font.render("%i" % node.id, False, (255, 255, 0)) 
+                    surface.blit(textSurface, (node.pos[0] + 2, node.pos[1] + d * 2 + 2))
         self._world.dirty = False
 
     def render(self):
@@ -66,9 +78,20 @@ class WorldView(object):
         self._screen.blit(self._worldSurface, (0, 0))        
 
 class PlayerView():
-    def __init__(self, player):
-        self._player = player
+    def __init__(self, entity):
+        self._entity = entity
         
     def render(self, screen):
         color = (255, 255, 255)
-        pygame.draw.circle(screen, color, (self._player.pos), 10)
+        pygame.draw.circle(screen, color, (self._entity.pos), 10)
+
+class FoeView():
+    def __init__(self, entity):
+        self._entity = entity
+        
+    def render(self, screen):
+        if self._entity.foeType == 0:
+            color = (255, 128, 0)
+        else:
+            color = (255, 0, 0)
+        pygame.draw.circle(screen, color, (self._entity.pos), 10)
