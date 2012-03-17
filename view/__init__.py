@@ -5,7 +5,7 @@
 import pygame
 import model
 
-debug = True
+debug = False
 
 class Display(object):
     def __init__(self, screen):
@@ -57,6 +57,27 @@ class WorldView(object):
                 color = (192, 192, 192)
                 width = 1
             pygame.draw.line(surface, color, edge.source.pos, edge.destination.pos, width )
+            if debug:
+                textSurface = self._font.render("%i" % edge.length, False, (0, 128, 128))
+                x1 = edge.source.pos[0]
+                x2 = edge.destination.pos[0]
+                y = edge.source.pos[1]
+                if x1 == x2:
+                    x = x1 + 5
+                    y1 = edge.source.pos[1]
+                    y2 = edge.destination.pos[1]
+                    if y1 > y2:
+                        aux = y1
+                        y1 = y2
+                        y2 = aux
+                    y = y1 + (y2 - y1) / 2 - 10
+                else:
+                    if x1 > x2:
+                        aux = x1
+                        x1 = x2
+                        x2 = aux
+                    x = x1 + (x2 - x1) / 2 - 10
+                surface.blit(textSurface, (x, y))
 
         # render nodes
         d = 5

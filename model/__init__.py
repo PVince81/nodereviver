@@ -20,7 +20,9 @@ def vectorMult(vector1, vector2):
 class PathFinder:
     def __init__(self):
         self.path = None
+        self.pathLength = 0
         self.shortestPath = None
+        self.shortestPathLength = None
         self.edges = None
         self.shortestPathEdges = None
         self.sourceNode = None
@@ -32,31 +34,44 @@ class PathFinder:
         @return: array of node's starting edges to follow to reach the target
         '''
         self.path = list()
+        self.pathLength = 0
         self.edges = list()
         self.shortestPath = None
         self.shortestPathEdges = []
+        self.shortestPathLength = None
         self.sourceNode = sourceNode
         self.targetNode = targetNode
         self.path.append(sourceNode)
         self._exploreNode(sourceNode)
 
-        return self.shortestPathEdges
+        # remove joint nodes
+        finalEdges = []
+        node = sourceNode
+        for edge in self.shortestPathEdges:
+            if node.type != Node.JOINT:
+                finalEdges.append(edge)
+            node = edge.getOther(node)
+
+        return finalEdges
 
     def _exploreNode(self, node):
-        if self.shortestPath and len(self.path) > len(self.shortestPath):
+        if self.shortestPathLength and self.pathLength >= self.shortestPathLength:
             return False
 
         if node == self.targetNode:
             self.shortestPath = list(self.path)
             self.shortestPathEdges = list(self.edges)
+            self.shortestPathLength = self.pathLength
             return True
 
         for edge in node.edges:
-            nextNode = node.getNextNode(edge)
+            nextNode = edge.getOther(node)
             if not nextNode in self.path:
                 self.path.append(nextNode)
                 self.edges.append(edge)
+                self.pathLength += edge.length
                 self._exploreNode(nextNode)
+                self.pathLength -= edge.length
                 self.edges.pop()
                 self.path.pop()
         return False
@@ -256,6 +271,7 @@ class World(object):
             world.startNode = node4
             world.createSimpleFoe(node1)
             world.createTrackingFoe(node2)
+            world.createTrackingFoe(node9)
         else:
             node1 = world.createNode((100, 100))
             node2 = world.createNode((200, 200))
