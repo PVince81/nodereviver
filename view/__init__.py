@@ -8,6 +8,7 @@ import model
 class Display(object):
     def __init__(self, screen):
         self._screen = screen
+        self._entities = []
         
     def setWorld(self, world):
         # pre-render level
@@ -17,7 +18,12 @@ class Display(object):
         
     def render(self):
         self._screen.blit(self._worldSurface, (0, 0))
+        for entity in self._entities:
+            entity.render(self._screen)
         pass
+
+    def addEntity(self, entity):
+        self._entities.append(entity)
 
 class WorldView(object):
     '''
@@ -39,3 +45,10 @@ class WorldView(object):
                 rect = (node.pos[0] - d, node.pos[1] - d, d * 2, d * 2)
                 pygame.draw.rect(screen, color, rect )
 
+class PlayerView():
+    def __init__(self, player):
+        self._player = player
+        
+    def render(self, screen):
+        color = (255, 255, 255)
+        pygame.draw.circle(screen, color, (self._player.pos), 10)

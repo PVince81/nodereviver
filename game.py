@@ -6,61 +6,77 @@
 
 
 import pygame
-import random
-import math
-from pygame.locals import *
-from pygame import Surface
 import model
 import view
+from config import Config
 
-class Config:
-    def __init__(self):
-        self.fullScreen = False
-        self.screenSize = (800, 600)
-        self.fps = 60
-        
 
 class Game:
     def __init__(self, config):
         self._config = config
+        self._screen = None
+        self._clock = None
+        self._player = model.Player()
+        self._terminated = False
+        self._display = None
+        self._world = None
         
     def _init(self):
-        pygame.init();
+        pygame.init()
         flags = 0
         if self._config.fullScreen:
             flags = pygame.FULLSCREEN | pygame.HWSURFACE | pygame.DOUBLEBUF
 
         pygame.display.set_mode(self._config.screenSize, flags)
         pygame.display.set_caption('MiniLD33') 
-        self._screen = pygame.display.get_surface()
-        self._terminated = False
+        self._screen = pygame.display.get_surface()        
         self._clock = pygame.time.Clock()
-        self._display = view.Display(self._screen);
+        self._display = view.Display(self._screen)
+        self._display.addEntity( view.PlayerView(self._player) )
         
     def _quit(self):
-        pygame.quit();
+        pygame.quit()
         
+    def _movePlayer(self, direction):
+        if self._player.moving:
+            return
+
+        movements = [(0, -1), (0, 1), (-1, 0), (1, 0)]
+        movement = movements[direction]
+        # Check whether player is allowed to move to this direction
+        edge = self._player.currentNode.getEdge(movement)
+        if edge:
+            self._player.moveTo(edge.getOther(self._player.currentNode))
+
     def _handleInput(self):
         for event in pygame.event.get():
-            if event.type == QUIT: 
+            if event.type == pygame.locals.QUIT: 
                 self._terminated = True
-            elif event.type == KEYUP:
-                if event.key == K_ESCAPE:
+            elif event.type == pygame.locals.KEYDOWN:
+                directionKeys = self._config.keymap.directions
+                for direction in range(4):
+                    if event.key in directionKeys[direction]:
+                        self._movePlayer(direction)
+                        break
+
+            elif event.type == pygame.locals.KEYUP:
+                if event.key == pygame.locals.K_ESCAPE:
                     self._terminated = True
 
     def _handleLogic(self):
-        pass
+        self._player.update()
     
     def _initWorld(self, worldNum):
         self._world = model.World.getWorld(worldNum)
         self._display.setWorld(self._world)
+        self._player.setCurrentNode(self._world.startNode)
         
     def run(self):
         self._init()
         self._initWorld(0)
         while not self._terminated:
-            self._handleInput();
-            self._handleLogic();
+            self._handleInput()
+            self._handleLogic()
             self._display.render()
             pygame.display.flip()
             self._clock.tick(self._config.fps)
@@ -68,7 +84,8 @@ class Game:
         self._quit()
         
 
+print model.Node()
+
 if __name__ == '__main__':
-    config = Config()
-    game = Game(config)
+    game = Game(Config())
     game.run()
