@@ -13,6 +13,7 @@ class Display(object):
         self._entities = []
         self._worldView = None
         self._hud = Hud(screen, gameState)
+        self.selectionView = SelectionView()
         
     def setWorld(self, world):
         self.clear()
@@ -27,6 +28,7 @@ class Display(object):
         for entity in self._entities:
             entity.render(self._screen)
         self._hud.render()
+        self.selectionView.render(self._screen)
 
     def addEntityView(self, entityView):
         self._entities.append(entityView)
@@ -119,6 +121,19 @@ class FoeView():
             color = (255, 0, 0)
         pygame.draw.circle(screen, color, (self._entity.pos), 10)
 
+class SelectionView():
+    def __init__(self):
+        self._selection = []
+    
+    def setSelection(self, selection):
+        self._selection = selection
+        
+    def render(self, screen):
+        d = 8
+        color = (255, 255, 0) 
+        for selectedNode in self._selection:
+            rect = (selectedNode.pos[0] - d, selectedNode.pos[1] - d, d * 2, d * 2)
+            pygame.draw.rect(screen, color, rect )
 
 class Hud(object):
     '''

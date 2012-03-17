@@ -148,8 +148,6 @@ class Node(object):
 
 _nextEdgeId = 1
 class Edge(object):
-    _nextId = 1
-
     def __init__(self, world, source, destination):
         global _nextEdgeId
         self.id = _nextEdgeId
@@ -197,6 +195,10 @@ class World(object):
         self.startNode = None
         self.dirty = False
         self.markedEdges = 0
+        global _nextEdgeId
+        global _nextNodeId
+        _nextEdgeId = 1
+        _nextNodeId = 1
     
     def update(self):
         for entity in self.entities:
@@ -208,20 +210,39 @@ class World(object):
     def createSimpleFoe(self, startNode):
         foe = SimpleFoe(startNode)
         self.entities.append(foe)
+        self.dirty = True
 
     def createTrackingFoe(self, startNode):
         foe = TrackingFoe(startNode)
         self.entities.append(foe)
+        self.dirty = True
 
     def createNode(self, pos = (0, 0), nodeType = Node.SQUARE):
         node = Node(self, pos, nodeType)
         self.nodes.append(node)
+        self.dirty = True
         return node
-    
+
+    def deleteNode(self, node):
+        self.nodes.remove(node)
+        for edge in list(node.edges):
+            self.deleteEdge(edge)
+        self.dirty = True
+            
+    def deleteEdge(self, edge):
+        if edge.source:
+            edge.source.edges.remove(edge)
+        if edge.destination:
+            edge.destination.edges.remove(edge)
+        self.edges.remove(edge)
+        self.dirty = True
+
     def connectNode(self, node1, node2 ):
+        self.dirty = True
         self.edges.append( node1.connect(node2) )
 
     def connectNodeWithJoint(self, node1, node2, reverse = False):
+        self.dirty = True
         if node1.pos[0] == node2.pos[0] or node1.pos[1] == node2.pos[1]:
             self.edges.append( node1.connect(node2) )
         else:
@@ -232,6 +253,13 @@ class World(object):
             self.nodes.append(angleNode)
             self.edges.append(node1.connect(angleNode))
             self.edges.append(node2.connect(angleNode))
+
+    def getNodeAt(self, pos, margin = 5):
+        for node in self.nodes:
+            dist = vectorDiff(node.pos, pos)
+            if abs(dist[0]) <= margin and abs(dist[1]) <= margin:
+                return node
+        return None 
 
     def hasAllEdgesMarked(self):
         return self.markedEdges == len(self.edges)
@@ -248,6 +276,10 @@ class Entity(object):
         self.targetNode = None
         self.destination = (0, 0)
         self.speed = 1
+        self.dead = False
+
+    def die(self):
+        self.dead = True
 
     def moveTo(self, targetNode):
         self.targetNode = targetNode
@@ -358,6 +390,7 @@ class TrackingFoe(Foe):
     def update(self):
         if self._sleepTicks > 0:
             self._sleepTicks -= 1
+            return
         elif self.moving:
             Foe.update(self)
         else:
@@ -376,6 +409,10 @@ class TrackingFoe(Foe):
                     targetNode = self._trackedEntity.getFinalTargetNode()
                 if targetNode != self.currentNode:
                     self._path = pathFinder.findShortestPath(self.currentNode, targetNode)
+
+        dist = vectorDiff(self._trackedEntity.pos, self.pos)
+        if abs(dist[0]) < 10 and abs(dist[1]) < 10:
+            self._trackedEntity.die()
 
 class GameState(object):
     def __init__(self):

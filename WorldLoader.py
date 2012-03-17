@@ -12,12 +12,15 @@ class WorldLoader(object):
     def _processNodes(self, world, nodesElement):
         nodes = {}
         for nodeElement in nodesElement.iter():
-            if not nodeElement.tag == "node":
+            if not nodeElement.tag == "node" and not nodeElement.tag == "joint":
                 continue
             id = nodeElement.get("id")
             x = int(nodeElement.get("x", 0))
             y = int(nodeElement.get("y", 0))
-            node = world.createNode((x, y))
+            nodeType = model.Node.SQUARE
+            if nodeElement.tag == "joint":
+                nodeType = model.Node.JOINT
+            node = world.createNode((x, y), nodeType)
             if id:
                 nodes[id] = node
         return nodes

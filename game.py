@@ -49,25 +49,33 @@ class Game:
         if edge:
             self._player.moveAlong(edge)
 
+    def _handleInputEvent(self, event):
+        if event.type == pygame.locals.QUIT: 
+            self._terminated = True
+        elif event.type == pygame.locals.KEYDOWN:
+            directionKeys = self._config.keymap.directions
+            for direction in range(4):
+                if event.key in directionKeys[direction]:
+                    self._movePlayer(direction)
+                    break
+
+        elif event.type == pygame.locals.KEYUP:
+            if event.key == pygame.locals.K_ESCAPE:
+                self._terminated = True
+
     def _handleInput(self):
         for event in pygame.event.get():
-            if event.type == pygame.locals.QUIT: 
-                self._terminated = True
-            elif event.type == pygame.locals.KEYDOWN:
-                directionKeys = self._config.keymap.directions
-                for direction in range(4):
-                    if event.key in directionKeys[direction]:
-                        self._movePlayer(direction)
-                        break
-
-            elif event.type == pygame.locals.KEYUP:
-                if event.key == pygame.locals.K_ESCAPE:
-                    self._terminated = True
+            self._handleInputEvent(event)
 
     def _handleLogic(self):
         self._world.update()
         if self._world.hasAllEdgesMarked():
             self._gameState.worldNum += 1
+            self._gameState.dirty = True
+            self._initWorld(self._gameState.worldNum)
+        if self._player.dead:
+            self._gameState.lives -= 1
+            self._gameState.dirty = True
             self._initWorld(self._gameState.worldNum)
     
     def _initWorld(self, worldNum):
@@ -82,7 +90,7 @@ class Game:
         for entity in self._world.entities:
             if entity.entityType == 1 and entity.foeType == 1:
                 entity.track(self._player)
-        
+
     def run(self):
         self._init()
         self._initWorld(self._gameState.worldNum)
@@ -95,7 +103,57 @@ class Game:
             self._clock.tick(self._config.fps)
             
         self._quit()
+
+class Editor(Game):
+    def __init__(self, config):
+        Game.__init__(self, config)
+        self._selectedNodes = []
+        self._selectedEdge = None
         
+    def _init(self):
+        Game._init(self)
+        pygame.display.set_caption('MiniLD33 (editor)')
+        
+    def _handleInputEvent(self, event):
+        Game._handleInputEvent(self, event)
+        mods = pygame.key.get_mods()
+        if event.type == pygame.locals.MOUSEBUTTONDOWN:
+            if event.button == 3:
+                # add node
+                pos = (event.pos[0] / 20 * 20, event.pos[1] / 20 * 20)
+                node = self._world.getNodeAt(event.pos, 15)
+                if not node:
+                    node = self._world.createNode(pos)
+                self._selectedNodes = [node]
+                self._display.selectionView.setSelection(self._selectedNodes)
+            elif event.button == 1:
+                # select or drag node
+                node = self._world.getNodeAt(event.pos, 10)
+                if node:
+                    # select another
+                    if mods & pygame.locals.KMOD_CTRL:                        
+                        self._selectedNodes.append(node)
+                    # connect
+                    elif mods & pygame.locals.KMOD_SHIFT & len(self._selectedNodes) > 0:
+                        for selectedNode in self._selectedNodes:
+                            self._world.connectNodeWithJoint(selectedNode, node)
+                        self._selectedNodes = [node]
+                    else:
+                        self._selectedNodes = [node]
+                else:
+                    self._selectedNodes = []
+                self._display.selectionView.setSelection(self._selectedNodes)
+        elif event.type == pygame.locals.KEYDOWN:
+            if event.key == pygame.locals.K_DELETE:
+                for selectedNode in self._selectedNodes:
+                    self._world.deleteNode(selectedNode)
+                self._selectedNodes = []
+                self._display.selectionView.setSelection(self._selectedNodes)
+        
+    def _handleLogic(self):
+        pass
+
 if __name__ == '__main__':
     game = Game(Config())
+    #game = Editor(Config())
     game.run()
