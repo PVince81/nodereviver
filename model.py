@@ -376,3 +376,10 @@ class TrackingFoe(Foe):
                     targetNode = self._trackedEntity.getFinalTargetNode()
                 if targetNode != self.currentNode:
                     self._path = pathFinder.findShortestPath(self.currentNode, targetNode)
+
+class GameState(object):
+    def __init__(self):
+        self.score = 0
+        self.lives = 5
+        self.worldNum = 1
+        self.dirty = True

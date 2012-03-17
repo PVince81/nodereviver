@@ -19,7 +19,7 @@ class Game:
         self._terminated = False
         self._display = None
         self._world = None
-        self._worldNum = 1
+        self._gameState = model.GameState()
         self._player = None
         self._worldLoader = WorldLoader(self._config.dataPath) 
 
@@ -33,7 +33,7 @@ class Game:
         pygame.display.set_caption('MiniLD33') 
         self._screen = pygame.display.get_surface()        
         self._clock = pygame.time.Clock()
-        self._display = view.Display(self._screen)
+        self._display = view.Display(self._screen, self._gameState)
         
     def _quit(self):
         pygame.quit()
@@ -67,8 +67,8 @@ class Game:
     def _handleLogic(self):
         self._world.update()
         if self._world.hasAllEdgesMarked():
-            self._worldNum += 1
-            self._initWorld(self._worldNum)
+            self._gameState.worldNum += 1
+            self._initWorld(self._gameState.worldNum)
     
     def _initWorld(self, worldNum):
         self._world = self._worldLoader.loadWorld(worldNum)
@@ -85,7 +85,7 @@ class Game:
         
     def run(self):
         self._init()
-        self._initWorld(self._worldNum)
+        self._initWorld(self._gameState.worldNum)
 
         while not self._terminated:
             self._handleInput()

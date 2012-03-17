@@ -8,10 +8,11 @@ import model
 debug = False
 
 class Display(object):
-    def __init__(self, screen):
+    def __init__(self, screen, gameState):
         self._screen = screen
         self._entities = []
         self._worldView = None
+        self._hud = Hud(screen, gameState)
         
     def setWorld(self, world):
         self.clear()
@@ -25,6 +26,7 @@ class Display(object):
         self._worldView.render()
         for entity in self._entities:
             entity.render(self._screen)
+        self._hud.render()
 
     def addEntityView(self, entityView):
         self._entities.append(entityView)
@@ -116,3 +118,34 @@ class FoeView():
         else:
             color = (255, 0, 0)
         pygame.draw.circle(screen, color, (self._entity.pos), 10)
+
+
+class Hud(object):
+    '''
+    '''
+
+    def __init__(self, screen, gameState):
+        self._screen = screen
+        self._gameState = gameState
+        self._surface = pygame.Surface((200, 20), 0, screen)
+        self._surface.fill((0, 0, 0))
+        self._font = pygame.font.SysFont('serif', 10)
+        
+    def _rerender(self):
+        self._surface.fill((0, 0, 0))
+        fontHeight = self._font.get_height()
+
+        hudSurfaces = []
+        hudSurfaces.append( self._font.render("Level: %i  Lives: %i" % (self._gameState.worldNum, self._gameState.lives), False, (255, 255, 255)) )
+        #hudSurfaces.append( self._font.render("Lives: %i" % self._gameState.lives, False, (255, 255, 255)) )
+
+        offset = 0
+        for hudSurface in hudSurfaces:
+            self._surface.blit(hudSurface, (0,offset))
+            offset += fontHeight
+
+    def render(self):
+        if self._gameState.dirty:
+           self._rerender()
+           self._gameState.dirty = False
+        self._screen.blit(self._surface, (0, 0))
