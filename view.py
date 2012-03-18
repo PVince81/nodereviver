@@ -5,7 +5,7 @@
 import pygame
 import model
 
-debug = False
+debug = True
 
 class Display(object):
     def __init__(self, screen, gameState):

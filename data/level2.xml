@@ -1,71 +1,20 @@
 <level>
 	<nodes>
-		<node id="1" x="100" y="100" />
-		<node id="2" x="200" y="100" />
-		<node id="3" x="140" y="160" />
-		<node id="4" x="140" y="200" />
-		<node id="5" x="220" y="220" />
-		<node id="6" x="70" y="180" />
-		<node id="7" x="260" y="200" />
-		<node id="8" x="260" y="80" />
-		<node id="9" x="140" y="50" />
-		<node id="10" x="50" y="260" />
-		<node id="11" x="350" y="100" />
-		<node id="12" x="400" y="200" />
-		<node id="13" x="260" y="220" />
-		<node id="14" x="430" y="300" />
-		<joint id="15" x="410" y="330" />
-		<node id="16" x="400" y="250" />
-		<node id="17" x="350" y="200" />
-		<node id="18" x="550" y="300" />
-		<node id="19" x="430" y="400" />
-		<node id="20" x="340" y="400" />
-		<node id="21" x="340" y="440" />
-		<joint id="22" x="220" y="440" />
-		<node id="23" x="50" y="300" />
+		<node id="1" x="100" y="0" />
+		<node id="2" x="0" y="20" />
+		<node id="3" x="60" y="40" />
+		<node id="4" x="20" y="80" />
+		<node id="5" x="80" y="100" />
 	</nodes>
 	<edges>
-		<edge source="1" dest="2" />
-		<edge source="1" dest="3" />
-		<edge source="2" dest="3" />
-		<edge source="3" dest="4" />
-		<edge source="4" dest="5" />
-		<edge source="2" dest="5" reverse="true"/>
-		<edge source="4" dest="6" reverse="true"/>
-		<edge source="6" dest="1" />
-		<edge source="4" dest="7" />
-		<edge source="7" dest="13" />
-		<edge source="5" dest="13" />
-		<edge source="7" dest="8" />
-		<edge source="2" dest="8" />
-		<edge source="9" dest="8" reverse="true"/>
-		<edge source="9" dest="1" reverse="true"/>
-		<edge source="9" dest="3" reverse="true"/>
-		<edge source="6" dest="10" reverse="true"/>
-		<edge source="10" dest="5" reverse="true"/>
-		<edge source="8" dest="11" reverse="true"/>
-		<edge source="11" dest="17"/>
-		<edge source="17" dest="7"/>
-		<edge source="11" dest="12" reverse="true"/>
-		<edge source="12" dest="13"/>
-		<edge source="12" dest="14" reverse="true"/>
-		<edge source="14" dest="15"/>
-		<edge source="15" dest="16" reverse="true"/>
-		<edge source="16" dest="17" reverse="true"/>
-		<edge source="14" dest="18" reverse="true"/>
-		<edge source="18" dest="19"/>
-		<edge source="19" dest="20"/>
-		<edge source="20" dest="21"/>
-		<edge source="21" dest="19" reverse="true"/>
-		<edge source="20" dest="22" reverse="true"/>
-		<edge source="22" dest="13" reverse="true"/>
-		<edge source="10" dest="23" reverse="true"/>
-		<edge source="23" dest="14" reverse="true"/>
+		<edge source="1" dest="2" reverse="true"/>
+		<edge source="2" dest="3" reverse="true"/>
+		<edge source="3" dest="4"/>
+		<edge source="4" dest="2" reverse="true" />
+		<edge source="4" dest="5"/>
+		<edge source="5" dest="1" reverse="true" />
 	</edges>
 	<entities>
-		<player node="4"/>
-		<foe type="simple" node="12"/>
-		<foe type="tracking" node="21"/>
-		<foe type="tracking" node="18"/>
+		<player node="1"/>
 	</entities>
 </level>

@@ -1,38 +1,16 @@
 <level>
 	<nodes>
 		<node id="1" x="40" y="40" />
-		<node id="2" x="600" y="40" />
-		<node id="3" x="600" y="400" />
-		<node id="4" x="40" y="400" />
-
-		<node id="5" x="120" y="120" />
-		<node id="6" x="520" y="120" />
-		<node id="7" x="520" y="320" />
-		<node id="8" x="120" y="320" />
-
-		<node id="9" x="120" y="40" />
-		<node id="10" x="520" y="400" />
-
+		<node id="2" x="80" y="20" />
+		<node id="3" x="120" y="100" />
 	</nodes>
 	<edges>
-		<edge source="1" dest="9" />
-		<edge source="9" dest="2" />
-		<edge source="2" dest="3" />
-		<edge source="3" dest="10" />
-		<edge source="10" dest="4" />
-		<edge source="4" dest="1" />
-
-		<edge source="5" dest="6" />
-		<edge source="6" dest="7" />
-		<edge source="7" dest="8" />
-		<edge source="8" dest="5" />
-
-		<edge source="9" dest="5" />
-		<edge source="7" dest="10" />
-		
+		<edge source="1" dest="2" />
+		<edge source="1" dest="2" reverse="true"/>
+		<edge source="2" dest="3" reverse="true" />
+		<edge source="1" dest="3" />
 	</edges>
 	<entities>
 		<player node="1"/>
-		<foe type="simple" node="3"/>
 	</entities>
 </level>

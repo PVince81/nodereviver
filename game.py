@@ -80,6 +80,7 @@ class Game:
     
     def _initWorld(self, worldNum):
         self._world = self._worldLoader.loadWorld(worldNum)
+        self._world.centerInView(self._config.screenSize)
         self._player = model.Player()
         self._player.setCurrentNode(self._world.startNode)
         self._display.setWorld(self._world)

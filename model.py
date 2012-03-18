@@ -218,6 +218,12 @@ class World(object):
         self.dirty = True
 
     def createNode(self, pos = (0, 0), nodeType = Node.SQUARE):
+        # check for overlap
+        for node in self.nodes:
+            if node.pos == pos:
+                print "Warning: node overlap with %s" % node.__str__()
+                return node
+        
         node = Node(self, pos, nodeType)
         self.nodes.append(node)
         self.dirty = True
@@ -250,9 +256,15 @@ class World(object):
                 angleNode = self.createNode((node2.pos[0], node1.pos[1]), Node.JOINT)
             else:
                 angleNode = self.createNode((node1.pos[0], node2.pos[1]), Node.JOINT)
-            self.nodes.append(angleNode)
-            self.edges.append(node1.connect(angleNode))
-            self.edges.append(node2.connect(angleNode))
+            self._addEdge(node1.connect(angleNode))
+            self._addEdge(node2.connect(angleNode))
+
+    def _addEdge(self, newEdge):
+        for edge in self.edges:
+            if edge.source.id == newEdge.source.id and edge.destination.id == newEdge.destination.id:
+                print "Warning: duplicate edge: %s" % edge.__str__()
+                return
+        self.edges.append(newEdge)            
 
     def getNodeAt(self, pos, margin = 5):
         for node in self.nodes:
@@ -260,6 +272,43 @@ class World(object):
             if abs(dist[0]) <= margin and abs(dist[1]) <= margin:
                 return node
         return None 
+
+    def translate(self, offset):
+        '''
+        Translate all node's coordinates
+        '''
+        self.dirty = True
+        for node in self.nodes:
+            node.pos = (node.pos[0] + offset[0], node.pos[1] + offset[1])
+        for entity in self.entities:
+            entity.pos = (entity.pos[0] + offset[0], entity.pos[1] + offset[1])
+
+    def centerInView(self, viewport):
+        rect = self.getRect()
+        offset = (int((rect[2] - rect[0]) / 2), int((rect[3] - rect[1]) / 2))
+        offset = (viewport[0] / 2 - offset[0] - rect[0], viewport[1] / 2 - offset[1] - rect[1])
+        self.translate(offset)
+    
+    def getRect(self):
+        '''
+        Get the smallest possible rectangle including all nodes.
+        @return rectangle as tuple in the format (x1, y1, x2, y2)
+        '''
+        if len(self.nodes) == 0:
+            return (0, 0, 0, 0)
+        firstNode = self.nodes[0]
+        rect = [firstNode.pos[0], firstNode.pos[1], firstNode.pos[0], firstNode.pos[1]]
+        for node in self.nodes[1:]:
+            if node.pos[0] < rect[0]:
+                rect[0] = node.pos[0]
+            if node.pos[0] > rect[2]:
+                rect[2] = node.pos[0]
+            if node.pos[1] < rect[1]:
+                rect[1] = node.pos[1]
+            if node.pos[1] > rect[3]:
+                rect[3] = node.pos[1]
+    
+        return tuple(rect)
 
     def hasAllEdgesMarked(self):
         return self.markedEdges == len(self.edges)
@@ -418,5 +467,5 @@ class GameState(object):
     def __init__(self):
         self.score = 0
         self.lives = 5
-        self.worldNum = 1
+        self.worldNum = 4
         self.dirty = True

@@ -1,0 +1,46 @@
+<level>
+	<nodes>
+		<node id="1" x="40" y="0" />
+		<node id="2" x="100" y="40" />
+		<node id="3" x="0" y="80" />
+		<node id="4" x="140" y="80" />
+		<node id="5" x="220" y="80" />
+		<node id="6" x="40" y="100" />
+		<node id="7" x="-40" y="160" />
+		<node id="8" x="160" y="140" />
+		<node id="9" x="140" y="160" />
+		<node id="10" x="220" y="160" />
+		<node id="11" x="100" y="180" />
+		<node id="12" x="200" y="180" />
+		<node id="13" x="40" y="200" />
+	</nodes>
+	<edges>
+		<edge source="2" dest="1"/>
+		<edge source="3" dest="1"/>
+		<edge source="3" dest="4"/>
+		<edge source="4" dest="5"/>
+
+		<edge source="2" dest="6"/>
+		<edge source="6" dest="2"/>
+		<edge source="3" dest="6"/>
+		
+		<edge source="4" dest="9"/>
+		<edge source="9" dest="10"/>
+		<edge source="10" dest="5"/>
+		
+		<edge source="8" dest="2"/>
+		<edge source="12" dest="8"/>
+		<edge source="11" dest="8"/>
+		<edge source="11" dest="13"/>
+		<edge source="7" dest="13"/>
+		<edge source="7" dest="3"/>
+		<edge source="6" dest="7"/>
+		
+		<edge source="11" dest="12"/>
+		
+	</edges>
+	<entities>
+		<player node="1"/>
+		<foe node="10" type="tracking"/>
+	</entities>
+</level>
