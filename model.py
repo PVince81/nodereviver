@@ -555,3 +555,5 @@ class GameState(object):
         self.lives = 5
         self.worldNum = 1
         self.dirty = True
+        self.title = True
+        self.pause = False

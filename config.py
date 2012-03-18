@@ -10,6 +10,7 @@ class KeyMap:
         self.down = [pygame.locals.K_DOWN, pygame.locals.K_x]
         self.left = [pygame.locals.K_LEFT, pygame.locals.K_a]
         self.right = [pygame.locals.K_RIGHT, pygame.locals.K_d]
+        self.pause = [pygame.locals.K_PAUSE, pygame.locals.K_p]
         self.directions = [self.up, self.down, self.left, self.right]
 
 class Config:

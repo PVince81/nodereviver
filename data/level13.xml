@@ -1,0 +1,16 @@
+<level>
+	<nodes>
+		<node id="1" x="40" y="40" />
+		<node id="2" x="80" y="20" />
+		<node id="3" x="120" y="100" />
+	</nodes>
+	<edges>
+		<edge source="1" dest="2" />
+		<edge source="1" dest="2" reverse="true"/>
+		<edge source="2" dest="3" reverse="true" />
+		<edge source="1" dest="3" />
+	</edges>
+	<entities>
+		<player node="1"/>
+	</entities>
+</level>

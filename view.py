@@ -11,16 +11,22 @@ from util import *
 debug = False
 
 _spriteSurface = None
+_gameState = None
         
 class Display(object):
     def __init__(self, config, screen, gameState):
         self._screen = screen
         self._entities = []
         self._worldView = None
+        self._titleScreen = TitleScreen(screen)
+        self._gameState = gameState
         self._hud = Hud(screen, gameState)
         self.selectionView = SelectionView()
-        self._edgeView = EdgeView() 
+        self._edgeView = EdgeView()
+        # UGLY, I know... but I'm tired to pass everything along 
         global _spriteSurface
+        global _gameState
+        _gameState = gameState
         _spriteSurface = pygame.image.load(config.dataPath + "sprites.png")
         _spriteSurface = _spriteSurface.convert_alpha(screen)
         
@@ -41,6 +47,8 @@ class Display(object):
         for entity in self._entities:
             entity.render(self._screen)
         self._hud.render()
+        if self._gameState.title:
+            self._titleScreen.render()
         self.selectionView.render(self._screen)
 
     def addEntityView(self, entityView):
@@ -230,7 +238,8 @@ class PlayerView():
         for particle in self._particles:
             if not particle.visible:
                 continue
-            particle.update()
+            if not _gameState.pause:
+                particle.update()
             particle.render(screen)
         screen.unlock()
         
@@ -245,15 +254,19 @@ class PlayerView():
         self._renderParticles(screen)
 
 class FoeView():
+    rect0 = pygame.Rect(20, 0, 20, 20)
+    rect1 = pygame.Rect(40, 0, 20, 20)
+    
     def __init__(self, entity):
         self._entity = entity
         
     def render(self, screen):
         if self._entity.foeType == 0:
-            color = (255, 128, 0)
+            rect = self.rect0
         else:
-            color = (255, 0, 0)
-        pygame.draw.circle(screen, color, (self._entity.pos), 10)
+            rect = self.rect1
+        pos = vectorAdd(self._entity.pos, (-10, -10))
+        screen.blit(_spriteSurface, pos, rect )
 
 class SelectionView():
     def __init__(self):
@@ -304,7 +317,27 @@ class Hud(object):
             offset += fontHeight
 
     def render(self):
+        if self._gameState.title:
+            return
+
         if self._gameState.dirty:
-           self._rerender()
-           self._gameState.dirty = False
+            self._rerender()
+            self._gameState.dirty = False
         self._screen.blit(self._surface, (0, 0))
+
+class TitleScreen(object):
+    def __init__(self, screen):
+        self._screen = screen
+        self._font = pygame.font.SysFont('serif', 12)
+        fontHeight = self._font.get_height()
+        self._textSurface = self._font.render("Press ENTER to start playing", False, (255, 255, 255))
+        self._text2Surface = self._font.render("By Vincent Petry (for MiniLD #33)", False, (255, 255, 255))
+        rect = self._textSurface.get_rect()
+        screenRect = screen.get_rect()
+        self._pos = (screenRect[2] / 2 - rect[2] / 2, 195)
+        rect = self._text2Surface.get_rect()
+        self._pos2 = (screenRect[2] - rect[2] - 20, screenRect[3] - fontHeight - 20) 
+    
+    def render(self):
+        self._screen.blit(self._textSurface, self._pos)
+        self._screen.blit(self._text2Surface, self._pos2)
