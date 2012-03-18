@@ -4,21 +4,31 @@
 
 import pygame
 import model
+import random
+import math
 from util import *
 
 debug = False
 
+_spriteSurface = None
+        
 class Display(object):
-    def __init__(self, screen, gameState):
+    def __init__(self, config, screen, gameState):
         self._screen = screen
         self._entities = []
         self._worldView = None
         self._hud = Hud(screen, gameState)
         self.selectionView = SelectionView()
+        self._edgeView = EdgeView() 
+        global _spriteSurface
+        _spriteSurface = pygame.image.load(config.dataPath + "sprites.png")
+        _spriteSurface = _spriteSurface.convert_alpha(screen)
         
-    def setWorld(self, world):
+    def setWorld(self, world, player):
         self.clear()
         world.dirty = True
+        self._world = world
+        self._player = player
         self._worldView = WorldView(self._screen, world)
         for entity in world.entities:
             # entities are all foes for now (except player)
@@ -26,6 +36,8 @@ class Display(object):
         
     def render(self):
         self._worldView.render()
+        self._edgeView.update(self._player.currentEdge)
+        self._edgeView.render(self._screen)
         for entity in self._entities:
             entity.render(self._screen)
         self._hud.render()
@@ -52,18 +64,24 @@ class WorldView(object):
         
     def _rerender(self):
         surface = self._worldSurface
+        surface.lock()
         # render edges
         for edge in self._world.edges:
+            width = 4
             if edge.isMarked():
                 color = (0, 255, 255)
-                width = 3
             else:
-                color = (192, 192, 192)
-                width = 1
-            pygame.draw.line(surface, color, edge.source.pos, edge.destination.pos, width )
+                color = (128, 128, 128)
+
+            # HACK: pygame.draw.line doesn't apply the width around the position,
+            # so need to shift it manually
+            posSource = vectorAdd(edge.source.pos, (-1, -1))
+            posDest = vectorAdd(edge.destination.pos, (-1, -1))
+            
+            pygame.draw.line(surface, color, posSource, posDest, width )
             if edge.oneWay and edge.destination.type != model.Node.JOINT:
                 # Draw arrow
-                dir = unitVector(vectorDiff(edge.destination.pos, edge.source.pos))
+                dir = unitVector(vectorDiff(posDest, posSource))
                 # go back a few pixels because of the node size,
                 # this is the arrow head's position
                 pos = vectorAdd(edge.destination.pos, vectorFactor(dir, -6))
@@ -99,15 +117,19 @@ class WorldView(object):
 
         # render nodes
         d = 5
-        color = (255, 255, 255)
         for node in self._world.nodes:
             if node.type == model.Node.SQUARE:
+                if node.marked:
+                    color = (255, 255, 0)
+                else:
+                    color = (255, 255, 255)
                 rect = (node.pos[0] - d, node.pos[1] - d, d * 2, d * 2)
                 pygame.draw.rect(surface, color, rect )
                 if debug:
                     textSurface = self._font.render("%i" % node.id, False, (255, 255, 0)) 
                     surface.blit(textSurface, (node.pos[0] + 2, node.pos[1] + d * 2 + 2))
         self._world.dirty = False
+        surface.unlock()
 
     def render(self):
         # pre-render level, only re-render if dirty
@@ -116,13 +138,111 @@ class WorldView(object):
             self._rerender()
         self._screen.blit(self._worldSurface, (0, 0))        
 
+class EdgeView(object):
+    def __init__(self, edge = None):
+        self.edge = edge
+        self.angleStep = 2.0 * math.pi / 60.0 
+    
+    def update(self, edge):
+        if self.edge != edge:
+            self.edge = edge
+            self.angle = 0
+            if self.edge:                
+                self.nodes = [node for node in [edge.source, edge.destination] if node.type != model.Node.JOINT]
+                self.posSource = vectorAdd(edge.source.pos, (-1, -1))
+                self.posDest = vectorAdd(edge.destination.pos, (-1, -1))
+
+    def render(self, screen):
+        if not self.edge or self.edge.marked:
+            return
+        ratio = (float(self.edge.markedLength) / self.edge.length)
+        if ratio > 1.0:
+            ratio = 1.0
+        # from 192 to 0
+        colorValue1 = 128 * int(1.0 - ratio)
+        # from 192 to 255
+        colorValue2 = 128 + int((255-128) * ratio)
+        color = (colorValue1, colorValue2, colorValue2)
+        width = 4
+
+        pygame.draw.line(screen, color, self.posSource, self.posDest, width )
+
+        d = 5
+        color = (255, 255, 255)
+        for node in self.nodes:
+            rect = (node.pos[0] - d, node.pos[1] - d, d * 2, d * 2)
+            pygame.draw.rect(screen, color, rect )
+
+class Particle(object):
+    def __init__(self, pos = (0,0)):
+        self.pos = pos
+        self.visible = False
+        self.movement = (0, 0)
+        self.lifeTime = 0
+        self.size = 3
+
+    def update(self):
+        self.lifeTime -= 1
+        if self.lifeTime <= 0:
+            self.visible = False
+        self.pos = vectorAdd(self.pos, self.movement)
+        # decelerate
+        self.movement = vectorFactor(self.movement, 0.95)
+        self.size = self.size * 0.9
+
+    def render(self, screen):
+        d = int(self.size)
+        colorValue = int(self.lifeTime / 60.0 * 255.0)
+        color = (0, colorValue, colorValue)
+        rect = (int(self.pos[0]) - d, int(self.pos[1]) - d, d * 2, d * 2)
+        pygame.draw.rect(screen, color, rect)
+        
+    def reset(self):
+        self.lifeTime = 60 # one second
+        self.size = 3
+        self.visible = True
+
 class PlayerView():
+    rect = pygame.Rect(0, 0, 20, 20)
+
     def __init__(self, entity):
         self._entity = entity
+        self._particles = []
+        while len(self._particles) < 40:
+            particle = Particle()
+            particle.visible = False
+            self._particles.append(particle)
+        
+    def _makeParticles(self):
+        toRevive = 1
+        for particle in self._particles:
+            if toRevive == 0:
+                break
+            if not particle.visible:
+                # revive it
+                particle.reset()
+                particle.movement = (random.random() * 4.0 - 2.0, random.random() * 4.0 - 2.0)
+                particle.pos = self._entity.pos
+                toRevive -= 1
+
+    def _renderParticles(self, screen):
+        screen.lock()
+        for particle in self._particles:
+            if not particle.visible:
+                continue
+            particle.update()
+            particle.render(screen)
+        screen.unlock()
         
     def render(self, screen):
-        color = (255, 255, 255)
-        pygame.draw.circle(screen, color, (self._entity.pos), 10)
+        #color = (0, 0, 0)
+        #pygame.draw.circle(screen, color, (self._entity.pos), 10)
+        pos = vectorAdd(self._entity.pos, (-10, -10))
+        screen.blit(_spriteSurface, pos, self.rect )
+        if self._entity.currentEdge and not self._entity.currentEdge.marked:
+            # Marking in progress
+            self._makeParticles()
+        self._renderParticles(screen)
 
 class FoeView():
     def __init__(self, entity):

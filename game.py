@@ -35,7 +35,7 @@ class Game:
         pygame.display.set_caption('MiniLD33') 
         self._screen = pygame.display.get_surface()        
         self._clock = pygame.time.Clock()
-        self._display = view.Display(self._screen, self._gameState)
+        self._display = view.Display(self._config, self._screen, self._gameState)
         sound.soundManager.init(self._config)
         
     def _quit(self):
@@ -101,7 +101,7 @@ class Game:
         self._world.centerInView(self._config.screenSize)
         self._player = model.Player()
         self._player.setCurrentNode(self._world.startNode)
-        self._display.setWorld(self._world)
+        self._display.setWorld(self._world, self._player)
         self._display.addEntityView( view.PlayerView(self._player) )
         self._world.addEntity(self._player)
 

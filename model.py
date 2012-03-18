@@ -87,6 +87,7 @@ class Node(object):
         self.type = nodeType
         self.pos = pos
         self.deleted = False
+        self.marked = False
         # Edges are saved in this order: up, down, left, right
         self.edges = []
     
@@ -157,6 +158,7 @@ class Edge(object):
         self.destination = destination
         self.oneWay = oneWay
         self.marked = False
+        self.markedLength = 0
         self.deleted = False
         diff = vectorDiff(source.pos, destination.pos)
         if diff[0] != 0:
@@ -182,6 +184,17 @@ class Edge(object):
             self.marked = True
             self.world.markedEdges += 1
             self.world.dirty = True
+            # mark nodes if all their edges have been marked
+            nodes = [self.source, self.destination]
+            for node in nodes:
+                allMarked = True
+                for edge in node.edges:
+                    if not edge.marked:
+                        allMarked = False
+                        break 
+                if allMarked:
+                    node.marked = True
+
 
     def __str__(self):
         return "Edge{id=%i,src=%s,dst=%s,len=%i}" % (self.id, self.source.__str__(), self.destination.__str__(), self.length)
@@ -387,7 +400,10 @@ class Entity(object):
 
     def update(self):
         if self.moving:
+            oldPos = self.pos
             self.pos = ( self.pos[0] + self.movement[0] * self.speed, self.pos[1] + self.movement[1] * self.speed )
+            self.onMoving(oldPos, self.pos)
+
             distance = vectorDiff(self.destination, self.pos)
             if ( self.movement[0] != 0 and abs(distance[0]) < self.speed ) or ( self.movement[1] != 0 and abs(distance[1]) < self.speed ):
                 self.pos = self.targetNode.pos
@@ -416,6 +432,9 @@ class Entity(object):
     
     def onStopMoving(self):
         pass
+    
+    def onMoving(self, oldPos, newPos):
+        pass
 
     def setCurrentNode(self, currentNode = None):
         self.currentNode = currentNode
@@ -442,6 +461,15 @@ class Player(Entity):
             self.justMarked = False
         else:
             sound.soundManager.play(sound.soundManager.MOVE)
+
+    def onMoving(self, oldPos, newPos):
+        if not self.currentEdge.marked:
+            diff = vectorDiff(newPos, oldPos)
+            if diff[0] != 0:
+                diff = diff[0]
+            else:
+                diff = diff[1]
+            self.currentEdge.markedLength += abs(diff)
 
 class Foe(Entity):
     entityType = 1
