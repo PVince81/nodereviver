@@ -1,0 +1,74 @@
+<level>
+	<nodes>
+		<node id="1" x="320" y="240" />
+		<node id="2" x="320" y="180" />
+		<node id="3" x="320" y="300" />
+		<node id="4" x="380" y="300" />
+		<node id="5" x="380" y="180" />
+		<node id="6" x="380" y="240" />
+		<node id="7" x="260" y="240" />
+		<node id="8" x="260" y="180" />
+		<node id="9" x="260" y="300" />
+		<node id="10" x="220" y="240" />
+		<node id="11" x="220" y="180" />
+		<node id="12" x="260" y="140" />
+		<node id="13" x="320" y="140" />
+		<node id="14" x="380" y="140" />
+		<joint id="15" x="220" y="140" />
+		<node id="16" x="220" y="300" />
+		<node id="17" x="420" y="300" />
+		<node id="18" x="420" y="240" />
+		<joint id="19" x="420" y="140" />
+		<node id="20" x="420" y="180" />
+		<node id="21" x="260" y="340" />
+		<joint id="22" x="220" y="340" />
+		<node id="23" x="320" y="340" />
+		<node id="24" x="380" y="340" />
+		<joint id="25" x="420" y="340" />
+	</nodes>
+	<edges>
+		<edge dest="1" oneway="true" source="6" />
+		<edge dest="5" oneway="true" source="6" />
+		<edge dest="5" oneway="true" source="2" />
+		<edge dest="1" oneway="true" source="2" />
+		<edge dest="4" oneway="true" source="3" />
+		<edge dest="6" oneway="true" source="4" />
+		<edge dest="2" oneway="true" source="8" />
+		<edge dest="7" oneway="true" source="8" />
+		<edge dest="3" oneway="true" source="9" />
+		<edge dest="9" oneway="true" source="7" />
+		<edge dest="1" oneway="true" source="3" />
+		<edge dest="7" oneway="true" source="1" />
+		<edge dest="7" oneway="true" source="10" />
+		<edge dest="8" oneway="true" source="11" />
+		<edge dest="13" oneway="true" source="14" />
+		<edge dest="13" oneway="true" source="12" />
+		<edge dest="12" oneway="true" source="8" />
+		<edge dest="14" oneway="true" source="5" />
+		<edge dest="2" oneway="true" source="13" />
+		<edge dest="11" oneway="true" source="15" />
+		<edge dest="12" source="15" />
+		<edge dest="11" oneway="true" source="10" />
+		<edge dest="10" oneway="true" source="16" />
+		<edge dest="16" oneway="true" source="9" />
+		<edge dest="19" source="14" />
+		<edge dest="20" oneway="true" source="19" />
+		<edge dest="20" oneway="true" source="18" />
+		<edge dest="18" oneway="true" source="17" />
+		<edge dest="17" oneway="true" source="4" />
+		<edge dest="18" oneway="true" source="6" />
+		<edge dest="5" oneway="true" source="20" />
+		<edge dest="22" source="16" />
+		<edge dest="21" oneway="true" source="22" />
+		<edge dest="21" oneway="true" source="23" />
+		<edge dest="24" oneway="true" source="23" />
+		<edge dest="25" source="24" />
+		<edge dest="17" oneway="true" source="25" />
+		<edge dest="4" oneway="true" source="24" />
+		<edge dest="23" oneway="true" source="3" />
+		<edge dest="9" oneway="true" source="21" />
+	</edges>
+	<entities>
+		<player node="1" />
+	</entities>
+</level>

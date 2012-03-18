@@ -4,8 +4,9 @@
 
 import pygame
 import model
+from util import *
 
-debug = True
+debug = False
 
 class Display(object):
     def __init__(self, screen, gameState):
@@ -47,8 +48,7 @@ class WorldView(object):
         self._background.fill((0, 0, 0))
         self._worldSurface = self._screen.copy()
         
-        if debug:
-            self._font = pygame.font.SysFont('serif', 10)
+        self._font = pygame.font.SysFont('serif', 10)
         
     def _rerender(self):
         surface = self._worldSurface
@@ -61,6 +61,20 @@ class WorldView(object):
                 color = (192, 192, 192)
                 width = 1
             pygame.draw.line(surface, color, edge.source.pos, edge.destination.pos, width )
+            if edge.oneWay and edge.destination.type != model.Node.JOINT:
+                # Draw arrow
+                dir = unitVector(vectorDiff(edge.destination.pos, edge.source.pos))
+                # go back a few pixels because of the node size,
+                # this is the arrow head's position
+                pos = vectorAdd(edge.destination.pos, vectorFactor(dir, -6))
+                # go back further for the back of the arrow
+                pos1 = vectorAdd(pos, vectorFactor(dir, -5))
+                pos2 = pos1
+                pos1 = vectorAdd(pos1, vectorFactor(vectorSwap(dir), 5))
+                pos2 = vectorAdd(pos2, vectorFactor(vectorSwap(dir), -5))
+                pygame.draw.line(surface, color, pos, pos1, width )
+                pygame.draw.line(surface, color, pos, pos2, width )
+            
             if debug:
                 textSurface = self._font.render("%i" % edge.length, False, (0, 128, 128))
                 x1 = edge.source.pos[0]
@@ -123,17 +137,27 @@ class FoeView():
 
 class SelectionView():
     def __init__(self):
-        self._selection = []
+        self._nodes = []
+        self._edge = None
     
     def setSelection(self, selection):
-        self._selection = selection
-        
+        self._nodes = selection
+
+    def setEdgeSelection(self, edge):
+        self._edge = edge
+
     def render(self, screen):
-        d = 8
         color = (255, 255, 0) 
-        for selectedNode in self._selection:
+        for selectedNode in self._nodes:
+            if selectedNode.type == model.Node.JOINT:
+                d = 3
+            else:
+                d = 8
             rect = (selectedNode.pos[0] - d, selectedNode.pos[1] - d, d * 2, d * 2)
             pygame.draw.rect(screen, color, rect )
+
+        if self._edge:
+            pygame.draw.line(screen, color, self._edge.source.pos, self._edge.destination.pos, 1 )
 
 class Hud(object):
     '''

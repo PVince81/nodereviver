@@ -1,0 +1,370 @@
+<level>
+	<nodes>
+		<node id="1" x="180" y="100" />
+		<node id="2" x="220" y="100" />
+		<node id="3" x="200" y="160" />
+		<joint id="4" x="180" y="160" />
+		<joint id="5" x="220" y="160" />
+		<node id="6" x="240" y="200" />
+		<joint id="7" x="200" y="200" />
+		<node id="8" x="260" y="140" />
+		<joint id="9" x="260" y="200" />
+		<node id="10" x="140" y="140" />
+		<node id="11" x="160" y="240" />
+		<joint id="12" x="140" y="240" />
+		<joint id="13" x="240" y="240" />
+		<node id="14" x="160" y="200" />
+		<node id="15" x="160" y="60" />
+		<node id="16" x="220" y="60" />
+		<joint id="17" x="240" y="60" />
+		<node id="18" x="100" y="280" />
+		<joint id="19" x="80" y="280" />
+		<node id="20" x="180" y="200" />
+		<joint id="21" x="180" y="280" />
+		<node id="22" x="100" y="180" />
+		<joint id="23" x="180" y="180" />
+		<node id="24" x="100" y="140" />
+		<joint id="25" x="60" y="140" />
+		<node id="26" x="60" y="180" />
+		<joint id="27" x="80" y="200" />
+		<node id="28" x="200" y="300" />
+		<joint id="29" x="160" y="300" />
+		<node id="30" x="120" y="240" />
+		<node id="31" x="100" y="320" />
+		<joint id="32" x="120" y="320" />
+		<joint id="33" x="60" y="320" />
+		<node id="34" x="140" y="340" />
+		<joint id="35" x="100" y="340" />
+		<joint id="36" x="200" y="340" />
+		<node id="37" x="220" y="220" />
+		<joint id="38" x="220" y="300" />
+		<node id="39" x="220" y="180" />
+		<node id="40" x="300" y="140" />
+		<joint id="41" x="300" y="180" />
+		<node id="42" x="280" y="220" />
+		<node id="43" x="280" y="140" />
+		<node id="44" x="200" y="80" />
+		<joint id="45" x="280" y="80" />
+		<node id="46" x="120" y="120" />
+		<joint id="47" x="200" y="120" />
+		<joint id="48" x="60" y="120" />
+		<joint id="49" x="60" y="80" />
+		<node id="50" x="100" y="80" />
+		<joint id="51" x="120" y="80" />
+		<node id="52" x="260" y="20" />
+		<joint id="53" x="220" y="20" />
+		<node id="54" x="320" y="60" />
+		<joint id="55" x="260" y="60" />
+		<node id="56" x="300" y="20" />
+		<joint id="57" x="320" y="20" />
+		<node id="58" x="300" y="100" />
+		<node id="59" x="340" y="100" />
+		<joint id="60" x="340" y="60" />
+		<node id="61" x="360" y="140" />
+		<node id="62" x="320" y="80" />
+		<node id="63" x="320" y="260" />
+		<joint id="64" x="360" y="80" />
+		<node id="65" x="420" y="200" />
+		<node id="66" x="540" y="200" />
+		<node id="67" x="540" y="360" />
+		<joint id="68" x="420" y="360" />
+		<node id="69" x="540" y="240" />
+		<node id="70" x="380" y="220" />
+		<joint id="71" x="380" y="240" />
+		<node id="72" x="440" y="220" />
+		<joint id="73" x="380" y="140" />
+		<joint id="74" x="440" y="140" />
+		<node id="75" x="480" y="160" />
+		<joint id="76" x="480" y="220" />
+		<node id="77" x="460" y="280" />
+		<node id="78" x="500" y="220" />
+		<joint id="79" x="500" y="160" />
+		<joint id="80" x="500" y="280" />
+		<node id="81" x="580" y="220" />
+		<node id="82" x="580" y="320" />
+		<node id="83" x="480" y="320" />
+		<node id="84" x="340" y="280" />
+		<joint id="85" x="340" y="220" />
+		<joint id="86" x="460" y="260" />
+		<joint id="87" x="340" y="320" />
+		<node id="88" x="540" y="400" />
+		<joint id="89" x="480" y="400" />
+		<joint id="90" x="580" y="400" />
+		<node id="91" x="500" y="440" />
+		<joint id="92" x="540" y="440" />
+		<joint id="93" x="320" y="440" />
+		<node id="94" x="220" y="380" />
+		<joint id="95" x="140" y="380" />
+		<node id="96" x="360" y="400" />
+		<joint id="97" x="220" y="400" />
+		<node id="98" x="440" y="420" />
+		<joint id="99" x="360" y="420" />
+		<node id="100" x="440" y="300" />
+		<joint id="101" x="480" y="300" />
+		<node id="102" x="540" y="100" />
+		<joint id="103" x="480" y="100" />
+		<node id="104" x="520" y="40" />
+		<node id="105" x="140" y="40" />
+		<joint id="106" x="540" y="40" />
+		<node id="107" x="380" y="40" />
+		<joint id="108" x="100" y="40" />
+		<node id="109" x="380" y="100" />
+		<joint id="110" x="420" y="100" />
+		<node id="111" x="420" y="60" />
+		<node id="112" x="380" y="60" />
+		<node id="113" x="440" y="120" />
+		<joint id="114" x="380" y="120" />
+		<joint id="115" x="440" y="60" />
+		<node id="116" x="460" y="80" />
+		<joint id="117" x="460" y="120" />
+		<node id="118" x="500" y="80" />
+		<node id="119" x="520" y="160" />
+		<joint id="120" x="520" y="80" />
+		<node id="121" x="520" y="280" />
+		<node id="122" x="560" y="280" />
+		<node id="123" x="560" y="180" />
+		<joint id="124" x="560" y="160" />
+		<node id="125" x="600" y="120" />
+		<joint id="126" x="600" y="180" />
+		<joint id="127" x="600" y="100" />
+		<joint id="128" x="520" y="60" />
+		<joint id="129" x="500" y="60" />
+		<node id="130" x="60" y="360" />
+		<joint id="131" x="40" y="240" />
+		<joint id="132" x="40" y="360" />
+		<node id="133" x="60" y="240" />
+		<node id="134" x="60" y="400" />
+		<node id="135" x="160" y="400" />
+		<node id="136" x="160" y="360" />
+		<node id="137" x="260" y="340" />
+		<node id="138" x="260" y="420" />
+		<joint id="139" x="160" y="420" />
+		<joint id="140" x="260" y="360" />
+		<node id="141" x="300" y="360" />
+		<joint id="142" x="300" y="340" />
+		<joint id="143" x="300" y="420" />
+		<node id="144" x="380" y="360" />
+		<node id="145" x="460" y="380" />
+		<node id="146" x="460" y="340" />
+		<joint id="147" x="380" y="340" />
+		<joint id="148" x="380" y="380" />
+		<node id="149" x="560" y="360" />
+		<joint id="150" x="560" y="340" />
+		<joint id="151" x="560" y="380" />
+		<joint id="152" x="460" y="420" />
+		<joint id="153" x="600" y="420" />
+		<joint id="154" x="600" y="360" />
+		<joint id="155" x="240" y="260" />
+		<node id="156" x="280" y="260" />
+		<joint id="157" x="280" y="300" />
+		<joint id="158" x="240" y="300" />
+		<node id="159" x="460" y="160" />
+		<joint id="160" x="360" y="160" />
+		<node id="161" x="580" y="140" />
+		<joint id="162" x="460" y="140" />
+		<joint id="163" x="560" y="60" />
+		<node id="164" x="580" y="60" />
+		<node id="165" x="560" y="20" />
+		<node id="166" x="600" y="20" />
+		<joint id="167" x="600" y="60" />
+	</nodes>
+	<edges>
+		<edge dest="4" source="1" />
+		<edge dest="3" source="4" />
+		<edge dest="5" source="2" />
+		<edge dest="3" source="5" />
+		<edge dest="2" source="1" />
+		<edge dest="7" source="3" />
+		<edge dest="6" source="7" />
+		<edge dest="9" source="8" />
+		<edge dest="6" source="9" />
+		<edge dest="8" source="10" />
+		<edge dest="12" source="10" />
+		<edge dest="11" source="12" />
+		<edge dest="13" source="6" />
+		<edge dest="11" source="13" />
+		<edge dest="14" source="15" />
+		<edge dest="17" source="6" />
+		<edge dest="16" source="17" />
+		<edge dest="15" source="16" />
+		<edge dest="18" source="19" />
+		<edge dest="21" source="20" />
+		<edge dest="18" source="21" />
+		<edge dest="23" source="20" />
+		<edge dest="22" source="23" />
+		<edge dest="22" source="26" />
+		<edge dest="27" source="19" />
+		<edge dest="14" source="27" />
+		<edge dest="25" source="26" />
+		<edge dest="24" source="25" />
+		<edge dest="22" source="24" />
+		<edge dest="29" source="11" />
+		<edge dest="28" source="29" />
+		<edge dest="32" source="30" />
+		<edge dest="31" source="32" />
+		<edge dest="31" source="33" />
+		<edge dest="35" source="31" />
+		<edge dest="34" source="35" />
+		<edge dest="36" source="28" />
+		<edge dest="34" source="36" />
+		<edge dest="38" source="37" />
+		<edge dest="28" source="38" />
+		<edge dest="37" source="39" />
+		<edge dest="41" source="40" />
+		<edge dest="39" source="41" />
+		<edge dest="37" source="42" />
+		<edge dest="42" source="43" />
+		<edge dest="45" source="43" />
+		<edge dest="44" source="45" />
+		<edge dest="47" source="44" />
+		<edge dest="46" source="47" />
+		<edge dest="48" source="46" />
+		<edge dest="49" source="48" />
+		<edge dest="50" source="49" />
+		<edge dest="46" oneway="true" source="51" />
+		<edge dest="50" source="51" />
+		<edge dest="53" source="16" />
+		<edge dest="52" source="53" />
+		<edge dest="55" source="52" />
+		<edge dest="54" source="55" />
+		<edge dest="56" source="52" />
+		<edge dest="57" source="54" />
+		<edge dest="56" source="57" />
+		<edge dest="58" source="56" />
+		<edge dest="60" source="54" />
+		<edge dest="59" source="60" />
+		<edge dest="58" source="59" />
+		<edge dest="40" source="61" />
+		<edge dest="62" source="63" />
+		<edge dest="64" source="61" />
+		<edge dest="62" source="64" />
+		<edge dest="68" source="65" />
+		<edge dest="67" source="68" />
+		<edge dest="65" source="66" />
+		<edge dest="66" source="69" />
+		<edge dest="67" source="69" />
+		<edge dest="71" source="70" />
+		<edge dest="69" source="71" />
+		<edge dest="73" source="70" />
+		<edge dest="74" source="72" />
+		<edge dest="74" source="73" />
+		<edge dest="76" source="75" />
+		<edge dest="72" source="76" />
+		<edge dest="79" source="78" />
+		<edge dest="75" source="79" />
+		<edge dest="80" source="78" />
+		<edge dest="77" source="80" />
+		<edge dest="78" source="81" />
+		<edge dest="82" source="83" />
+		<edge dest="81" source="82" />
+		<edge dest="85" source="84" />
+		<edge dest="70" source="85" />
+		<edge dest="86" source="77" />
+		<edge dest="63" source="86" />
+		<edge dest="87" source="84" />
+		<edge dest="83" oneway="true" source="87" />
+		<edge dest="89" source="83" />
+		<edge dest="88" source="89" />
+		<edge dest="90" source="82" />
+		<edge dest="88" source="90" />
+		<edge dest="92" source="88" />
+		<edge dest="91" source="92" />
+		<edge dest="63" oneway="true" source="93" />
+		<edge dest="91" source="93" />
+		<edge dest="34" oneway="true" source="95" />
+		<edge dest="94" source="95" />
+		<edge dest="97" source="94" />
+		<edge dest="96" source="97" />
+		<edge dest="99" source="96" />
+		<edge dest="98" source="99" />
+		<edge dest="101" source="83" />
+		<edge dest="100" source="101" />
+		<edge dest="98" source="100" />
+		<edge dest="103" source="75" />
+		<edge dest="102" source="103" />
+		<edge dest="106" source="102" />
+		<edge dest="104" source="106" />
+		<edge dest="104" source="107" />
+		<edge dest="105" source="107" />
+		<edge dest="50" oneway="true" source="108" />
+		<edge dest="105" source="108" />
+		<edge dest="110" source="109" />
+		<edge dest="112" source="107" />
+		<edge dest="111" source="112" />
+		<edge dest="110" source="111" />
+		<edge dest="109" source="112" />
+		<edge dest="114" source="109" />
+		<edge dest="113" source="114" />
+		<edge dest="111" source="115" />
+		<edge dest="113" source="115" />
+		<edge dest="117" source="116" />
+		<edge dest="113" source="117" />
+		<edge dest="116" source="118" />
+		<edge dest="120" source="119" />
+		<edge dest="118" source="120" />
+		<edge dest="119" source="121" />
+		<edge dest="121" source="122" />
+		<edge dest="122" source="123" />
+		<edge dest="124" source="123" />
+		<edge dest="119" source="124" />
+		<edge dest="126" source="125" />
+		<edge dest="123" source="126" />
+		<edge dest="127" source="125" />
+		<edge dest="102" source="127" />
+		<edge dest="129" source="118" />
+		<edge dest="128" source="129" />
+		<edge dest="104" source="128" />
+		<edge dest="133" source="33" />
+		<edge dest="30" source="133" />
+		<edge dest="131" source="132" />
+		<edge dest="133" source="131" />
+		<edge dest="132" source="130" />
+		<edge dest="134" source="130" />
+		<edge dest="135" source="134" />
+		<edge dest="136" source="135" />
+		<edge dest="130" source="136" />
+		<edge dest="139" source="135" />
+		<edge dest="138" source="139" />
+		<edge dest="140" source="137" />
+		<edge dest="136" source="140" />
+		<edge dest="142" source="141" />
+		<edge dest="137" source="142" />
+		<edge dest="143" source="141" />
+		<edge dest="138" source="143" />
+		<edge dest="144" source="141" />
+		<edge dest="147" source="144" />
+		<edge dest="146" source="147" />
+		<edge dest="148" source="144" />
+		<edge dest="145" source="148" />
+		<edge dest="150" source="149" />
+		<edge dest="146" source="150" />
+		<edge dest="151" source="149" />
+		<edge dest="145" source="151" />
+		<edge dest="152" source="145" />
+		<edge dest="153" source="152" />
+		<edge dest="154" source="153" />
+		<edge dest="149" source="154" />
+		<edge dest="158" source="155" />
+		<edge dest="157" source="158" />
+		<edge dest="156" source="157" />
+		<edge dest="155" source="156" />
+		<edge dest="156" source="42" />
+		<edge dest="160" source="61" />
+		<edge dest="159" source="160" />
+		<edge dest="162" source="159" />
+		<edge dest="161" source="162" />
+		<edge dest="164" source="161" />
+		<edge dest="163" source="164" />
+		<edge dest="165" source="163" />
+		<edge dest="166" source="165" />
+		<edge dest="167" source="166" />
+		<edge dest="164" source="167" />
+	</edges>
+	<entities>
+		<player node="6" />
+		<foe node="166"  type="tracking"/>
+		<foe node="91"  type="tracking"/>
+		<foe node="100" type="simple"/>
+		<foe node="75" type="simple"/>
+	</entities>
+</level>
