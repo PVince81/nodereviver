@@ -8,6 +8,7 @@
 import pygame
 import model
 import view
+import sound
 from util import *
 from config import Config
 from WorldLoader import WorldLoader, WorldSaver
@@ -35,8 +36,10 @@ class Game:
         self._screen = pygame.display.get_surface()        
         self._clock = pygame.time.Clock()
         self._display = view.Display(self._screen, self._gameState)
+        sound.soundManager.init(self._config)
         
     def _quit(self):
+        sound.soundManager.release()
         pygame.quit()
 
     def _movePlayer(self, direction):
@@ -82,11 +85,16 @@ class Game:
             dist = vectorDiff(entity.pos, self._player.pos)
             if abs(dist[0]) < 10 and abs(dist[1]) < 10:
                 self._player.die()
+                sound.soundManager.play(sound.soundManager.DEAD)
 
         if self._player.dead:
-            self._gameState.lives -= 1
-            self._gameState.dirty = True
-            self._initWorld(self._gameState.worldNum)
+            if self._gameState.lives > 0:
+                self._gameState.lives -= 1
+                self._gameState.dirty = True
+                self._initWorld(self._gameState.worldNum)
+            else:
+                # TODO: game over screen
+                self._terminated = True
     
     def _initWorld(self, worldNum):
         self._world = self._worldLoader.loadWorld(worldNum)

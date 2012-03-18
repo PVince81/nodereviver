@@ -2,6 +2,7 @@
 @author: Vincent Petry <PVince81@yahoo.fr>
 '''
 import random
+import sound
 from util import *
 
 class PathFinder:
@@ -396,7 +397,8 @@ class Entity(object):
                     # need to continue along the next edge
                     edge = self.currentNode.getOtherEdge(self.currentEdge)
                     self.moveAlong( edge )
-                else:                                   
+                else:
+                    self.onStopMoving()
                     self.moving = False
                     self.movement = (0, 0)
                     self.targetNode = None
@@ -410,6 +412,9 @@ class Entity(object):
         return self.targetNode
         
     def onEdgeComplete(self, edge):
+        pass
+    
+    def onStopMoving(self):
         pass
 
     def setCurrentNode(self, currentNode = None):
@@ -426,7 +431,17 @@ class Player(Entity):
         self.speed = 2
         
     def onEdgeComplete(self, edge):
-        edge.setMarked(True)
+        if not edge.isMarked():
+            edge.setMarked(True)
+            if self.currentNode.type != Node.JOINT:
+                sound.soundManager.play(sound.soundManager.DRAW)
+            self.justMarked = True
+        
+    def onStopMoving(self):
+        if self.justMarked:
+            self.justMarked = False
+        else:
+            sound.soundManager.play(sound.soundManager.MOVE)
 
 class Foe(Entity):
     entityType = 1

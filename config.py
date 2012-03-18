@@ -19,3 +19,4 @@ class Config:
         self.fps = 60
         self.keymap = KeyMap()
         self.dataPath = "data/"
+        self.sound = False
