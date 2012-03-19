@@ -215,6 +215,9 @@ class World(object):
         self.startNode = None
         self.dirty = False
         self.markedEdges = 0
+        self.title = None
+        self.subtitle = None
+        self.endtext = None
         global _nextEdgeId
         global _nextNodeId
         _nextEdgeId = 1
@@ -550,10 +553,49 @@ class TrackingFoe(Foe):
                     self._trackedTarget = targetNode
 
 class GameState(object):
+    TITLE = 0
+    GAME = 1
+    DEAD = 2
+    LEVEL_START = 3
+    LEVEL_END = 4
+    NEXT_LEVEL = 5
+    RESTART_LEVEL = 6
+    EDITOR = 7
+
     def __init__(self):
         self.score = 0
-        self.lives = 5
         self.worldNum = 1
         self.dirty = True
-        self.title = True
+        self.state = self.TITLE
         self.pause = False
+        self.nextState = None
+        self.duration = None
+        
+    def setState(self, state, duration = None, nextState = 1):
+        self.state = state
+        self.duration = duration
+        self.maxDuration = duration
+        self.nextState = nextState
+        self.dirty = True
+
+    def update(self):
+        if self.duration == None:
+            return
+        if self.duration > 0:
+            self.duration -= 1
+        else:
+            self.state = self.nextState
+            self.dirty = True
+            self.duration = None
+            self.maxDuration = None
+            
+    def getProgress(self):
+        '''
+        Returns the transition ration between two states S1 and S2.
+        0 is S1
+        0.5 is exactly between S1 and S2
+        1 is S2
+        '''
+        if self.duration == None:
+            return 1.0
+        return 1.0 - float(self.duration) / self.maxDuration

@@ -1,4 +1,7 @@
 <level>
+	<title>The Coffee Machine</title>
+	<subtitle>Your first and most important task... I mean...\nYeah, please fix it.</subtitle>
+	<endtext>This will surely restore productivity !</endtext>
 	<nodes>
 		<node id="1" x="40" y="40" />
 		<node id="2" x="80" y="20" />

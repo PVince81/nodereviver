@@ -1,4 +1,7 @@
 <level>
+	<title>The Washing Machine</title>
+	<subtitle>Because we need it for... I give up. Just fix it.</subtitle>
+	<endtext>Thanks. It always feel better with clean clothes !</endtext>
 	<nodes>
 		<joint id="1" x="320" y="310" />
 		<joint id="2" x="320" y="190" />

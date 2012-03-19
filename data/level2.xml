@@ -1,4 +1,7 @@
 <level>
+	<title>The Toaster...</title>
+	<subtitle>because sometimes we are hungry</subtitle>
+	<endtext>Yummy toasts will surely increase productivity !</endtext>
 	<nodes>
 		<node id="1" x="100" y="0" />
 		<node id="2" x="0" y="20" />

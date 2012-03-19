@@ -67,6 +67,12 @@ class WorldLoader(object):
                 edgesElement = element
             elif element.tag == "entities":
                 entitiesElement = element
+            elif element.tag == "title":
+                world.title = element.text
+            elif element.tag == "subtitle":
+                world.subtitle = element.text
+            elif element.tag == "endtext":
+                world.endtext = element.text
 
         nodes = self._processNodes(world, nodesElement)
         self._processEdges(world, nodes, edgesElement)
@@ -81,6 +87,15 @@ class WorldSaver(object):
     def saveWorld(self, num, world):
         filename = "%slevel%i_test.xml" % (self.dataPath, num)
         root = ET.Element("level")
+        if world.title:
+            titleElement = ET.SubElement(root, "title")
+            titleElement.text = world.title
+        if world.subtitle:
+            titleElement = ET.SubElement(root, "subtitle")
+            titleElement.text = world.subtitle
+        if world.endtext:
+            titleElement = ET.SubElement(root, "endtext")
+            titleElement.text = world.endtext
         nodesElement = ET.SubElement(root, "nodes")
         edgesElement = ET.SubElement(root, "edges")
         entitiesElement = ET.SubElement(root, "entities")

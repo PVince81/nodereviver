@@ -1,4 +1,7 @@
 <level>
+	<title>The Light Bulb</title>
+	<subtitle>Even that contains nodes as well... please fix.</subtitle>
+	<endtext>Thanks!</endtext>
 	<nodes>
 		<node id="1" x="40" y="40" />
 		<node id="2" x="80" y="20" />

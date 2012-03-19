@@ -1,4 +1,7 @@
 <level>
+	<title>The 12.1 Audio System</title>
+	<subtitle>Because... we need music to motivate ourselves</subtitle>
+	<endtext>Boom tss boom tss boom tss... huh, are you talking to me ?</endtext>
 	<nodes>
 		<node id="1" x="40" y="0" />
 		<node id="2" x="100" y="40" />

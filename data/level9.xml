@@ -1,4 +1,7 @@
 <level>
+	<title>The Photocopier</title>
+	<subtitle>A surely important piece of hardware in our office</subtitle>
+	<endtext>Thanks for fixing ! Now proceed to the next one !</endtext>
 	<nodes>
 		<node id="1" x="180" y="290" />
 		<node id="2" x="220" y="290" />

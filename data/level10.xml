@@ -1,4 +1,7 @@
 <level>
+	<title>The Central Heating System</title>
+	<subtitle>Can't work when it's too cold...</subtitle>
+	<endtext>Thanks, we're all immensely grateful. Now back to work.</endtext>
 	<nodes>
 		<node id="1" x="320" y="240" />
 		<node id="2" x="320" y="180" />

@@ -7,12 +7,13 @@ import model
 import random
 import math
 from util import *
+from model import GameState
 
 debug = False
 
 _spriteSurface = None
 _gameState = None
-        
+
 class Display(object):
     def __init__(self, config, screen, gameState):
         self._screen = screen
@@ -28,7 +29,9 @@ class Display(object):
         global _gameState
         _gameState = gameState
         _spriteSurface = pygame.image.load(config.dataPath + "sprites.png")
-        _spriteSurface = _spriteSurface.convert_alpha(screen)
+        #_spriteSurface = _spriteSurface.convert_alpha(screen)
+        _spriteSurface = _spriteSurface.convert(screen)
+        _spriteSurface.set_colorkey((0, 0, 0), pygame.RLEACCEL)
         
     def setWorld(self, world, player):
         self.clear()
@@ -39,15 +42,16 @@ class Display(object):
         for entity in world.entities:
             # entities are all foes for now (except player)
             self.addEntityView(FoeView(entity))
+        self._hud.setTitle(world.title, world.subtitle, world.endtext)
         
     def render(self):
         self._worldView.render()
+        self._hud.render()
         self._edgeView.update(self._player.currentEdge)
         self._edgeView.render(self._screen)
         for entity in self._entities:
             entity.render(self._screen)
-        self._hud.render()
-        if self._gameState.title:
+        if self._gameState.state == GameState.TITLE:
             self._titleScreen.render()
         self.selectionView.render(self._screen)
 
@@ -246,12 +250,24 @@ class PlayerView():
     def render(self, screen):
         #color = (0, 0, 0)
         #pygame.draw.circle(screen, color, (self._entity.pos), 10)
-        pos = vectorAdd(self._entity.pos, (-10, -10))
+        offset = (-10,-10)
+        alpha = 255
+        if _gameState.state == GameState.LEVEL_START:
+            alpha = int(_gameState.getProgress() * 255)
+        elif _gameState.state == GameState.LEVEL_END:
+            alpha = 255 - int(_gameState.getProgress() * 255)
+        elif _gameState.state == GameState.DEAD:
+            offset = vectorAdd(offset, (random.randint(-3, 3), random.randint(-3, 3)))
+            alpha = 255 - int(_gameState.getProgress() * 255)
+
+        _spriteSurface.set_alpha(alpha)
+        pos = vectorAdd(self._entity.pos, offset)
         screen.blit(_spriteSurface, pos, self.rect )
         if self._entity.currentEdge and not self._entity.currentEdge.marked:
             # Marking in progress
             self._makeParticles()
         self._renderParticles(screen)
+        _spriteSurface.set_alpha(255)
 
 class FoeView():
     rect0 = pygame.Rect(20, 0, 20, 20)
@@ -292,52 +308,100 @@ class SelectionView():
         if self._edge:
             pygame.draw.line(screen, color, self._edge.source.pos, self._edge.destination.pos, 1 )
 
+def makeTextSurfaces(text, font, color = (255, 255, 255)):
+    if not text:
+        return []
+    surfaces = []
+    rows = text.split("\\n")
+    for row in rows:
+        surfaces.append( font.render(row, False, color) )
+    return surfaces
+
+def blitTextSurfaces(targetSurface, surfaces, offsetY, fontHeight):
+    offset = 0
+    for surface in surfaces:
+        offset = int(targetSurface.get_width() / 2 - surface.get_width() / 2)            
+        targetSurface.blit(surface, (offset, offsetY))
+        offsetY += fontHeight
+    return offsetY
+
 class Hud(object):
     '''
     '''
 
     def __init__(self, screen, gameState):
         self._screen = screen
-        self._gameState = gameState
-        self._surface = pygame.Surface((200, 20), 0, screen)
-        self._surface.fill((0, 0, 0))
-        self._font = pygame.font.SysFont('serif', 10)
+        self._gameState = gameState        
+        self._font = pygame.font.SysFont('monospace', 20)
+        self._font2 = pygame.font.SysFont('monospace', 15)
+        self._title = None
+        self._subtitle = None
+        self._endtext = None
+        self._dirty = False
+        self._lastScore = None
+        self._scoreSurface = None
+        self._titleSurfaces = []
+        self._subtitleSurfaces = []
+        self._endtextSurfaces = []
+
+    def setTitle(self, title = None, subtitle = None, endtext = None):
+        self._title = title
+        self._subtitle = subtitle
+        self._endtext = endtext
+        self._dirty = True
+        self._updateTextSurfaces()
         
-    def _rerender(self):
-        self._surface.fill((0, 0, 0))
-        fontHeight = self._font.get_height()
+    def setSubtitle(self, subtitle):
+        self._subtitle = subtitle
+        self._dirty = True
 
-        hudSurfaces = []
-        hudSurfaces.append( self._font.render("Level: %i  Lives: %i" % (self._gameState.worldNum, self._gameState.lives), False, (255, 255, 255)) )
-        #hudSurfaces.append( self._font.render("Lives: %i" % self._gameState.lives, False, (255, 255, 255)) )
+    def _updateTextSurfaces(self):
+        if self._title:
+            titleString = "%i) %s was hacked." % (self._gameState.worldNum, self._title)
+        else:
+            titleString = "%i) They hacked something" % self._gameState.worldNum
 
-        offset = 0
-        for hudSurface in hudSurfaces:
-            self._surface.blit(hudSurface, (0,offset))
-            offset += fontHeight
+        self._titleSurfaces = makeTextSurfaces(titleString, self._font, (0, 255, 0))
+
+        if self._subtitle:
+            subtitleString = "Please fix it...\\n" + self._subtitle
+        else:
+            subtitleString = "Please revive its nodes !"
+
+        self._subtitleSurfaces = makeTextSurfaces(subtitleString, self._font2, (0, 192, 0))
+        self._endtextSurfaces = makeTextSurfaces(self._endtext, self._font2, (255, 255, 0))
 
     def render(self):
-        if self._gameState.title:
+        if self._gameState.state == GameState.TITLE:
             return
 
-        if self._gameState.dirty:
-            self._rerender()
-            self._gameState.dirty = False
-        self._screen.blit(self._surface, (0, 0))
+        offsetY = blitTextSurfaces(self._screen, self._titleSurfaces, 10, self._font.get_height())
+        
+        if self._gameState.state == GameState.LEVEL_END and self._endtext:
+            offsetY = self._screen.get_height() - self._font2.get_height() * len(self._endtextSurfaces) - 10
+            blitTextSurfaces(self._screen, self._endtextSurfaces, offsetY, self._font2.get_height())
+        else:
+            offsetY = self._screen.get_height() - self._font2.get_height() * len(self._subtitleSurfaces) - 10
+            blitTextSurfaces(self._screen, self._subtitleSurfaces, offsetY, self._font2.get_height())
+
+        if self._lastScore != self._gameState.score:
+            self._lastScore = self._gameState.score
+            self._scoreSurface = self._font.render("%i" % self._lastScore, False, (0, 192, 0))
+        self._screen.blit(self._scoreSurface, (0, self._screen.get_height() - self._font.get_height()))
 
 class TitleScreen(object):
     def __init__(self, screen):
         self._screen = screen
-        self._font = pygame.font.SysFont('serif', 12)
+        self._font = pygame.font.SysFont('monospace', 18)
         fontHeight = self._font.get_height()
-        self._textSurface = self._font.render("Press ENTER to start playing", False, (255, 255, 255))
-        self._text2Surface = self._font.render("By Vincent Petry (for MiniLD #33)", False, (255, 255, 255))
+        self._textSurface = self._font.render("Press ENTER to start playing", False, (0, 192, 0))
+        self._text2Surface = self._font.render("By Vincent Petry (for MiniLD #33)", False, (0, 192, 0))
         rect = self._textSurface.get_rect()
         screenRect = screen.get_rect()
         self._pos = (screenRect[2] / 2 - rect[2] / 2, 195)
         rect = self._text2Surface.get_rect()
         self._pos2 = (screenRect[2] - rect[2] - 20, screenRect[3] - fontHeight - 20) 
-    
+
     def render(self):
         self._screen.blit(self._textSurface, self._pos)
         self._screen.blit(self._text2Surface, self._pos2)

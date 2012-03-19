@@ -1,4 +1,7 @@
 <level>
+	<title>The Fridge</title>
+	<subtitle>For storing butter for our toasts, of course !</subtitle>
+	<endtext>Yay, fresh drinks !</endtext>
 	<nodes>
 		<node id="1" x="200" y="0" />
 		<node id="2" x="100" y="20" />

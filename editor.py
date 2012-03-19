@@ -106,7 +106,7 @@ class Editor(Game):
 
     def run(self):
         self._init()
-        self._gameState.title = False
+        self._gameState.state = model.GameState.EDITOR
         self._initWorld(self._gameState.worldNum)
 
         while not self._terminated:

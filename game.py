@@ -10,6 +10,7 @@ import sound
 from util import *
 from config import Config
 from WorldLoader import WorldLoader
+from model import GameState
 
 class Game:
     titleDemo = [3,0,0,3,0,1,2,1,1,3,0,2,0,3,1,2,1,3,0,2,0,3,1,2,1,3,0,2,0,0,3,2,1,3,2,1,3,3,2,1,3,1,2,2,2,2,2,2,2,1,2,1,1,0,3,1,2,3,0,2,0,3,1,2,1,1,3,2,0,3,2,0,3,3,2,0,3,1,1,3,3,3,0,0,1,2,2,0,0,0,3,1,1,2,3,3,2,0,2,3,3,2,0,3,1,1,3,3,0,0,1,2,2,0,0,0,3,1,3,2,2,1,3,2,1,3,2,0,0,3,0,3,1,2,1,1,0,0,3,3,1,2,2,3,1,1,2]
@@ -67,9 +68,9 @@ class Game:
                 if mods & pygame.locals.KMOD_ALT:
                     self._config.fullScreen = not self._config.fullScreen
                     self._initDisplay()
-                elif self._gameState.title: 
+                elif self._gameState.state == GameState.TITLE: 
                     self._startGame()
-            elif not self._gameState.title and not self._gameState.pause:
+            elif self._gameState.state == GameState.GAME and not self._gameState.pause:
                 directionKeys = self._config.keymap.directions
                 for direction in range(4):
                     if event.key in directionKeys[direction]:
@@ -78,7 +79,7 @@ class Game:
 
         elif event.type == pygame.locals.KEYUP:
             if event.key == pygame.locals.K_ESCAPE:
-                if self._gameState.title:
+                if self._gameState.state == GameState.TITLE:
                     self._terminated = True
                 else:
                     self._startTitle()
@@ -96,49 +97,51 @@ class Game:
         self._movePlayer(nextDirection)
         
     def _handleLogic(self):
-        if self._gameState.title:
+        state = self._gameState 
+        state.update()
+        if state.state == GameState.NEXT_LEVEL or state.state == GameState.RESTART_LEVEL:
+            if state.state == GameState.NEXT_LEVEL:
+                state.worldNum += 1
+            state.dirty = True
+            self._initWorld(state.worldNum)
+            state.setState(GameState.LEVEL_START, self._config.fps)
+
+        if state.state == GameState.TITLE:
             # plays title demo
-            self._handleDemo()            
-        
-        if self._gameState.pause:
+            self._handleDemo()
+
+        if state.pause:
             return
-        
-        self._world.update()
-        if self._world.hasAllEdgesMarked():
-            self._gameState.worldNum += 1
-            self._gameState.dirty = True
-            self._initWorld(self._gameState.worldNum)
 
-        # check for player collision
-        for entity in self._world.entities:
-            if entity == self._player:
-                continue            
-            dist = vectorDiff(entity.pos, self._player.pos)
-            if abs(dist[0]) < 10 and abs(dist[1]) < 10:
-                self._player.die()
-                sound.soundManager.play(sound.soundManager.DEAD)
+        if state.state in [GameState.GAME, GameState.TITLE, GameState.LEVEL_END, GameState.LEVEL_START]:
+            self._world.update()
+            
+        if state.state in [GameState.GAME, GameState.TITLE] and self._world.hasAllEdgesMarked():
+            state.setState(GameState.LEVEL_END, self._config.fps, GameState.NEXT_LEVEL);
 
-        if self._player.dead:
-            if self._gameState.lives > 0:
-                self._gameState.lives -= 1
-                self._gameState.dirty = True
-                self._initWorld(self._gameState.worldNum)
-            else:
-                # TODO: game over screen
-                self._terminated = True
-    
+        if state.state == GameState.GAME:
+            # check for player collision
+            for entity in self._world.entities:
+                if entity == self._player:
+                    continue            
+                dist = vectorDiff(entity.pos, self._player.pos)
+                if abs(dist[0]) < 10 and abs(dist[1]) < 10:
+                    self._player.die()
+                    state.setState(GameState.DEAD, self._config.fps, GameState.RESTART_LEVEL);
+                    sound.soundManager.play(sound.soundManager.DEAD)
+
     def _startGame(self):
-        self._gameState.title = False
+        self._gameState.setState(GameState.LEVEL_START, self._config.fps)
         self._gameState.worldNum = 1
         self._initWorld(self._gameState.worldNum)
 
     def _startTitle(self):
-        self._gameState.title = True
+        self._gameState.state = GameState.TITLE
         self._initWorld(0)
 
     def _initWorld(self, worldNum):
         self._player = model.Player()
-        if self._gameState.title:
+        if self._gameState.state == GameState.TITLE:
             self._player.speed = 4
             self._world = self._worldLoader.loadWorld(0)
             self._titleDemo = list(self.titleDemo)
@@ -157,7 +160,7 @@ class Game:
 
     def run(self):
         self._init()
-        self._gameState.title = True
+        self._gameState.state = GameState.TITLE
         self._initWorld(self._gameState.worldNum)
 
         while not self._terminated:
