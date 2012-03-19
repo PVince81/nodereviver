@@ -63,7 +63,7 @@ class Game:
         elif event.type == pygame.locals.KEYDOWN:
             if event.key in self._config.keymap.pause:
                 self._gameState.pause = not self._gameState.pause
-            elif event.key == pygame.locals.K_RETURN:
+            elif event.key in self._config.keymap.start:
                 mods = pygame.key.get_mods()
                 if mods & pygame.locals.KMOD_ALT:
                     self._config.fullScreen = not self._config.fullScreen
