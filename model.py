@@ -560,8 +560,9 @@ class GameState(object):
     LEVEL_END = 4
     NEXT_LEVEL = 5
     RESTART_LEVEL = 6
-    EDITOR = 7
-
+    EDITOR = 7 
+    STORY = 8
+    ENDGAME = 9
     def __init__(self):
         self.score = 0
         self.worldNum = 1

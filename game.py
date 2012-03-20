@@ -14,6 +14,7 @@ from model import GameState
 
 class Game:
     titleDemo = [3,0,0,3,0,1,2,1,1,3,0,2,0,3,1,2,1,3,0,2,0,3,1,2,1,3,0,2,0,0,3,2,1,3,2,1,3,3,2,1,3,1,2,2,2,2,2,2,2,1,2,1,1,0,3,1,2,3,0,2,0,3,1,2,1,1,3,2,0,3,2,0,3,3,2,0,3,1,1,3,3,3,0,0,1,2,2,0,0,0,3,1,1,2,3,3,2,0,2,3,3,2,0,3,1,1,3,3,0,0,1,2,2,0,0,0,3,1,3,2,2,1,3,2,1,3,2,0,0,3,0,3,1,2,1,1,0,0,3,3,1,2,2,3,1,1,2]
+    levelsCount = 13
     
     def __init__(self, config):
         self._config = config
@@ -69,7 +70,11 @@ class Game:
                     self._config.fullScreen = not self._config.fullScreen
                     self._initDisplay()
                 elif self._gameState.state == GameState.TITLE: 
+                    self._showStory()
+                elif self._gameState.state == GameState.STORY: 
                     self._startGame()
+                elif self._gameState.state == GameState.ENDGAME: 
+                    self._startTitle()
             elif self._gameState.state == GameState.GAME and not self._gameState.pause:
                 directionKeys = self._config.keymap.directions
                 for direction in range(4):
@@ -102,6 +107,9 @@ class Game:
         if state.state == GameState.NEXT_LEVEL or state.state == GameState.RESTART_LEVEL:
             if state.state == GameState.NEXT_LEVEL:
                 state.worldNum += 1
+                if state.worldNum > self.levelsCount:
+                    state.setState(GameState.ENDGAME)
+                    return;
             state.dirty = True
             self._initWorld(state.worldNum)
             state.setState(GameState.LEVEL_START, self._config.fps)
@@ -129,6 +137,9 @@ class Game:
                     self._player.die()
                     state.setState(GameState.DEAD, self._config.fps, GameState.RESTART_LEVEL);
                     sound.soundManager.play(sound.soundManager.DEAD)
+
+    def _showStory(self):
+        self._gameState.setState(GameState.STORY)
 
     def _startGame(self):
         self._gameState.setState(GameState.LEVEL_START, self._config.fps)

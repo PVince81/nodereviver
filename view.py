@@ -14,14 +14,78 @@ debug = False
 _spriteSurface = None
 _gameState = None
 
+_storyText = ["Oh noes ! Our super-expensive equipment     ",
+"has been hacked !",
+"  ",
+"All internal nodes have been disconnected",
+"and security drones have been reprogrammed against us !",
+"         ",
+"We hired you for your particular talent",
+"with dealing with this kind of situation.",
+"         ",
+"So your mission is...            ",
+"to reconnect all nodes of our appliances...",
+"         ",
+"I mean valuable equipment",
+"            ",
+"Which we need to get some work done in here...",
+"   ",
+"Good luck and beware of the drones !",
+"                                               ",
+"And if you die we'll replace you...              ",
+"I mean... you can try again.  ",
+""]
+
+_endGameText = ["Congratulations !!!",
+"You have saved all of our company's equipment",
+"except our bank account which has unfortunately",
+"been hacked as well... so you'll have to wait",
+"for a while to get your check...",
+"    ",
+"    ",
+"    ",
+"Thank you for playing Node Reviver (MiniLD #33)",
+"    ",
+"by Vincent Petry"]
+
+def makeTextSurfaces(text, font, color = (255, 255, 255)):
+    if not text:
+        return []
+    surfaces = []
+    if type(text) == "list":
+        rows = text
+    else:
+        rows = text.split("\\n")
+    for row in rows:
+        surfaces.append( font.render(row, False, color) )
+    return surfaces
+
+def blitTextSurfaces(targetSurface, surfaces, fontHeight, globalOffset = (0, 0), center = True):
+    offsetY = globalOffset[1]
+    if center:
+        for surface in surfaces:
+            offset = globalOffset[0] + int(targetSurface.get_width() / 2 - surface.get_width() / 2)            
+            targetSurface.blit(surface, (offset, offsetY))
+            offsetY += fontHeight
+    else:
+        for surface in surfaces:
+            targetSurface.blit(surface, (globalOffset[0], offsetY))
+            offsetY += fontHeight
+
+    return offsetY
+
 class Display(object):
     def __init__(self, config, screen, gameState):
         self._screen = screen
+        self._background = self._screen.copy()
+        self._background.fill((0, 0, 0))
         self._entities = []
         self._worldView = None
         self._titleScreen = TitleScreen(screen)
         self._gameState = gameState
         self._hud = Hud(screen, gameState)
+        self._story = Story(_storyText)
+        self._endStory = Story(_endGameText)
         self.selectionView = SelectionView()
         self._edgeView = EdgeView()
         # UGLY, I know... but I'm tired to pass everything along 
@@ -45,6 +109,16 @@ class Display(object):
         self._hud.setTitle(world.title, world.subtitle, world.endtext)
         
     def render(self):
+        if _gameState.state == GameState.STORY:
+            self._screen.blit(self._background, (0,0))
+            self._story.update()
+            self._story.render(self._screen)
+            return
+        elif _gameState.state == GameState.ENDGAME:
+            self._screen.blit(self._background, (0,0))
+            self._endStory.update()
+            self._endStory.render(self._screen)
+            return
         self._worldView.render()
         self._hud.render()
         self._edgeView.update(self._player.currentEdge)
@@ -72,7 +146,7 @@ class WorldView(object):
         self._background.fill((0, 0, 0))
         self._worldSurface = self._screen.copy()
         
-        self._font = pygame.font.SysFont('serif', 10)
+        self._font = pygame.font.SysFont('monospace', 10)
         
     def _rerender(self):
         surface = self._worldSurface
@@ -184,6 +258,51 @@ class EdgeView(object):
         for node in self.nodes:
             rect = (node.pos[0] - d, node.pos[1] - d, d * 2, d * 2)
             pygame.draw.rect(screen, color, rect )
+
+class Story(object):
+    rowDelay = 10
+    
+    def __init__(self, text):
+        self._font = pygame.font.SysFont('monospace', 18)
+        font2 = pygame.font.SysFont('monospace', 20)
+        self._pressEnterSurface = font2.render("Press ENTER to continue", False, (0, 255, 0))
+        self._textIndex = 0
+        self._rowIndex = 0
+        self._text = text
+        self._textSurfaces = [None]
+        self._currentText = ""
+        self._delay = 0
+
+    def update(self):
+        if self._delay > 0:
+            self._delay -= 1
+            return
+        self._delay = random.randint(0, 4) 
+
+        if self._rowIndex >= len(self._text):
+            return
+        if self._textIndex < len(self._text[self._rowIndex]):
+            self._currentText += self._text[self._rowIndex][self._textIndex]
+            self._textIndex += 1
+        elif self._rowIndex < len(self._text):
+            self._textSurfaces[self._rowIndex] = self._font.render(self._currentText, False, (0, 255, 0))
+            self._rowIndex += 1
+            self._textIndex = 0
+            self._currentText = ""
+            self._delay = self.rowDelay
+            self._textSurfaces.append(None)
+        else:
+            return
+
+        self._textSurfaces[self._rowIndex] = self._font.render(self._currentText, False, (0, 192, 0))
+
+    def render(self, screen):
+        fontHeight = self._font.get_height()
+        offsetY = blitTextSurfaces(screen, self._textSurfaces, fontHeight, (10, 10), False)
+        # cursor
+        pygame.draw.rect(screen, (0, 255, 0), (10 + self._textSurfaces[-1].get_width(), offsetY - fontHeight, fontHeight / 2 - 2, fontHeight - 2))
+
+        screen.blit(self._pressEnterSurface, (screen.get_width() / 2 - self._pressEnterSurface.get_width() / 2, screen.get_height() - fontHeight * 2))
 
 class Particle(object):
     def __init__(self, pos = (0,0)):
@@ -308,23 +427,6 @@ class SelectionView():
         if self._edge:
             pygame.draw.line(screen, color, self._edge.source.pos, self._edge.destination.pos, 1 )
 
-def makeTextSurfaces(text, font, color = (255, 255, 255)):
-    if not text:
-        return []
-    surfaces = []
-    rows = text.split("\\n")
-    for row in rows:
-        surfaces.append( font.render(row, False, color) )
-    return surfaces
-
-def blitTextSurfaces(targetSurface, surfaces, offsetY, fontHeight):
-    offset = 0
-    for surface in surfaces:
-        offset = int(targetSurface.get_width() / 2 - surface.get_width() / 2)            
-        targetSurface.blit(surface, (offset, offsetY))
-        offsetY += fontHeight
-    return offsetY
-
 class Hud(object):
     '''
     '''
@@ -375,19 +477,19 @@ class Hud(object):
         if self._gameState.state == GameState.TITLE:
             return
 
-        offsetY = blitTextSurfaces(self._screen, self._titleSurfaces, 10, self._font.get_height())
+        offsetY = blitTextSurfaces(self._screen, self._titleSurfaces, self._font.get_height(), (0, 10))
         
         if self._gameState.state == GameState.LEVEL_END and self._endtext:
             offsetY = self._screen.get_height() - self._font2.get_height() * len(self._endtextSurfaces) - 10
-            blitTextSurfaces(self._screen, self._endtextSurfaces, offsetY, self._font2.get_height())
+            blitTextSurfaces(self._screen, self._endtextSurfaces, self._font2.get_height(), (0, offsetY))
         else:
             offsetY = self._screen.get_height() - self._font2.get_height() * len(self._subtitleSurfaces) - 10
-            blitTextSurfaces(self._screen, self._subtitleSurfaces, offsetY, self._font2.get_height())
+            blitTextSurfaces(self._screen, self._subtitleSurfaces, self._font2.get_height(), (0, offsetY))
 
-        if self._lastScore != self._gameState.score:
-            self._lastScore = self._gameState.score
-            self._scoreSurface = self._font.render("%i" % self._lastScore, False, (0, 192, 0))
-        self._screen.blit(self._scoreSurface, (0, self._screen.get_height() - self._font.get_height()))
+        #if self._lastScore != self._gameState.score:
+        #    self._lastScore = self._gameState.score
+        #    self._scoreSurface = self._font.render("%i" % self._lastScore, False, (0, 192, 0))
+        #self._screen.blit(self._scoreSurface, (0, self._screen.get_height() - self._font.get_height()))
 
 class TitleScreen(object):
     def __init__(self, screen):
