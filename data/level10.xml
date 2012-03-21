@@ -73,5 +73,6 @@
 	</edges>
 	<entities>
 		<player node="1" />
+		<foe node="16" type="simple" />
 	</entities>
 </level>

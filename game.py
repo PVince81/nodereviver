@@ -14,7 +14,7 @@ from model import GameState
 
 class Game:
     titleDemo = [3,0,0,3,0,1,2,1,1,3,0,2,0,3,1,2,1,3,0,2,0,3,1,2,1,3,0,2,0,0,3,2,1,3,2,1,3,3,2,1,3,1,2,2,2,2,2,2,2,1,2,1,1,0,3,1,2,3,0,2,0,3,1,2,1,1,3,2,0,3,2,0,3,3,2,0,3,1,1,3,3,3,0,0,1,2,2,0,0,0,3,1,1,2,3,3,2,0,2,3,3,2,0,3,1,1,3,3,0,0,1,2,2,0,0,0,3,1,3,2,2,1,3,2,1,3,2,0,0,3,0,3,1,2,1,1,0,0,3,3,1,2,2,3,1,1,2]
-    levelsCount = 13
+    levelsCount = 12
     
     def __init__(self, config):
         self._config = config
@@ -84,10 +84,13 @@ class Game:
 
         elif event.type == pygame.locals.KEYUP:
             if event.key == pygame.locals.K_ESCAPE:
-                if self._gameState.state == GameState.TITLE:
-                    self._terminated = True
-                else:
-                    self._startTitle()
+                self.onBack()
+
+    def onBack(self):
+        if self._gameState.state == GameState.TITLE:
+            self._terminated = True
+        else:
+            self._startTitle()
 
     def _handleInput(self):
         for event in pygame.event.get():
@@ -125,7 +128,7 @@ class Game:
             self._world.update()
             
         if state.state in [GameState.GAME, GameState.TITLE] and self._world.hasAllEdgesMarked():
-            state.setState(GameState.LEVEL_END, self._config.fps, GameState.NEXT_LEVEL);
+            self.onLevelEnd()
 
         if state.state == GameState.GAME:
             # check for player collision
@@ -138,12 +141,15 @@ class Game:
                     state.setState(GameState.DEAD, self._config.fps, GameState.RESTART_LEVEL);
                     sound.soundManager.play(sound.soundManager.DEAD)
 
+    def onLevelEnd(self):
+        self._gameState.setState(GameState.LEVEL_END, self._config.fps, GameState.NEXT_LEVEL);
+
     def _showStory(self):
         self._gameState.setState(GameState.STORY)
 
-    def _startGame(self):
+    def _startGame(self, worldNum = 1):
         self._gameState.setState(GameState.LEVEL_START, self._config.fps)
-        self._gameState.worldNum = 1
+        self._gameState.worldNum = worldNum
         self._initWorld(self._gameState.worldNum)
 
     def _startTitle(self):

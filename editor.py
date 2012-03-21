@@ -4,6 +4,7 @@ import pygame
 import view
 import model
 from config import Config
+from model import GameState
 
 class Editor(Game):
     def __init__(self, config):
@@ -21,10 +22,15 @@ class Editor(Game):
         self._worldSaver.saveWorld(self._gameState.worldNum, self._world)
 
     def _movePlayer(self, direction):
-        return
+        if self._gameState.state == GameState.EDITOR:
+            return
+        Game._movePlayer(self, direction)
 
     def _handleInputEvent(self, event):
         Game._handleInputEvent(self, event)
+        if self._gameState.state != GameState.EDITOR:
+            return
+        
         mods = pygame.key.get_mods()
         if event.type == pygame.locals.MOUSEBUTTONDOWN:
             if event.button == 3:
@@ -60,6 +66,16 @@ class Editor(Game):
                 self._display.selectionView.setEdgeSelection(self._selectedEdge)
 
         elif event.type == pygame.locals.KEYDOWN:
+            if event.key == pygame.locals.K_PAGEUP:
+                if self._gameState.worldNum > 1:
+                    self._gameState.worldNum -= 1
+                    self._gameState.dirty = True
+                    self._initWorld(self._gameState.worldNum)
+            if event.key == pygame.locals.K_PAGEDOWN:
+                if self._gameState.worldNum < Game.levelsCount:
+                    self._gameState.worldNum += 1
+                    self._gameState.dirty = True
+                    self._initWorld(self._gameState.worldNum)
             if event.key == pygame.locals.K_DELETE:
                 if self._selectedEdge:
                     self._world.deleteEdge(self._selectedEdge)
@@ -97,12 +113,26 @@ class Editor(Game):
             if event.key == pygame.locals.K_p:
                 if len(self._selectedNodes) > 0:
                     self._player.setCurrentNode(self._selectedNodes[0])
-                    self._world.startNode = self._selectedNodes[0]                    
+                    self._world.startNode = self._selectedNodes[0]
             elif event.key == pygame.locals.K_F2:
                 self._saveWorld()
+            elif event.key == pygame.locals.K_F5:
+                # TODO: need to clone the current level instead of reloading!
+                self._startGame(self._gameState.worldNum)
         
     def _handleLogic(self):
-        pass
+        if self._gameState.state == GameState.EDITOR:
+            pass
+        Game._handleLogic(self)
+
+    def onLevelEnd(self):
+        self._gameState.setState(GameState.LEVEL_END, self._config.fps, GameState.RESTART_LEVEL);
+
+    def onBack(self):
+        if self._gameState.state == GameState.EDITOR:
+            self._terminated = True
+        else:
+            self._gameState.setState(GameState.EDITOR)
 
     def run(self):
         self._init()

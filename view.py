@@ -14,6 +14,8 @@ debug = False
 _spriteSurface = None
 _gameState = None
 
+# TODO: use config
+_fontFile = "data/DejaVuSansMono.ttf"
 _storyText = ["Oh noes ! Our super-expensive equipment     ",
 "has been hacked !",
 "  ",
@@ -48,6 +50,53 @@ _endGameText = ["Congratulations !!!",
 "    ",
 "by Vincent Petry"]
 
+_sprites = [
+    # 0 Player
+    pygame.Rect(0, 0, 20, 20),
+    # 1 Foe 1
+    pygame.Rect(20, 0, 20, 20),
+    # 2 Foe 2
+    pygame.Rect(40, 0, 20, 20),
+    # 3 Arrow up
+    pygame.Rect(60, 12, 12, 6),
+    # 4 Arrow down
+    pygame.Rect(72, 12, 12, 6),
+    # 5 Arrow left
+    pygame.Rect(66, 0, 6, 12),
+    # 6 Arrow right
+    pygame.Rect(60, 0, 6, 12),
+    # 7 Arrow up active
+    pygame.Rect(84, 12, 12, 6),
+    # 8 Arrow down active
+    pygame.Rect(96, 12, 12, 6),
+    # 9 Arrow left active
+    pygame.Rect(90, 0, 6, 12),
+    # 10 Arrow right active
+    pygame.Rect(84, 0, 6, 12),
+    # 11 Node normal
+    pygame.Rect(96, 0, 10, 10),
+    # 12 Node active
+    pygame.Rect(106, 0, 10, 10)
+]
+
+SPRITE_PLAYER = 0
+SPRITE_FOE1 = 1
+SPRITE_FOE2 = 2
+SPRITE_ARROW_UP = 3
+SPRITE_ARROW_DOWN = 4
+SPRITE_ARROW_LEFT = 5
+SPRITE_ARROW_RIGHT = 6
+SPRITE_ARROW_UP_ACTIVE = 7
+SPRITE_ARROW_DOWN_ACTIVE = 8
+SPRITE_ARROW_LEFT_ACTIVE = 9
+SPRITE_ARROW_RIGHT_ACTIVE = 10
+SPRITE_NODE_NORMAL = 11
+SPRITE_NODE_ACTIVE = 12
+
+def drawSprite(surface, spriteIndex, pos, alpha = 255):
+    _spriteSurface.set_alpha(alpha)
+    surface.blit(_spriteSurface, pos, _sprites[spriteIndex] )    
+
 def makeTextSurfaces(text, font, color = (255, 255, 255)):
     if not text:
         return []
@@ -74,6 +123,16 @@ def blitTextSurfaces(targetSurface, surfaces, fontHeight, globalOffset = (0, 0),
 
     return offsetY
 
+def drawLine(surface, color, src, dest, width = 1):
+    if src[0] > dest[0] or src[1] > dest[1]:
+        aux = src
+        src = dest
+        dest = aux
+    width -= 1
+    pos1 = vectorAdd(src, (-width, -width))
+    pos2 = vectorAdd(dest, (width, width))
+    pygame.draw.rect(surface, color, (pos1[0], pos1[1], pos2[0] - pos1[0], pos2[1] - pos1[1]))
+
 class Display(object):
     def __init__(self, config, screen, gameState):
         self._screen = screen
@@ -95,7 +154,7 @@ class Display(object):
         _spriteSurface = pygame.image.load(config.dataPath + "sprites.png")
         #_spriteSurface = _spriteSurface.convert_alpha(screen)
         _spriteSurface = _spriteSurface.convert(screen)
-        _spriteSurface.set_colorkey((0, 0, 0), pygame.RLEACCEL)
+        _spriteSurface.set_colorkey((255, 0, 255), pygame.RLEACCEL)
         
     def setWorld(self, world, player):
         self.clear()
@@ -146,14 +205,13 @@ class WorldView(object):
         self._background.fill((0, 0, 0))
         self._worldSurface = self._screen.copy()
         
-        self._font = pygame.font.SysFont('monospace', 10)
+        self._font = pygame.font.Font(_fontFile, 10)
         
     def _rerender(self):
         surface = self._worldSurface
-        surface.lock()
         # render edges
         for edge in self._world.edges:
-            width = 4
+            width = 3
             if edge.isMarked():
                 color = (0, 255, 255)
             else:
@@ -161,23 +219,30 @@ class WorldView(object):
 
             # HACK: pygame.draw.line doesn't apply the width around the position,
             # so need to shift it manually
-            posSource = vectorAdd(edge.source.pos, (-1, -1))
-            posDest = vectorAdd(edge.destination.pos, (-1, -1))
-            
-            pygame.draw.line(surface, color, posSource, posDest, width )
+            drawLine(surface, color, edge.source.pos, edge.destination.pos, width )
             if edge.oneWay and edge.destination.type != model.Node.JOINT:
                 # Draw arrow
-                dir = unitVector(vectorDiff(posDest, posSource))
-                # go back a few pixels because of the node size,
-                # this is the arrow head's position
-                pos = vectorAdd(edge.destination.pos, vectorFactor(dir, -6))
-                # go back further for the back of the arrow
-                pos1 = vectorAdd(pos, vectorFactor(dir, -5))
-                pos2 = pos1
-                pos1 = vectorAdd(pos1, vectorFactor(vectorSwap(dir), 5))
-                pos2 = vectorAdd(pos2, vectorFactor(vectorSwap(dir), -5))
-                pygame.draw.line(surface, color, pos, pos1, width )
-                pygame.draw.line(surface, color, pos, pos2, width )
+                dir = unitVector(vectorDiff(edge.destination.pos, edge.source.pos))
+                # I used to calculate this, but time is against me now,
+                # so just hard-coding it
+                if dir[0] == 0:
+                    if dir[1] < 0:
+                        spriteIndex = SPRITE_ARROW_UP
+                        offset = (-6, 4)
+                    else:
+                        spriteIndex = SPRITE_ARROW_DOWN
+                        offset = (-6, -10)
+                else:
+                    if dir[0] < 0:
+                        spriteIndex = SPRITE_ARROW_LEFT
+                        offset = (4, -6)
+                    else:
+                        spriteIndex = SPRITE_ARROW_RIGHT
+                        offset = (-10, -6)
+                if edge.isMarked():
+                    spriteIndex += 4
+                pos = vectorAdd(edge.destination.pos, offset)
+                drawSprite(surface, spriteIndex, pos)
             
             if debug:
                 textSurface = self._font.render("%i" % edge.length, False, (0, 128, 128))
@@ -206,16 +271,15 @@ class WorldView(object):
         for node in self._world.nodes:
             if node.type == model.Node.SQUARE:
                 if node.marked:
-                    color = (255, 255, 0)
+                    spriteIndex = SPRITE_NODE_ACTIVE
                 else:
-                    color = (255, 255, 255)
-                rect = (node.pos[0] - d, node.pos[1] - d, d * 2, d * 2)
-                pygame.draw.rect(surface, color, rect )
+                    spriteIndex = SPRITE_NODE_NORMAL
+                pos = (node.pos[0] - d, node.pos[1] - d)
+                drawSprite(surface, spriteIndex, pos)
                 if debug:
                     textSurface = self._font.render("%i" % node.id, False, (255, 255, 0)) 
                     surface.blit(textSurface, (node.pos[0] + 2, node.pos[1] + d * 2 + 2))
         self._world.dirty = False
-        surface.unlock()
 
     def render(self):
         # pre-render level, only re-render if dirty
@@ -263,8 +327,8 @@ class Story(object):
     rowDelay = 10
     
     def __init__(self, text):
-        self._font = pygame.font.SysFont('monospace', 18)
-        font2 = pygame.font.SysFont('monospace', 20)
+        self._font = pygame.font.Font(_fontFile, 18)
+        font2 = pygame.font.Font(_fontFile, 20)
         self._pressEnterSurface = font2.render("Press ENTER to continue", False, (0, 255, 0))
         self._textIndex = 0
         self._rowIndex = 0
@@ -334,8 +398,6 @@ class Particle(object):
         self.visible = True
 
 class PlayerView():
-    rect = pygame.Rect(0, 0, 20, 20)
-
     def __init__(self, entity):
         self._entity = entity
         self._particles = []
@@ -379,29 +441,24 @@ class PlayerView():
             offset = vectorAdd(offset, (random.randint(-3, 3), random.randint(-3, 3)))
             alpha = 255 - int(_gameState.getProgress() * 255)
 
-        _spriteSurface.set_alpha(alpha)
-        pos = vectorAdd(self._entity.pos, offset)
-        screen.blit(_spriteSurface, pos, self.rect )
         if self._entity.currentEdge and not self._entity.currentEdge.marked:
             # Marking in progress
             self._makeParticles()
         self._renderParticles(screen)
-        _spriteSurface.set_alpha(255)
+        pos = vectorAdd(self._entity.pos, offset)
+        drawSprite(screen, SPRITE_PLAYER, pos, alpha)
 
 class FoeView():
-    rect0 = pygame.Rect(20, 0, 20, 20)
-    rect1 = pygame.Rect(40, 0, 20, 20)
-    
     def __init__(self, entity):
         self._entity = entity
         
     def render(self, screen):
         if self._entity.foeType == 0:
-            rect = self.rect0
+            sprite = SPRITE_FOE1
         else:
-            rect = self.rect1
+            sprite = SPRITE_FOE2
         pos = vectorAdd(self._entity.pos, (-10, -10))
-        screen.blit(_spriteSurface, pos, rect )
+        drawSprite(screen, sprite, pos)
 
 class SelectionView():
     def __init__(self):
@@ -434,8 +491,8 @@ class Hud(object):
     def __init__(self, screen, gameState):
         self._screen = screen
         self._gameState = gameState        
-        self._font = pygame.font.SysFont('monospace', 20)
-        self._font2 = pygame.font.SysFont('monospace', 15)
+        self._font = pygame.font.Font(_fontFile, 20)
+        self._font2 = pygame.font.Font(_fontFile, 15)
         self._title = None
         self._subtitle = None
         self._endtext = None
@@ -494,7 +551,7 @@ class Hud(object):
 class TitleScreen(object):
     def __init__(self, screen):
         self._screen = screen
-        self._font = pygame.font.SysFont('monospace', 18)
+        self._font = pygame.font.Font(_fontFile, 18)
         fontHeight = self._font.get_height()
         self._textSurface = self._font.render("Press ENTER to start playing", False, (0, 192, 0))
         self._text2Surface = self._font.render("By Vincent Petry (for MiniLD #33)", False, (0, 192, 0))
