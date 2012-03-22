@@ -39,13 +39,21 @@ _storyText = ["Oh noes ! Our super-expensive equipment     ",
 ""]
 
 _endGameText = ["Congratulations !!!",
-"You have saved all of our company's equipment",
-"except our bank account which has unfortunately",
-"been hacked as well... so you'll have to wait",
-"for a while to get your check...",
+"You have reactivated all of our company's equipment",
+"which means we can resume work now...",
+"By the way, our bank account has been hacked as well",
+"beyond repair... so you'll have to wait",
+"for a while until you get your check...",
 "    ",
 "    ",
 "    ",
+"Cup of coffee ? How many sugars ?"
+"    ",
+"    ",
+"    ",
+"You finished the game in %time%.",
+"     ",
+"                                           ",
 "Thank you for playing Node Reviver (MiniLD #33)",
 "    ",
 "by Vincent Petry"]
@@ -136,6 +144,7 @@ def drawLine(surface, color, src, dest, width = 1):
 class Display(object):
     def __init__(self, config, screen, gameState):
         self._screen = screen
+        self._config = config
         self._background = self._screen.copy()
         self._background.fill((0, 0, 0))
         self._entities = []
@@ -144,7 +153,7 @@ class Display(object):
         self._gameState = gameState
         self._hud = Hud(screen, gameState)
         self._story = Story(_storyText)
-        self._endStory = Story(_endGameText)
+        self._endStory = None
         self.selectionView = SelectionView()
         self._edgeView = EdgeView()
         # UGLY, I know... but I'm tired to pass everything along 
@@ -174,6 +183,13 @@ class Display(object):
             self._story.render(self._screen)
             return
         elif _gameState.state == GameState.ENDGAME:
+            if self._endStory == None:
+                a = []
+                timeString = makeTimeString(self._gameState.elapsed / self._config.fps)
+                for text in _endGameText:
+                    a.append(text.replace("%time%", timeString))
+                self._endStory = Story(a)
+                            
             self._screen.blit(self._background, (0,0))
             self._endStory.update()
             self._endStory.render(self._screen)
@@ -516,16 +532,16 @@ class Hud(object):
 
     def _updateTextSurfaces(self):
         if self._title:
-            titleString = "%i) %s was hacked." % (self._gameState.worldNum, self._title)
+            titleString = "%i) %s" % (self._gameState.worldNum, self._title)
         else:
-            titleString = "%i) They hacked something" % self._gameState.worldNum
+            titleString = "Level %i" % self._gameState.worldNum
 
         self._titleSurfaces = makeTextSurfaces(titleString, self._font, (0, 255, 0))
 
         if self._subtitle:
-            subtitleString = "Please fix it...\\n" + self._subtitle
+            subtitleString = self._subtitle
         else:
-            subtitleString = "Please revive its nodes !"
+            subtitleString = ""
 
         self._subtitleSurfaces = makeTextSurfaces(subtitleString, self._font2, (0, 192, 0))
         self._endtextSurfaces = makeTextSurfaces(self._endtext, self._font2, (255, 255, 0))

@@ -571,6 +571,8 @@ class GameState(object):
         self.pause = False
         self.nextState = None
         self.duration = None
+        # Elapsed time in ticks
+        self.elapsed = 0
         
     def setState(self, state, duration = None, nextState = 1):
         self.state = state

@@ -1,7 +1,7 @@
 <level>
-	<title>The Power Plant</title>
-	<subtitle>Can't work here without electricty.</subtitle>
-	<endtext>Cool ! Next one the light bulb...</endtext>
+	<title>The power plant has been hacked</title>
+	<subtitle>Can't work here without electricty...</subtitle>
+	<endtext>Wow, that was a hard one !</endtext>
 	<nodes>
 		<node id="1" x="180" y="100" />
 		<node id="2" x="220" y="100" />

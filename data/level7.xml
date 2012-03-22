@@ -1,7 +1,7 @@
 <level>
-	<title>The Electrical Screwdriver</title>
+	<title>The Electrical Screwdriver has been hacked</title>
 	<subtitle>To fix broken stuff more quickly</subtitle>
-	<endtext>Too bad it's not sonic. Thanks anyway !</endtext>
+	<endtext>Too bad it's not sonic !</endtext>
 	<nodes>
 		<node id="1" x="350" y="290" />
 		<node id="2" x="210" y="190" />

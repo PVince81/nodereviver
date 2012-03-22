@@ -1,7 +1,7 @@
 <level>
-	<title>The Washing Machine</title>
+	<title>The Washing Machine has been hacked</title>
 	<subtitle>Because we need it for... I give up. Just fix it.</subtitle>
-	<endtext>Thanks. It always feel better with clean clothes !</endtext>
+	<endtext>Yay, clean clothes !</endtext>
 	<nodes>
 		<node id="1" x="260" y="180" />
 		<node id="2" x="260" y="280" />

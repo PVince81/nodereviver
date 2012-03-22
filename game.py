@@ -7,11 +7,13 @@ import pygame
 import model
 import view
 import sound
+import time
 from util import *
 from config import Config
 from WorldLoader import WorldLoader
 from model import GameState
 
+startLevel = 1
 class Game:
     titleDemo = [3,0,0,3,0,1,2,1,1,3,0,2,0,3,1,2,1,3,0,2,0,3,1,2,1,3,0,2,0,0,3,2,1,3,2,1,3,3,2,1,3,1,2,2,2,2,2,2,2,1,2,1,1,0,3,1,2,3,0,2,0,3,1,2,1,1,3,2,0,3,2,0,3,3,2,0,3,1,1,3,3,3,0,0,1,2,2,0,0,0,3,1,1,2,3,3,2,0,2,3,3,2,0,3,1,1,3,3,0,0,1,2,2,0,0,0,3,1,3,2,2,1,3,2,1,3,2,0,0,3,0,3,1,2,1,1,0,0,3,3,1,2,2,3,1,1,2]
     levelsCount = 12
@@ -124,6 +126,8 @@ class Game:
         if state.pause:
             return
 
+        self._gameState.elapsed += 1
+
         if state.state in [GameState.GAME, GameState.TITLE, GameState.LEVEL_END, GameState.LEVEL_START]:
             self._world.update()
             
@@ -142,12 +146,15 @@ class Game:
                     sound.soundManager.play(sound.soundManager.DEAD)
 
     def onLevelEnd(self):
+        if self._gameState.state == GameState.TITLE:
+            self._startTitle()
+            return
         self._gameState.setState(GameState.LEVEL_END, self._config.fps, GameState.NEXT_LEVEL);
 
     def _showStory(self):
         self._gameState.setState(GameState.STORY)
 
-    def _startGame(self, worldNum = 1):
+    def _startGame(self, worldNum = startLevel):
         self._gameState.setState(GameState.LEVEL_START, self._config.fps)
         self._gameState.worldNum = worldNum
         self._initWorld(self._gameState.worldNum)

@@ -1,7 +1,7 @@
 <level>
-	<title>The Computer</title>
+	<title>The Computer has been hacked</title>
 	<subtitle>Ah ! I knew we should fix that one in the first place...</subtitle>
-	<endtext>Super ! I can finally play more g... I mean finish this task !</endtext>
+	<endtext>Yay, more gam... I mean I'll finish this task !</endtext>
 	<nodes>
 		<joint id="1" x="260" y="280" />
 		<node id="2" x="260" y="240" />

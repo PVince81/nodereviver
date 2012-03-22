@@ -26,3 +26,24 @@ def between(value, rangeStart, rangeEnd):
         rangeEnd = rangeStart
         rangeStart = aux
     return rangeStart < value and value < rangeEnd
+
+def makeTimeString(elapsed):
+    s = ""
+    minutes = elapsed / 60
+    seconds = elapsed % 60
+    hours = minutes / 60
+    minutes = minutes % 60
+    if hours > 0:
+        s = "%i hour" % hours
+        if hours > 1:
+            s += "s"
+        s += " "
+    if minutes > 0:
+        s += "%i minute" % minutes
+        if minutes > 1:
+            s += "s"
+        s += " "
+    s += "%i second" % seconds
+    if seconds > 0:
+        s += "s"
+    return s

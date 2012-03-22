@@ -1,7 +1,7 @@
 <level>
-	<title>The Pocket Calculator</title>
+	<title>The Pocket Calculator has been hacked</title>
 	<subtitle>We need it to... calculate stuff</subtitle>
-	<endtext>Thanks for fixing... well, I still do prefer the computer</endtext>
+	<endtext>I still prefer the computer...</endtext>
 	<nodes>
 		<node id="1" x="200" y="120" />
 		<node id="2" x="240" y="120" />
