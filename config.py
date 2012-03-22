@@ -22,3 +22,6 @@ class Config:
         self.keymap = KeyMap()
         self.dataPath = "data/"
         self.sound = False
+        self.startLevel = 1
+        self.levelsCount = 12
+        self.cheat = False

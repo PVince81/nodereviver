@@ -85,7 +85,7 @@ class WorldSaver(object):
         self.dataPath = dataPath
 
     def saveWorld(self, num, world):
-        filename = "%slevel%i_test.xml" % (self.dataPath, num)
+        filename = "%slevel%i_editor.xml" % (self.dataPath, num)
         root = ET.Element("level")
         if world.title:
             titleElement = ET.SubElement(root, "title")

@@ -13,13 +13,13 @@ from config import Config
 from WorldLoader import WorldLoader
 from model import GameState
 
-startLevel = 1
 class Game:
     titleDemo = [3,0,0,3,0,1,2,1,1,3,0,2,0,3,1,2,1,3,0,2,0,3,1,2,1,3,0,2,0,0,3,2,1,3,2,1,3,3,2,1,3,1,2,2,2,2,2,2,2,1,2,1,1,0,3,1,2,3,0,2,0,3,1,2,1,1,3,2,0,3,2,0,3,3,2,0,3,1,1,3,3,3,0,0,1,2,2,0,0,0,3,1,1,2,3,3,2,0,2,3,3,2,0,3,1,1,3,3,0,0,1,2,2,0,0,0,3,1,3,2,2,1,3,2,1,3,2,0,0,3,0,3,1,2,1,1,0,0,3,3,1,2,2,3,1,1,2]
-    levelsCount = 12
     
     def __init__(self, config):
         self._config = config
+        if self._config.dataPath[-1] != '/':
+            self._config.dataPath += '/'
         self._screen = None
         self._clock = None
         self._terminated = False
@@ -32,7 +32,8 @@ class Game:
     def _init(self):
         pygame.init()
         self._initDisplay()
-        pygame.display.set_caption('Node Reviver - by Vincent Petry (MiniLD#33)') 
+        pygame.display.set_caption('Node Reviver - by Vincent Petry (MiniLD#33)')
+        pygame.mouse.set_visible(False) 
         self._screen = pygame.display.get_surface()
         self._clock = pygame.time.Clock()
         self._display = view.Display(self._config, self._screen, self._gameState)
@@ -112,7 +113,7 @@ class Game:
         if state.state == GameState.NEXT_LEVEL or state.state == GameState.RESTART_LEVEL:
             if state.state == GameState.NEXT_LEVEL:
                 state.worldNum += 1
-                if state.worldNum > self.levelsCount:
+                if state.worldNum > self._config.levelsCount:
                     state.setState(GameState.ENDGAME)
                     return;
             state.dirty = True
@@ -154,7 +155,9 @@ class Game:
     def _showStory(self):
         self._gameState.setState(GameState.STORY)
 
-    def _startGame(self, worldNum = startLevel):
+    def _startGame(self, worldNum = None):
+        if worldNum == None:
+            worldNum = self._config.startLevel        
         self._gameState.setState(GameState.LEVEL_START, self._config.fps)
         self._gameState.worldNum = worldNum
         self._initWorld(self._gameState.worldNum)

@@ -58,6 +58,17 @@ _endGameText = ["Congratulations !!!",
 "    ",
 "by Vincent Petry"]
 
+_cheatEndGameText = ["Well, it seems you haven't fixed everything...",
+"Please start again, this time from the very beginning !",
+"     ",
+"Clever you, using command line arguments !!!",
+"     ",
+"                       ",
+"But I like your attitude !",
+"     ",
+"Thank you for playing Node Reviver (MiniLD #33)",
+"    ",
+"by Vincent Petry"]
 _sprites = [
     # 0 Player
     pygame.Rect(0, 0, 20, 20),
@@ -145,6 +156,9 @@ class Display(object):
     def __init__(self, config, screen, gameState):
         self._screen = screen
         self._config = config
+        if self._config.cheat:
+            global _endGameText
+            _endGameText = _cheatEndGameText
         self._background = self._screen.copy()
         self._background.fill((0, 0, 0))
         self._entities = []
@@ -183,7 +197,7 @@ class Display(object):
             self._story.render(self._screen)
             return
         elif _gameState.state == GameState.ENDGAME:
-            if self._endStory == None:
+            if self._endStory == None:                
                 a = []
                 timeString = makeTimeString(self._gameState.elapsed / self._config.fps)
                 for text in _endGameText:
@@ -568,9 +582,10 @@ class TitleScreen(object):
     def __init__(self, screen):
         self._screen = screen
         self._font = pygame.font.Font(_fontFile, 18)
+        self._font2 = pygame.font.Font(_fontFile, 12)
         fontHeight = self._font.get_height()
         self._textSurface = self._font.render("Press ENTER to start playing", False, (0, 192, 0))
-        self._text2Surface = self._font.render("By Vincent Petry (for MiniLD #33)", False, (0, 192, 0))
+        self._text2Surface = self._font2.render("Copyright \xa9 2012 Vincent Petry (for MiniLD #33)", False, (0, 192, 0))
         rect = self._textSurface.get_rect()
         screenRect = screen.get_rect()
         self._pos = (screenRect[2] / 2 - rect[2] / 2, 195)

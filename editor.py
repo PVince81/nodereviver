@@ -17,6 +17,7 @@ class Editor(Game):
     def _init(self):
         Game._init(self)
         pygame.display.set_caption('Node Reviver Editor - by Vincent Petry')
+        pygame.mouse.set_visible(True)
 
     def _saveWorld(self):
         print "Saving world"
