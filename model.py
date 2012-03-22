@@ -4,73 +4,7 @@
 import random
 import sound
 from util import *
-
-class PathFinder:
-    def __init__(self):
-        self.path = None
-        self.pathLength = 0
-        self.shortestPath = None
-        self.shortestPathLength = None
-        self.edges = None
-        self.shortestPathEdges = None
-        self.sourceNode = None
-        self.targetNode = None
-
-    def findShortestPath(self, sourceNode, targetNode):
-        '''
-        Finds the shortest path from sourceNode to targetNode.
-        @return: array of node's starting edges to follow to reach the target
-        '''
-        self.path = list()
-        self.pathLength = 0
-        self.edges = list()
-        self.shortestPath = None
-        self.shortestPathEdges = []
-        self.shortestPathLength = None
-        self.sourceNode = sourceNode
-        self.targetNode = targetNode
-        self.path.append(sourceNode)
-        self._exploreNode(sourceNode)
-
-        # remove joint nodes
-        finalEdges = []
-        node = sourceNode
-        for edge in self.shortestPathEdges:
-            if node.type != Node.JOINT:
-                finalEdges.append(edge)
-            node = edge.getOther(node)
-
-        return finalEdges
-
-    def _exploreNode(self, node):
-        if self.shortestPathLength and self.pathLength >= self.shortestPathLength:
-            return False
-
-        if node == self.targetNode:
-            self.shortestPath = list(self.path)
-            self.shortestPathEdges = list(self.edges)
-            self.shortestPathLength = self.pathLength
-            return True
-
-        for edge in node.getOutgoingEdges():
-            nextNode = edge.getOther(node)
-            if not nextNode in self.path:
-                self.path.append(nextNode)
-                self.edges.append(edge)
-                self.pathLength += edge.length
-                self._exploreNode(nextNode)
-                self.pathLength -= edge.length
-                self.edges.pop()
-                self.path.pop()
-        return False
-    
-    def printPath(self, sourceNode, edges):
-        node = sourceNode
-        for edge in edges:
-            print node
-            print edge
-            node = edge.getOther(node)
-        print node
+from algo import PathFinder
 
 pathFinder = PathFinder()
 
@@ -107,6 +41,13 @@ class Node(object):
 
     def getOutgoingEdges(self):
         return [edge for edge in self.edges if not edge.oneWay or edge.source == self]
+
+    def getOutgoingNeighbours(self):
+        edges = self.getOutgoingEdges()
+        nodes = []
+        for edge in edges:
+            nodes.append(edge.getOther(self))
+        return nodes
 
     def getEdgeByDirection(self, direction):
         '''
@@ -533,7 +474,7 @@ class TrackingFoe(Foe):
             Foe.update(self)
         else:
             # find path to player
-            if (len(self._path) > 0 and
+            if (self._path != None and len(self._path) > 0 and
                     (self._trackedEntity.targetNode == self._trackedTarget or
                      self._trackedEntity.currentNode == self._trackedTarget)):
                 nextEdge = self._path[0]

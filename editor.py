@@ -5,6 +5,7 @@ import view
 import model
 from config import Config
 from model import GameState
+from algo import PathFinder
 
 class Editor(Game):
     def __init__(self, config):
@@ -119,7 +120,20 @@ class Editor(Game):
             elif event.key == pygame.locals.K_F5:
                 # TODO: need to clone the current level instead of reloading!
                 self._startGame(self._gameState.worldNum)
-        
+            elif event.key == pygame.locals.K_x:
+                self._testPathFinder()
+
+    def _testPathFinder(self):
+        if len(self._selectedNodes) == 0:
+            return
+        # Test the pathfinding algo from player to selection
+        pathfinder = PathFinder()
+        print "Path finder from %i to %i" % (self._player.currentNode.id, self._selectedNodes[0].id )
+        path = pathfinder.findShortestPath(self._player.currentNode, self._selectedNodes[0])
+        pathfinder.printPath(self._player.currentNode, path)
+        self._selectedNodes = pathfinder.getPathNodes(self._player.currentNode, path)
+        self._display.selectionView.setSelection(self._selectedNodes)
+
     def _handleLogic(self):
         if self._gameState.state == GameState.EDITOR:
             pass
