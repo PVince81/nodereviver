@@ -20,6 +20,8 @@ class Game:
         self._config = config
         if self._config.dataPath[-1] != '/':
             self._config.dataPath += '/'
+	if self._config.startLevel > 1:
+		self._config.cheat = True
         self._screen = None
         self._clock = None
         self._terminated = False

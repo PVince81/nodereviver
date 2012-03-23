@@ -55,8 +55,7 @@ _endGameText = ["Congratulations !!!",
 "     ",
 "                                           ",
 "Thank you for playing Node Reviver (MiniLD #33)",
-"    ",
-"by Vincent Petry"]
+""]
 
 _cheatEndGameText = ["Well, it seems you haven't fixed everything...",
 "Please start again, this time from the very beginning !",
@@ -67,8 +66,7 @@ _cheatEndGameText = ["Well, it seems you haven't fixed everything...",
 "But I like your attitude !",
 "     ",
 "Thank you for playing Node Reviver (MiniLD #33)",
-"    ",
-"by Vincent Petry"]
+""]
 _sprites = [
     # 0 Player
     pygame.Rect(0, 0, 20, 20),

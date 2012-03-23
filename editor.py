@@ -12,6 +12,7 @@ class Editor(Game):
         Game.__init__(self, config)
         self._selectedNodes = []
         self._selectedEdge = None
+        self._config.cheat = True
         self._worldSaver = WorldSaver(self._config.dataPath)
         
     def _init(self):
