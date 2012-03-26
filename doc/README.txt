@@ -7,7 +7,6 @@ Website: http://vincentpetry.net/games/nodereviver
 This game was written in Python and uses Pygame internally.
 
 
-
 Game Rules
 ----------
 
