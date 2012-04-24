@@ -27,7 +27,7 @@ def main():
     parser = optparse.OptionParser(description='Node Reviver')
     parser.add_option('--enable-sound', action="store_true",
                         dest='enableSound',
-                        default=False, help='enable sound (ugly)')
+                        default=True, help='enable sound')
     parser.add_option('--game', action="store_true", default=True,
                         dest='game',
                         help='runs the game (default)')

@@ -333,12 +333,10 @@ class WorldView(object):
 class EdgeView(object):
     def __init__(self, edge = None):
         self.edge = edge
-        self.angleStep = 2.0 * math.pi / 60.0 
     
     def update(self, edge):
         if self.edge != edge:
             self.edge = edge
-            self.angle = 0
             if self.edge:                
                 self.nodes = [node for node in [edge.source, edge.destination] if node.type != model.Node.JOINT]
                 self.posSource = vectorAdd(edge.source.pos, (-1, -1))
@@ -360,10 +358,14 @@ class EdgeView(object):
         pygame.draw.line(screen, color, self.posSource, self.posDest, width )
 
         d = 5
-        color = (255, 255, 255)
         for node in self.nodes:
-            rect = (node.pos[0] - d, node.pos[1] - d, d * 2, d * 2)
-            pygame.draw.rect(screen, color, rect )
+            if node.type == model.Node.SQUARE:
+                if node.marked:
+                    spriteIndex = SPRITE_NODE_ACTIVE
+                else:
+                    spriteIndex = SPRITE_NODE_NORMAL
+                pos = (node.pos[0] - d, node.pos[1] - d)
+                drawSprite(screen, spriteIndex, pos)
 
 class Story(object):
     rowDelay = 10

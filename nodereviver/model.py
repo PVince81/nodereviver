@@ -143,6 +143,8 @@ class Edge(object):
             # mark nodes if all their edges have been marked
             nodes = [self.source, self.destination]
             for node in nodes:
+                if node.type != Node.SQUARE:
+                    continue
                 allMarked = True
                 for edge in node.edges:
                     if not edge.marked:
@@ -150,6 +152,7 @@ class Edge(object):
                         break 
                 if allMarked:
                     node.marked = True
+                    sound.soundManager.play(sound.soundManager.DRAW)
 
 
     def __str__(self):
@@ -407,18 +410,14 @@ class Player(Entity):
     def __init__(self, currentNode = None):
         Entity.__init__(self, currentNode)
         self.speed = 2
+        self.justMarked = False
         
     def onEdgeComplete(self, edge):
         if not edge.isMarked():
             edge.setMarked(True)
-            if self.currentNode.type != Node.JOINT:
-                sound.soundManager.play(sound.soundManager.DRAW)
-            self.justMarked = True
         
     def onStopMoving(self):
-        if self.justMarked:
-            self.justMarked = False
-        else:
+        if self.currentNode.type != Node.JOINT:
             sound.soundManager.play(sound.soundManager.MOVE)
 
     def onMoving(self, oldPos, newPos):
@@ -527,6 +526,7 @@ class GameState(object):
         self.pause = False
         self.nextState = None
         self.duration = None
+        self.maxDuration = None
         # Elapsed time in ticks
         self.elapsed = 0
         
@@ -550,7 +550,7 @@ class GameState(object):
             
     def getProgress(self):
         '''
-        Returns the transition ration between two states S1 and S2.
+        Returns the transition ratio between two states S1 and S2.
         0 is S1
         0.5 is exactly between S1 and S2
         1 is S2

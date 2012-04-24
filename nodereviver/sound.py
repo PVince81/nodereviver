@@ -31,6 +31,7 @@ class _SoundManager:
     def __init__(self):
         self.sounds = []
         self._initialized = False
+        self.enabled = True
 
     def init(self, config):
         if self._initialized:
@@ -38,7 +39,11 @@ class _SoundManager:
         self._initialized = True
         self._config = config
         if self._config.sound:
-            pygame.mixer.init(22050, -16, 1, 1024)
+            pygame.mixer.pre_init(44100, -16, 2, 256)
+        
+    def loadSounds(self):
+        if self._config.sound:
+            #pygame.mixer.init()
             for fileName in self.FILES:
                 self.sounds.append(pygame.mixer.Sound(self._config.dataPath + fileName))
 
@@ -47,8 +52,12 @@ class _SoundManager:
             pygame.mixer.quit()
 
     def play(self, soundIndex):
-        if not self._initialized or not self._config.sound:
+        if not self.enabled or not self._initialized or not self._config.sound:
             return
         self.sounds[soundIndex].play()
+        
+    def enable(self, enabled = True):
+        self.enabled = enabled
+        
 
 soundManager = _SoundManager()

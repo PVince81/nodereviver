@@ -45,6 +45,7 @@ class Game:
         self._worldLoader = WorldLoader(self._config.dataPath)
 
     def _init(self):
+        sound.soundManager.init(self._config)
         pygame.init()
         self._initDisplay()
         pygame.display.set_caption('Node Reviver - by Vincent Petry (MiniLD#33)')
@@ -52,7 +53,7 @@ class Game:
         self._screen = pygame.display.get_surface()
         self._clock = pygame.time.Clock()
         self._display = view.Display(self._config, self._screen, self._gameState)
-        sound.soundManager.init(self._config)
+        sound.soundManager.loadSounds()
 
     def _quit(self):
         sound.soundManager.release()
@@ -176,6 +177,7 @@ class Game:
         self._gameState.setState(GameState.LEVEL_START, self._config.fps)
         self._gameState.worldNum = worldNum
         self._initWorld(self._gameState.worldNum)
+        sound.soundManager.enable()
 
     def _startTitle(self):
         self._gameState.state = GameState.TITLE
@@ -187,6 +189,7 @@ class Game:
             self._player.speed = 4
             self._world = self._worldLoader.loadWorld(0)
             self._titleDemo = list(self.titleDemo)
+            sound.soundManager.enable(False)
         else:
             self._world = self._worldLoader.loadWorld(worldNum)
         self._world.centerInView(self._config.screenSize)

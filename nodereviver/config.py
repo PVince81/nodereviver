@@ -35,7 +35,7 @@ class Config:
         self.fps = 60
         self.keymap = KeyMap()
         self.dataPath = "data/"
-        self.sound = False
+        self.sound = True
         self.startLevel = 1
         self.levelsCount = 12
         self.cheat = False
