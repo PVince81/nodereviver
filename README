@@ -3,6 +3,7 @@ Node Reviver
 
 Node Reviver was developed by Vincent Petry <PVince81@yahoo.fr> for MiniLD #33.
 Website: http://vincentpetry.net/games/nodereviver
+GitHub: http://github.com/PVince81/nodereviver
 
 This game was written in Python and uses Pygame internally.
 
