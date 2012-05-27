@@ -102,7 +102,7 @@ class Game:
                         break
 
         elif event.type == pygame.locals.KEYUP:
-            if event.key == pygame.locals.K_ESCAPE:
+            if event.key in self._config.keymap.quit:
                 self.onBack()
 
     def onBack(self):
