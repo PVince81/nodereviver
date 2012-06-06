@@ -1,0 +1,366 @@
+{
+    "subtitle": "Can't work when it's too cold...",
+    "title": "The Central Heating System has been hacked",
+    "endtext": "Turn it down ! Too hot now...",
+    "entities": [
+        {
+            "node": "1",
+            "type": "player"
+        },
+        {
+            "node": "16",
+            "type": "foe",
+            "foeType": "simple"
+        }
+    ],
+    "edges": [
+        {
+            "dest": "1",
+            "source": "6",
+            "oneway": true
+        },
+        {
+            "dest": "5",
+            "source": "6",
+            "oneway": true
+        },
+        {
+            "dest": "5",
+            "source": "2",
+            "oneway": true
+        },
+        {
+            "dest": "1",
+            "source": "2",
+            "oneway": true
+        },
+        {
+            "dest": "4",
+            "source": "3",
+            "oneway": true
+        },
+        {
+            "dest": "6",
+            "source": "4",
+            "oneway": true
+        },
+        {
+            "dest": "2",
+            "source": "8",
+            "oneway": true
+        },
+        {
+            "dest": "7",
+            "source": "8",
+            "oneway": true
+        },
+        {
+            "dest": "3",
+            "source": "9",
+            "oneway": true
+        },
+        {
+            "dest": "9",
+            "source": "7",
+            "oneway": true
+        },
+        {
+            "dest": "1",
+            "source": "3",
+            "oneway": true
+        },
+        {
+            "dest": "7",
+            "source": "1",
+            "oneway": true
+        },
+        {
+            "dest": "7",
+            "source": "10",
+            "oneway": true
+        },
+        {
+            "dest": "8",
+            "source": "11",
+            "oneway": true
+        },
+        {
+            "dest": "13",
+            "source": "14",
+            "oneway": true
+        },
+        {
+            "dest": "13",
+            "source": "12",
+            "oneway": true
+        },
+        {
+            "dest": "12",
+            "source": "8",
+            "oneway": true
+        },
+        {
+            "dest": "14",
+            "source": "5",
+            "oneway": true
+        },
+        {
+            "dest": "2",
+            "source": "13",
+            "oneway": true
+        },
+        {
+            "dest": "11",
+            "source": "15",
+            "oneway": true
+        },
+        {
+            "dest": "12",
+            "source": "15"
+        },
+        {
+            "dest": "11",
+            "source": "10",
+            "oneway": true
+        },
+        {
+            "dest": "10",
+            "source": "16",
+            "oneway": true
+        },
+        {
+            "dest": "16",
+            "source": "9",
+            "oneway": true
+        },
+        {
+            "dest": "19",
+            "source": "14"
+        },
+        {
+            "dest": "20",
+            "source": "19",
+            "oneway": true
+        },
+        {
+            "dest": "20",
+            "source": "18",
+            "oneway": true
+        },
+        {
+            "dest": "18",
+            "source": "17",
+            "oneway": true
+        },
+        {
+            "dest": "17",
+            "source": "4",
+            "oneway": true
+        },
+        {
+            "dest": "18",
+            "source": "6",
+            "oneway": true
+        },
+        {
+            "dest": "5",
+            "source": "20",
+            "oneway": true
+        },
+        {
+            "dest": "22",
+            "source": "16"
+        },
+        {
+            "dest": "21",
+            "source": "22",
+            "oneway": true
+        },
+        {
+            "dest": "21",
+            "source": "23",
+            "oneway": true
+        },
+        {
+            "dest": "24",
+            "source": "23",
+            "oneway": true
+        },
+        {
+            "dest": "25",
+            "source": "24"
+        },
+        {
+            "dest": "17",
+            "source": "25",
+            "oneway": true
+        },
+        {
+            "dest": "4",
+            "source": "24",
+            "oneway": true
+        },
+        {
+            "dest": "23",
+            "source": "3",
+            "oneway": true
+        },
+        {
+            "dest": "9",
+            "source": "21",
+            "oneway": true
+        }
+    ],
+    "nodes": [
+        {
+            "y": "240",
+            "x": "320",
+            "type": "node",
+            "id": 1
+        },
+        {
+            "y": "180",
+            "x": "320",
+            "type": "node",
+            "id": 2
+        },
+        {
+            "y": "300",
+            "x": "320",
+            "type": "node",
+            "id": 3
+        },
+        {
+            "y": "300",
+            "x": "380",
+            "type": "node",
+            "id": 4
+        },
+        {
+            "y": "180",
+            "x": "380",
+            "type": "node",
+            "id": 5
+        },
+        {
+            "y": "240",
+            "x": "380",
+            "type": "node",
+            "id": 6
+        },
+        {
+            "y": "240",
+            "x": "260",
+            "type": "node",
+            "id": 7
+        },
+        {
+            "y": "180",
+            "x": "260",
+            "type": "node",
+            "id": 8
+        },
+        {
+            "y": "300",
+            "x": "260",
+            "type": "node",
+            "id": 9
+        },
+        {
+            "y": "240",
+            "x": "220",
+            "type": "node",
+            "id": 10
+        },
+        {
+            "y": "180",
+            "x": "220",
+            "type": "node",
+            "id": 11
+        },
+        {
+            "y": "140",
+            "x": "260",
+            "type": "node",
+            "id": 12
+        },
+        {
+            "y": "140",
+            "x": "320",
+            "type": "node",
+            "id": 13
+        },
+        {
+            "y": "140",
+            "x": "380",
+            "type": "node",
+            "id": 14
+        },
+        {
+            "y": "140",
+            "x": "220",
+            "type": "joint",
+            "id": 15
+        },
+        {
+            "y": "300",
+            "x": "220",
+            "type": "node",
+            "id": 16
+        },
+        {
+            "y": "300",
+            "x": "420",
+            "type": "node",
+            "id": 17
+        },
+        {
+            "y": "240",
+            "x": "420",
+            "type": "node",
+            "id": 18
+        },
+        {
+            "y": "140",
+            "x": "420",
+            "type": "joint",
+            "id": 19
+        },
+        {
+            "y": "180",
+            "x": "420",
+            "type": "node",
+            "id": 20
+        },
+        {
+            "y": "340",
+            "x": "260",
+            "type": "node",
+            "id": 21
+        },
+        {
+            "y": "340",
+            "x": "220",
+            "type": "joint",
+            "id": 22
+        },
+        {
+            "y": "340",
+            "x": "320",
+            "type": "node",
+            "id": 23
+        },
+        {
+            "y": "340",
+            "x": "380",
+            "type": "node",
+            "id": 24
+        },
+        {
+            "y": "340",
+            "x": "420",
+            "type": "joint",
+            "id": 25
+        }
+    ]
+}

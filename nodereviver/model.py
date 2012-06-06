@@ -27,7 +27,7 @@ _nextNodeId = 1
 class Node(object):
     SQUARE = 0
     JOINT = 1
-    
+
     def __init__(self, world, pos = (0, 0), nodeType = SQUARE):
         global _nextNodeId
         self.id = _nextNodeId
@@ -39,7 +39,7 @@ class Node(object):
         self.marked = False
         # Edges are saved in this order: up, down, left, right
         self.edges = []
-    
+
     def connect(self, otherNode, oneWay = False):
         '''
         Connects the current node to the other node
@@ -68,35 +68,35 @@ class Node(object):
         '''
         Returns the edge going in the given direction and is an outgoing edge
         or None if none found.
-        @param direction: direction vector 
+        @param direction: direction vector
         '''
         for edge in self.edges:
             # skip oneway incoming edges
             if edge.oneWay and edge.destination == self:
-                continue             
+                continue
             destNode = edge.getOther(self)
             diff = unitVector(vectorDiff(destNode.pos, self.pos))
             if direction == diff:
                 return edge
         return None
-    
+
     def getOtherEdge(self, sourceEdge):
         for edge in self.edges:
             if edge != sourceEdge:
                 return edge
         return None
-        
+
     def getNextNode(self, edge):
         '''
         Returns the next node following the path along the given edge.
-        @param edge edge to use as direction 
+        @param edge edge to use as direction
         '''
         nextNode = edge.getOther(self)
         while nextNode.type == Node.JOINT and nextNode != self:
             nextNode = nextNode.getNextNode(nextNode.getOtherEdge(edge))
 
         return nextNode
-    
+
     def __str__(self):
         typeString = "S"
         if self.type == Node.JOINT:
@@ -149,7 +149,7 @@ class Edge(object):
                 for edge in node.edges:
                     if not edge.marked:
                         allMarked = False
-                        break 
+                        break
                 if allMarked:
                     node.marked = True
                     sound.soundManager.play(sound.soundManager.DRAW)
@@ -181,11 +181,11 @@ class World(object):
         global _nextNodeId
         _nextEdgeId = 1
         _nextNodeId = 1
-    
+
     def update(self):
         for entity in self.entities:
             entity.update()
-        
+
     def addEntity(self, entity):
         self.entities.append(entity)
 
@@ -211,7 +211,7 @@ class World(object):
             if node.pos == pos:
                 print "Warning: node overlap with %s" % node.__str__()
                 return node
-        
+
         node = Node(self, pos, nodeType)
         self.nodes.append(node)
         self.dirty = True
@@ -223,7 +223,7 @@ class World(object):
         for edge in list(node.edges):
             self.deleteEdge(edge)
         self.dirty = True
-            
+
     def deleteEdge(self, edge):
         if edge.source:
             edge.source.edges.remove(edge)
@@ -241,7 +241,7 @@ class World(object):
         self.dirty = True
         if node1.pos[0] == node2.pos[0] or node1.pos[1] == node2.pos[1]:
             if reverse:
-                edge = node2.connect(node1, oneWay)                
+                edge = node2.connect(node1, oneWay)
             else:
                 edge = node1.connect(node2, oneWay)
             self._addEdge( edge )
@@ -267,7 +267,7 @@ class World(object):
             dist = vectorDiff(node.pos, pos)
             if abs(dist[0]) <= margin and abs(dist[1]) <= margin:
                 return node
-        return None 
+        return None
 
     def getEdgeAt(self, pos, margin = 5):
         for edge in self.edges:
@@ -305,7 +305,7 @@ class World(object):
         for node in self.nodes:
             node.pos = (node.pos[0] / 20 * 20, node.pos[1] / 20 * 20)
         self.dirty = True
-    
+
     def getRect(self):
         '''
         Get the smallest possible rectangle including all nodes.
@@ -324,7 +324,7 @@ class World(object):
                 rect[1] = node.pos[1]
             if node.pos[1] > rect[3]:
                 rect[3] = node.pos[1]
-    
+
         return tuple(rect)
 
     def hasAllEdgesMarked(self):
@@ -388,13 +388,13 @@ class Entity(object):
         if self.targetNode.type == Node.JOINT:
             return self.currentNode.getNextNode(self.currentEdge)
         return self.targetNode
-        
+
     def onEdgeComplete(self, edge):
         pass
-    
+
     def onStopMoving(self):
         pass
-    
+
     def onMoving(self, oldPos, newPos):
         pass
 
@@ -411,11 +411,11 @@ class Player(Entity):
         Entity.__init__(self, currentNode)
         self.speed = 2
         self.justMarked = False
-        
+
     def onEdgeComplete(self, edge):
         if not edge.isMarked():
             edge.setMarked(True)
-        
+
     def onStopMoving(self):
         if self.currentNode.type != Node.JOINT:
             sound.soundManager.play(sound.soundManager.MOVE)
@@ -457,7 +457,7 @@ class SimpleFoe(Foe):
                     nextEdge = nextEdges[0]
                 else:
                     nextEdge = nextEdges[index + 1]
-            self.moveAlong(nextEdge)  
+            self.moveAlong(nextEdge)
 
     def onEdgeComplete(self, edge):
         self.lastEdge = edge
@@ -497,7 +497,7 @@ class TrackingFoe(Foe):
             elif random.randint(0, 5) == 0:
                 # sleep for a second
                 self._sleepTicks = 60
-            elif self._trackedEntity and ( self._trackedEntity.currentNode != self.currentNode or 
+            elif self._trackedEntity and ( self._trackedEntity.currentNode != self.currentNode or
                                            self._trackedEntity.currentNode != self.targetNode ):
                 targetNode = self._trackedEntity.currentNode
                 if self._trackedEntity.moving:
@@ -515,21 +515,23 @@ class GameState(object):
     LEVEL_END = 4
     NEXT_LEVEL = 5
     RESTART_LEVEL = 6
-    EDITOR = 7 
+    EDITOR = 7
     STORY = 8
     ENDGAME = 9
+    QUIT = 10
     def __init__(self):
         self.score = 0
         self.worldNum = 1
         self.dirty = True
         self.state = self.TITLE
         self.pause = False
+        self.focus = True
         self.nextState = None
         self.duration = None
         self.maxDuration = None
         # Elapsed time in ticks
         self.elapsed = 0
-        
+
     def setState(self, state, duration = None, nextState = 1):
         self.state = state
         self.duration = duration
@@ -547,7 +549,7 @@ class GameState(object):
             self.dirty = True
             self.duration = None
             self.maxDuration = None
-            
+
     def getProgress(self):
         '''
         Returns the transition ratio between two states S1 and S2.

@@ -1,0 +1,216 @@
+{
+    "subtitle": "Need it for storing butter for our toasts, of course !\\nBeware of the wandering drone !",
+    "title": "The Fridge has been hacked",
+    "endtext": "Cold drinks !",
+    "entities": [
+        {
+            "node": "1",
+            "type": "player"
+        },
+        {
+            "node": "5",
+            "type": "foe",
+            "foeType": "simple"
+        }
+    ],
+    "edges": [
+        {
+            "dest": "8",
+            "source": "1"
+        },
+        {
+            "dest": "2",
+            "source": "8"
+        },
+        {
+            "dest": "9",
+            "source": "1"
+        },
+        {
+            "dest": "3",
+            "source": "9"
+        },
+        {
+            "dest": "10",
+            "source": "3"
+        },
+        {
+            "dest": "1",
+            "source": "10"
+        },
+        {
+            "dest": "11",
+            "source": "2"
+        },
+        {
+            "dest": "4",
+            "source": "11"
+        },
+        {
+            "dest": "12",
+            "source": "4"
+        },
+        {
+            "dest": "2",
+            "source": "12"
+        },
+        {
+            "dest": "13",
+            "source": "4"
+        },
+        {
+            "dest": "6",
+            "source": "13"
+        },
+        {
+            "dest": "14",
+            "source": "5"
+        },
+        {
+            "dest": "6",
+            "source": "14"
+        },
+        {
+            "dest": "15",
+            "source": "5"
+        },
+        {
+            "dest": "2",
+            "source": "15"
+        },
+        {
+            "dest": "16",
+            "source": "7"
+        },
+        {
+            "dest": "5",
+            "source": "16"
+        },
+        {
+            "dest": "17",
+            "source": "6"
+        },
+        {
+            "dest": "7",
+            "source": "17"
+        },
+        {
+            "dest": "18",
+            "source": "3"
+        },
+        {
+            "dest": "7",
+            "source": "18"
+        }
+    ],
+    "nodes": [
+        {
+            "y": "0",
+            "x": "200",
+            "type": "node",
+            "id": 1
+        },
+        {
+            "y": "20",
+            "x": "100",
+            "type": "node",
+            "id": 2
+        },
+        {
+            "y": "40",
+            "x": "300",
+            "type": "node",
+            "id": 3
+        },
+        {
+            "y": "80",
+            "x": "0",
+            "type": "node",
+            "id": 4
+        },
+        {
+            "y": "100",
+            "x": "140",
+            "type": "node",
+            "id": 5
+        },
+        {
+            "y": "120",
+            "x": "20",
+            "type": "node",
+            "id": 6
+        },
+        {
+            "y": "140",
+            "x": "220",
+            "type": "node",
+            "id": 7
+        },
+        {
+            "y": "0",
+            "x": "100",
+            "type": "joint",
+            "id": 8
+        },
+        {
+            "y": "40",
+            "x": "200",
+            "type": "joint",
+            "id": 9
+        },
+        {
+            "y": "0",
+            "x": "300",
+            "type": "joint",
+            "id": 10
+        },
+        {
+            "y": "80",
+            "x": "100",
+            "type": "joint",
+            "id": 11
+        },
+        {
+            "y": "20",
+            "x": "0",
+            "type": "joint",
+            "id": 12
+        },
+        {
+            "y": "120",
+            "x": "0",
+            "type": "joint",
+            "id": 13
+        },
+        {
+            "y": "120",
+            "x": "140",
+            "type": "joint",
+            "id": 14
+        },
+        {
+            "y": "20",
+            "x": "140",
+            "type": "joint",
+            "id": 15
+        },
+        {
+            "y": "100",
+            "x": "220",
+            "type": "joint",
+            "id": 16
+        },
+        {
+            "y": "140",
+            "x": "20",
+            "type": "joint",
+            "id": 17
+        },
+        {
+            "y": "140",
+            "x": "300",
+            "type": "joint",
+            "id": 18
+        }
+    ]
+}

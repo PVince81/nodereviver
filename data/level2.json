@@ -1,0 +1,129 @@
+{
+    "subtitle": "Please fix it...\\nbecause sometimes we are hungry",
+    "title": "The Toaster... has been hacked",
+    "endtext": "Yummy toasts !",
+    "entities": [
+        {
+            "node": "1",
+            "type": "player"
+        }
+    ],
+    "edges": [
+        {
+            "dest": "6",
+            "source": "1"
+        },
+        {
+            "dest": "2",
+            "source": "6"
+        },
+        {
+            "dest": "7",
+            "source": "2"
+        },
+        {
+            "dest": "3",
+            "source": "7"
+        },
+        {
+            "dest": "8",
+            "source": "3"
+        },
+        {
+            "dest": "4",
+            "source": "8"
+        },
+        {
+            "dest": "9",
+            "source": "4"
+        },
+        {
+            "dest": "2",
+            "source": "9"
+        },
+        {
+            "dest": "10",
+            "source": "4"
+        },
+        {
+            "dest": "5",
+            "source": "10"
+        },
+        {
+            "dest": "11",
+            "source": "5"
+        },
+        {
+            "dest": "1",
+            "source": "11"
+        }
+    ],
+    "nodes": [
+        {
+            "y": "0",
+            "x": "100",
+            "type": "node",
+            "id": 1
+        },
+        {
+            "y": "20",
+            "x": "0",
+            "type": "node",
+            "id": 2
+        },
+        {
+            "y": "40",
+            "x": "60",
+            "type": "node",
+            "id": 3
+        },
+        {
+            "y": "80",
+            "x": "20",
+            "type": "node",
+            "id": 4
+        },
+        {
+            "y": "100",
+            "x": "80",
+            "type": "node",
+            "id": 5
+        },
+        {
+            "y": "0",
+            "x": "0",
+            "type": "joint",
+            "id": 6
+        },
+        {
+            "y": "20",
+            "x": "60",
+            "type": "joint",
+            "id": 7
+        },
+        {
+            "y": "80",
+            "x": "60",
+            "type": "joint",
+            "id": 8
+        },
+        {
+            "y": "80",
+            "x": "0",
+            "type": "joint",
+            "id": 9
+        },
+        {
+            "y": "100",
+            "x": "20",
+            "type": "joint",
+            "id": 10
+        },
+        {
+            "y": "100",
+            "x": "100",
+            "type": "joint",
+            "id": 11
+        }
+    ]
+}

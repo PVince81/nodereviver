@@ -17,7 +17,7 @@
     @author: Vincent Petry <PVince81@yahoo.fr>
 '''
 from game import Game
-from WorldLoader import WorldSaver
+from WorldLoaderJson import WorldSaver
 import pygame
 import view
 import model
@@ -32,11 +32,12 @@ class Editor(Game):
         self._selectedEdge = None
         self._config.cheat = True
         self._worldSaver = WorldSaver(self._config.dataPath)
-        
+
     def _init(self):
         Game._init(self)
         pygame.display.set_caption('Node Reviver Editor - by Vincent Petry')
         pygame.mouse.set_visible(True)
+        self._gameUI = None
 
     def _saveWorld(self):
         print "Saving world"
@@ -51,7 +52,7 @@ class Editor(Game):
         Game._handleInputEvent(self, event)
         if self._gameState.state != GameState.EDITOR:
             return
-        
+
         mods = pygame.key.get_mods()
         if event.type == pygame.locals.MOUSEBUTTONDOWN:
             if event.button == 3:
@@ -68,7 +69,7 @@ class Editor(Game):
                 if node:
                     self._selectedEdge = None
                     # select another
-                    if mods & pygame.locals.KMOD_CTRL:                        
+                    if mods & pygame.locals.KMOD_CTRL:
                         self._selectedNodes.append(node)
                     # connect
                     elif mods & (pygame.locals.KMOD_SHIFT | pygame.locals.KMOD_RSHIFT | pygame.locals.KMOD_LSHIFT) and len(self._selectedNodes) > 0:
@@ -93,7 +94,7 @@ class Editor(Game):
                     self._gameState.dirty = True
                     self._initWorld(self._gameState.worldNum)
             if event.key == pygame.locals.K_PAGEDOWN:
-                if self._gameState.worldNum < Game.levelsCount:
+                if self._gameState.worldNum < self._config.levelsCount:
                     self._gameState.worldNum += 1
                     self._gameState.dirty = True
                     self._initWorld(self._gameState.worldNum)
@@ -179,7 +180,7 @@ class Editor(Game):
             self._display.render()
             pygame.display.flip()
             self._clock.tick(self._config.fps)
-            
+
         self._quit()
 
 if __name__ == '__main__':

@@ -27,7 +27,7 @@ class _SoundManager:
         "dead.wav",
         "draw.wav"
     ]
-    
+
     def __init__(self):
         self.sounds = []
         self._initialized = False
@@ -40,7 +40,7 @@ class _SoundManager:
         self._config = config
         if self._config.sound:
             pygame.mixer.pre_init(44100, -16, 2, 256)
-        
+
     def loadSounds(self):
         if self._config.sound:
             #pygame.mixer.init()
@@ -55,9 +55,9 @@ class _SoundManager:
         if not self.enabled or not self._initialized or not self._config.sound:
             return
         self.sounds[soundIndex].play()
-        
+
     def enable(self, enabled = True):
         self.enabled = enabled
-        
+
 
 soundManager = _SoundManager()

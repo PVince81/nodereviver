@@ -1,0 +1,532 @@
+{
+    "subtitle": "Well... we sometimes need a break",
+    "title": "The Ultra-Definition Television has been hacked",
+    "endtext": "What's on those 482303 channels today ?",
+    "entities": [
+        {
+            "node": "4",
+            "type": "player"
+        },
+        {
+            "node": "12",
+            "type": "foe",
+            "foeType": "simple"
+        },
+        {
+            "node": "21",
+            "type": "foe",
+            "foeType": "tracking"
+        },
+        {
+            "node": "18",
+            "type": "foe",
+            "foeType": "tracking"
+        }
+    ],
+    "edges": [
+        {
+            "dest": "2",
+            "source": "1"
+        },
+        {
+            "dest": "24",
+            "source": "1"
+        },
+        {
+            "dest": "3",
+            "source": "24"
+        },
+        {
+            "dest": "25",
+            "source": "2"
+        },
+        {
+            "dest": "3",
+            "source": "25"
+        },
+        {
+            "dest": "4",
+            "source": "3"
+        },
+        {
+            "dest": "26",
+            "source": "4"
+        },
+        {
+            "dest": "5",
+            "source": "26"
+        },
+        {
+            "dest": "27",
+            "source": "2"
+        },
+        {
+            "dest": "5",
+            "source": "27"
+        },
+        {
+            "dest": "28",
+            "source": "4"
+        },
+        {
+            "dest": "6",
+            "source": "28"
+        },
+        {
+            "dest": "29",
+            "source": "6"
+        },
+        {
+            "dest": "1",
+            "source": "29"
+        },
+        {
+            "dest": "7",
+            "source": "4"
+        },
+        {
+            "dest": "13",
+            "source": "7"
+        },
+        {
+            "dest": "13",
+            "source": "5"
+        },
+        {
+            "dest": "8",
+            "source": "7"
+        },
+        {
+            "dest": "30",
+            "source": "2"
+        },
+        {
+            "dest": "8",
+            "source": "30"
+        },
+        {
+            "dest": "31",
+            "source": "9"
+        },
+        {
+            "dest": "8",
+            "source": "31"
+        },
+        {
+            "dest": "32",
+            "source": "9"
+        },
+        {
+            "dest": "1",
+            "source": "32"
+        },
+        {
+            "dest": "9",
+            "source": "3"
+        },
+        {
+            "dest": "33",
+            "source": "6"
+        },
+        {
+            "dest": "10",
+            "source": "33"
+        },
+        {
+            "dest": "34",
+            "source": "10"
+        },
+        {
+            "dest": "5",
+            "source": "34"
+        },
+        {
+            "dest": "35",
+            "source": "8"
+        },
+        {
+            "dest": "11",
+            "source": "35"
+        },
+        {
+            "dest": "17",
+            "source": "11"
+        },
+        {
+            "dest": "7",
+            "source": "17"
+        },
+        {
+            "dest": "36",
+            "source": "11"
+        },
+        {
+            "dest": "12",
+            "source": "36"
+        },
+        {
+            "dest": "37",
+            "source": "12"
+        },
+        {
+            "dest": "13",
+            "source": "37"
+        },
+        {
+            "dest": "38",
+            "source": "12"
+        },
+        {
+            "dest": "14",
+            "source": "38"
+        },
+        {
+            "dest": "39",
+            "source": "14"
+        },
+        {
+            "dest": "15",
+            "source": "39"
+        },
+        {
+            "dest": "40",
+            "source": "15"
+        },
+        {
+            "dest": "16",
+            "source": "40"
+        },
+        {
+            "dest": "41",
+            "source": "16"
+        },
+        {
+            "dest": "17",
+            "source": "41"
+        },
+        {
+            "dest": "14",
+            "source": "18"
+        },
+        {
+            "dest": "42",
+            "source": "18"
+        },
+        {
+            "dest": "19",
+            "source": "42"
+        },
+        {
+            "dest": "20",
+            "source": "19"
+        },
+        {
+            "dest": "21",
+            "source": "20"
+        },
+        {
+            "dest": "43",
+            "source": "21"
+        },
+        {
+            "dest": "19",
+            "source": "43"
+        },
+        {
+            "dest": "44",
+            "source": "20"
+        },
+        {
+            "dest": "22",
+            "source": "44"
+        },
+        {
+            "dest": "45",
+            "source": "22"
+        },
+        {
+            "dest": "13",
+            "source": "45"
+        },
+        {
+            "dest": "10",
+            "source": "23"
+        },
+        {
+            "dest": "23",
+            "source": "14"
+        }
+    ],
+    "nodes": [
+        {
+            "y": "100",
+            "x": "100",
+            "type": "node",
+            "id": 1
+        },
+        {
+            "y": "100",
+            "x": "200",
+            "type": "node",
+            "id": 2
+        },
+        {
+            "y": "160",
+            "x": "140",
+            "type": "node",
+            "id": 3
+        },
+        {
+            "y": "200",
+            "x": "140",
+            "type": "node",
+            "id": 4
+        },
+        {
+            "y": "220",
+            "x": "220",
+            "type": "node",
+            "id": 5
+        },
+        {
+            "y": "180",
+            "x": "70",
+            "type": "node",
+            "id": 6
+        },
+        {
+            "y": "200",
+            "x": "260",
+            "type": "node",
+            "id": 7
+        },
+        {
+            "y": "80",
+            "x": "260",
+            "type": "node",
+            "id": 8
+        },
+        {
+            "y": "50",
+            "x": "140",
+            "type": "node",
+            "id": 9
+        },
+        {
+            "y": "260",
+            "x": "50",
+            "type": "node",
+            "id": 10
+        },
+        {
+            "y": "100",
+            "x": "350",
+            "type": "node",
+            "id": 11
+        },
+        {
+            "y": "200",
+            "x": "400",
+            "type": "node",
+            "id": 12
+        },
+        {
+            "y": "220",
+            "x": "260",
+            "type": "node",
+            "id": 13
+        },
+        {
+            "y": "300",
+            "x": "430",
+            "type": "node",
+            "id": 14
+        },
+        {
+            "y": "330",
+            "x": "410",
+            "type": "joint",
+            "id": 15
+        },
+        {
+            "y": "250",
+            "x": "400",
+            "type": "node",
+            "id": 16
+        },
+        {
+            "y": "200",
+            "x": "350",
+            "type": "node",
+            "id": 17
+        },
+        {
+            "y": "300",
+            "x": "550",
+            "type": "node",
+            "id": 18
+        },
+        {
+            "y": "350",
+            "x": "430",
+            "type": "node",
+            "id": 19
+        },
+        {
+            "y": "350",
+            "x": "340",
+            "type": "node",
+            "id": 20
+        },
+        {
+            "y": "390",
+            "x": "340",
+            "type": "node",
+            "id": 21
+        },
+        {
+            "y": "390",
+            "x": "220",
+            "type": "joint",
+            "id": 22
+        },
+        {
+            "y": "300",
+            "x": "50",
+            "type": "node",
+            "id": 23
+        },
+        {
+            "y": "160",
+            "x": "100",
+            "type": "joint",
+            "id": 24
+        },
+        {
+            "y": "160",
+            "x": "200",
+            "type": "joint",
+            "id": 25
+        },
+        {
+            "y": "220",
+            "x": "140",
+            "type": "joint",
+            "id": 26
+        },
+        {
+            "y": "100",
+            "x": "220",
+            "type": "joint",
+            "id": 27
+        },
+        {
+            "y": "200",
+            "x": "70",
+            "type": "joint",
+            "id": 28
+        },
+        {
+            "y": "100",
+            "x": "70",
+            "type": "joint",
+            "id": 29
+        },
+        {
+            "y": "80",
+            "x": "200",
+            "type": "joint",
+            "id": 30
+        },
+        {
+            "y": "50",
+            "x": "260",
+            "type": "joint",
+            "id": 31
+        },
+        {
+            "y": "50",
+            "x": "100",
+            "type": "joint",
+            "id": 32
+        },
+        {
+            "y": "180",
+            "x": "50",
+            "type": "joint",
+            "id": 33
+        },
+        {
+            "y": "260",
+            "x": "220",
+            "type": "joint",
+            "id": 34
+        },
+        {
+            "y": "80",
+            "x": "350",
+            "type": "joint",
+            "id": 35
+        },
+        {
+            "y": "100",
+            "x": "400",
+            "type": "joint",
+            "id": 36
+        },
+        {
+            "y": "220",
+            "x": "400",
+            "type": "joint",
+            "id": 37
+        },
+        {
+            "y": "200",
+            "x": "430",
+            "type": "joint",
+            "id": 38
+        },
+        {
+            "y": "330",
+            "x": "430",
+            "type": "joint",
+            "id": 39
+        },
+        {
+            "y": "330",
+            "x": "400",
+            "type": "joint",
+            "id": 40
+        },
+        {
+            "y": "250",
+            "x": "350",
+            "type": "joint",
+            "id": 41
+        },
+        {
+            "y": "350",
+            "x": "550",
+            "type": "joint",
+            "id": 42
+        },
+        {
+            "y": "390",
+            "x": "430",
+            "type": "joint",
+            "id": 43
+        },
+        {
+            "y": "350",
+            "x": "220",
+            "type": "joint",
+            "id": 44
+        },
+        {
+            "y": "390",
+            "x": "260",
+            "type": "joint",
+            "id": 45
+        }
+    ]
+}

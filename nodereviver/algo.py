@@ -33,7 +33,7 @@ class PathFinder:
         min = 999999999999
         curNode = None
         for node in list:
-            score = scores[node] 
+            score = scores[node]
             if score < min:
                 curNode = node
                 min = score
@@ -71,7 +71,7 @@ class PathFinder:
                 if neighbor in closedset:
                     continue
                 tentative_g_score = g_score[current] + edge.length
-     
+
                 if neighbor not in openset:
                     openset.add(neighbor)
                     h_score[neighbor] = self.h(neighbor, goal)
@@ -95,7 +95,7 @@ class PathFinder:
             path.append(edge)
             node = edge.getOther(node)
         path.reverse()
-        
+
         # remove joint nodes
         finalEdges = []
         node = sourceNode

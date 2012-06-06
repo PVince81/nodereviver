@@ -1,0 +1,89 @@
+{
+    "subtitle": "Even that contains nodes as well... please fix.",
+    "title": "The Light Bulb has been hacked",
+    "endtext": "Thanks!",
+    "entities": [
+        {
+            "node": "1",
+            "type": "player"
+        }
+    ],
+    "edges": [
+        {
+            "dest": "4",
+            "source": "1"
+        },
+        {
+            "dest": "2",
+            "source": "4"
+        },
+        {
+            "dest": "5",
+            "source": "1"
+        },
+        {
+            "dest": "2",
+            "source": "5"
+        },
+        {
+            "dest": "6",
+            "source": "2"
+        },
+        {
+            "dest": "3",
+            "source": "6"
+        },
+        {
+            "dest": "7",
+            "source": "1"
+        },
+        {
+            "dest": "3",
+            "source": "7"
+        }
+    ],
+    "nodes": [
+        {
+            "y": "40",
+            "x": "40",
+            "type": "node",
+            "id": 1
+        },
+        {
+            "y": "20",
+            "x": "80",
+            "type": "node",
+            "id": 2
+        },
+        {
+            "y": "100",
+            "x": "120",
+            "type": "node",
+            "id": 3
+        },
+        {
+            "y": "20",
+            "x": "40",
+            "type": "joint",
+            "id": 4
+        },
+        {
+            "y": "40",
+            "x": "80",
+            "type": "joint",
+            "id": 5
+        },
+        {
+            "y": "20",
+            "x": "120",
+            "type": "joint",
+            "id": 6
+        },
+        {
+            "y": "100",
+            "x": "40",
+            "type": "joint",
+            "id": 7
+        }
+    ]
+}

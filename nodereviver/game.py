@@ -21,20 +21,21 @@ import model
 import view
 import sound
 import time
+import ui
 from util import *
 from config import Config
-from WorldLoader import WorldLoader
+from WorldLoaderJson import WorldLoader
 from model import GameState
 
 class Game:
     titleDemo = [3,0,0,3,0,1,2,1,1,3,0,2,0,3,1,2,1,3,0,2,0,3,1,2,1,3,0,2,0,0,3,2,1,3,2,1,3,3,2,1,3,1,2,2,2,2,2,2,2,1,2,1,1,0,3,1,2,3,0,2,0,3,1,2,1,1,3,2,0,3,2,0,3,3,2,0,3,1,1,3,3,3,0,0,1,2,2,0,0,0,3,1,1,2,3,3,2,0,2,3,3,2,0,3,1,1,3,3,0,0,1,2,2,0,0,0,3,1,3,2,2,1,3,2,1,3,2,0,0,3,0,3,1,2,1,1,0,0,3,3,1,2,2,3,1,1,2]
-    
+
     def __init__(self, config):
         self._config = config
         if self._config.dataPath[-1] != '/':
             self._config.dataPath += '/'
-	if self._config.startLevel > 1:
-		self._config.cheat = True
+        if self._config.startLevel > 1:
+            self._config.cheat = True
         self._screen = None
         self._clock = None
         self._terminated = False
@@ -49,16 +50,22 @@ class Game:
         pygame.init()
         self._initDisplay()
         pygame.display.set_caption('Node Reviver - by Vincent Petry (MiniLD#33)')
-        pygame.mouse.set_visible(False) 
+        pygame.mouse.set_visible(False)
         self._screen = pygame.display.get_surface()
         self._clock = pygame.time.Clock()
         self._display = view.Display(self._config, self._screen, self._gameState)
+
+        if self._config.controls:
+            self._gameUI = ui.GameUI(self._config)
+        else:
+            self._gameUI = None
+
         sound.soundManager.loadSounds()
 
     def _quit(self):
         sound.soundManager.release()
         pygame.quit()
-        
+
     def _initDisplay(self):
         flags = 0
         if self._config.fullScreen:
@@ -78,38 +85,82 @@ class Game:
             self._player.moveAlong(edge)
 
     def _handleInputEvent(self, event):
-        if event.type == pygame.locals.QUIT: 
-            self._terminated = True
+        action = None
+
+        if event.type == pygame.locals.QUIT:
+            self._quitGame()
+            return
+        elif event.type == pygame.ACTIVEEVENT:
+            if event.state == 2:
+                self._gameState.focus = event.gain
         elif event.type == pygame.locals.KEYDOWN:
             if event.key in self._config.keymap.pause:
-                self._gameState.pause = not self._gameState.pause
+                action = "togglepause"
             elif event.key in self._config.keymap.start:
                 mods = pygame.key.get_mods()
                 if mods & pygame.locals.KMOD_ALT:
-                    self._config.fullScreen = not self._config.fullScreen
-                    self._initDisplay()
-                elif self._gameState.state == GameState.TITLE: 
-                    self._showStory()
-                elif self._gameState.state == GameState.STORY: 
-                    self._startGame()
-                elif self._gameState.state == GameState.ENDGAME: 
-                    self._startTitle()
+                    action = "togglefullscreen"
+                else:
+                    action = "start"
             elif self._gameState.state == GameState.GAME and not self._gameState.pause:
                 directionKeys = self._config.keymap.directions
                 for direction in range(4):
                     if event.key in directionKeys[direction]:
                         self._movePlayer(direction)
                         break
-
         elif event.type == pygame.locals.KEYUP:
             if event.key in self._config.keymap.quit:
-                self.onBack()
+                action = "back"
+        elif event.type == pygame.locals.MOUSEBUTTONDOWN and event.button == 1:
+            if self._gameUI:
+                widget = self._gameUI.getWidgetAt(event.pos)
+                if widget:
+                    action = widget.action
+                else:
+                    action = "start"
+
+        # TODO: use hash to function mapping ?
+        if not action:
+            return
+        elif action == "back":
+            self.onBack()
+            self._gameState.pause = False
+        elif action == "start":
+            self._gameState.pause = False
+            if self._gameState.state == GameState.TITLE:
+                self._showStory()
+            elif self._gameState.state == GameState.STORY:
+                self._startGame()
+            elif self._gameState.state == GameState.ENDGAME:
+                self._startTitle()
+        elif action == "togglepause":
+            if self._gameState.state == GameState.GAME:
+                self._gameState.pause = not self._gameState.pause
+        elif action == "togglefullscreen":
+            self._config.fullScreen = not self._config.fullScreen
+            self._initDisplay()
+        elif action == "taskswitch":
+            self._taskSwitch()
+
+        if self._gameState.state == GameState.GAME and not self._gameState.pause:
+            if action == "up":
+                self._movePlayer(0)
+            elif action == "down":
+                self._movePlayer(1)
+            elif action == "left":
+                self._movePlayer(2)
+            elif action == "right":
+                self._movePlayer(3)
 
     def onBack(self):
         if self._gameState.state == GameState.TITLE:
-            self._terminated = True
+            self._quitGame()
         else:
             self._startTitle()
+
+    def _taskSwitch(self):
+        # TODO: trigger task switching, if supported
+        pass
 
     def _handleInput(self):
         for event in pygame.event.get():
@@ -118,13 +169,13 @@ class Game:
     def _handleDemo(self):
         if self._player.moving:
             return
-        
+
         nextDirection = self._titleDemo[0]
         self._titleDemo = self._titleDemo[1:]
         self._movePlayer(nextDirection)
-        
+
     def _handleLogic(self):
-        state = self._gameState 
+        state = self._gameState
         state.update()
         if state.state == GameState.NEXT_LEVEL or state.state == GameState.RESTART_LEVEL:
             if state.state == GameState.NEXT_LEVEL:
@@ -147,7 +198,7 @@ class Game:
 
         if state.state in [GameState.GAME, GameState.TITLE, GameState.LEVEL_END, GameState.LEVEL_START]:
             self._world.update()
-            
+
         if state.state in [GameState.GAME, GameState.TITLE] and self._world.hasAllEdgesMarked():
             self.onLevelEnd()
 
@@ -155,25 +206,25 @@ class Game:
             # check for player collision
             for entity in self._world.entities:
                 if entity == self._player:
-                    continue            
+                    continue
                 dist = vectorDiff(entity.pos, self._player.pos)
                 if abs(dist[0]) < 10 and abs(dist[1]) < 10:
                     self._player.die()
-                    state.setState(GameState.DEAD, self._config.fps, GameState.RESTART_LEVEL);
+                    state.setState(GameState.DEAD, self._config.fps, GameState.RESTART_LEVEL)
                     sound.soundManager.play(sound.soundManager.DEAD)
 
     def onLevelEnd(self):
         if self._gameState.state == GameState.TITLE:
             self._startTitle()
             return
-        self._gameState.setState(GameState.LEVEL_END, self._config.fps, GameState.NEXT_LEVEL);
+        self._gameState.setState(GameState.LEVEL_END, self._config.fps, GameState.NEXT_LEVEL)
 
     def _showStory(self):
         self._gameState.setState(GameState.STORY)
 
     def _startGame(self, worldNum = None):
         if worldNum == None:
-            worldNum = self._config.startLevel        
+            worldNum = self._config.startLevel
         self._gameState.setState(GameState.LEVEL_START, self._config.fps)
         self._gameState.worldNum = worldNum
         self._initWorld(self._gameState.worldNum)
@@ -182,6 +233,10 @@ class Game:
     def _startTitle(self):
         self._gameState.state = GameState.TITLE
         self._initWorld(0)
+        
+    def _quitGame(self):
+        self._terminated = True
+        self._gameState.state = GameState.QUIT
 
     def _initWorld(self, worldNum):
         self._player = model.Player()
@@ -194,6 +249,12 @@ class Game:
             self._world = self._worldLoader.loadWorld(worldNum)
         self._world.centerInView(self._config.screenSize)
         self._player.setCurrentNode(self._world.startNode)
+        if self._gameUI:
+            if self._gameState.state in [GameState.LEVEL_START, GameState.NEXT_LEVEL]:
+                self._gameUI.setControlsVisibility(True)
+            else:
+                self._gameUI.setControlsVisibility(False)
+            self._display.setUI(self._gameUI)
         self._display.setWorld(self._world, self._player)
         self._display.addEntityView( view.PlayerView(self._player) )
         self._world.addEntity(self._player)
@@ -210,14 +271,16 @@ class Game:
 
         while not self._terminated:
             self._handleInput()
-            self._handleLogic()
-            self._display.render()
-            pygame.display.flip()
+            if self._gameState.focus:
+                self._handleLogic()
+                if not self._gameState.pause:
+                    self._display.render()
+                    pygame.display.flip()
+
             self._clock.tick(self._config.fps)
-            
+
         self._quit()
 
 if __name__ == '__main__':
     game = Game(Config())
-    #game = Editor(Config())
     game.run()

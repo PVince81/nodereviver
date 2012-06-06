@@ -1,0 +1,601 @@
+{
+    "subtitle": "To fix broken stuff more quickly",
+    "title": "The Electrical Screwdriver has been hacked",
+    "endtext": "Too bad it's not sonic !",
+    "entities": [
+        {
+            "node": "15",
+            "type": "player"
+        },
+        {
+            "node": "29",
+            "type": "foe",
+            "foeType": "simple"
+        },
+        {
+            "node": "49",
+            "type": "foe",
+            "foeType": "tracking"
+        }
+    ],
+    "edges": [
+        {
+            "dest": "3",
+            "source": "2"
+        },
+        {
+            "dest": "4",
+            "source": "3",
+            "oneway": true
+        },
+        {
+            "dest": "5",
+            "source": "3"
+        },
+        {
+            "dest": "5",
+            "source": "6"
+        },
+        {
+            "dest": "4",
+            "source": "6",
+            "oneway": true
+        },
+        {
+            "dest": "7",
+            "source": "2",
+            "oneway": true
+        },
+        {
+            "dest": "4",
+            "source": "7",
+            "oneway": true
+        },
+        {
+            "dest": "10",
+            "source": "2"
+        },
+        {
+            "dest": "8",
+            "source": "10"
+        },
+        {
+            "dest": "12",
+            "source": "8"
+        },
+        {
+            "dest": "11",
+            "source": "12"
+        },
+        {
+            "dest": "13",
+            "source": "9"
+        },
+        {
+            "dest": "11",
+            "source": "13"
+        },
+        {
+            "dest": "14",
+            "source": "5"
+        },
+        {
+            "dest": "9",
+            "source": "14"
+        },
+        {
+            "dest": "15",
+            "source": "8"
+        },
+        {
+            "dest": "15",
+            "source": "9"
+        },
+        {
+            "dest": "15",
+            "source": "3"
+        },
+        {
+            "dest": "16",
+            "source": "5"
+        },
+        {
+            "dest": "17",
+            "source": "16"
+        },
+        {
+            "dest": "18",
+            "source": "17"
+        },
+        {
+            "dest": "19",
+            "source": "18"
+        },
+        {
+            "dest": "20",
+            "source": "19"
+        },
+        {
+            "dest": "21",
+            "source": "14"
+        },
+        {
+            "dest": "23",
+            "source": "21"
+        },
+        {
+            "dest": "24",
+            "source": "23"
+        },
+        {
+            "dest": "22",
+            "source": "24"
+        },
+        {
+            "dest": "25",
+            "source": "22"
+        },
+        {
+            "dest": "26",
+            "source": "27"
+        },
+        {
+            "dest": "29",
+            "source": "27"
+        },
+        {
+            "dest": "28",
+            "source": "29"
+        },
+        {
+            "dest": "26",
+            "source": "28"
+        },
+        {
+            "dest": "1",
+            "source": "30"
+        },
+        {
+            "dest": "32",
+            "source": "31"
+        },
+        {
+            "dest": "2",
+            "source": "32"
+        },
+        {
+            "dest": "33",
+            "source": "31"
+        },
+        {
+            "dest": "4",
+            "source": "30"
+        },
+        {
+            "dest": "34",
+            "source": "33"
+        },
+        {
+            "dest": "7",
+            "source": "34",
+            "oneway": true
+        },
+        {
+            "dest": "36",
+            "source": "1"
+        },
+        {
+            "dest": "35",
+            "source": "36"
+        },
+        {
+            "dest": "37",
+            "source": "1"
+        },
+        {
+            "dest": "35",
+            "source": "37"
+        },
+        {
+            "dest": "39",
+            "source": "37"
+        },
+        {
+            "dest": "38",
+            "source": "39"
+        },
+        {
+            "dest": "40",
+            "source": "20"
+        },
+        {
+            "dest": "38",
+            "source": "40"
+        },
+        {
+            "dest": "41",
+            "source": "25"
+        },
+        {
+            "dest": "41",
+            "source": "42",
+            "oneway": true
+        },
+        {
+            "dest": "20",
+            "source": "42"
+        },
+        {
+            "dest": "28",
+            "source": "43",
+            "oneway": true
+        },
+        {
+            "dest": "37",
+            "source": "43"
+        },
+        {
+            "dest": "45",
+            "source": "34"
+        },
+        {
+            "dest": "44",
+            "source": "45"
+        },
+        {
+            "dest": "47",
+            "source": "46"
+        },
+        {
+            "dest": "31",
+            "source": "47"
+        },
+        {
+            "dest": "48",
+            "source": "46"
+        },
+        {
+            "dest": "44",
+            "source": "48"
+        },
+        {
+            "dest": "50",
+            "source": "44"
+        },
+        {
+            "dest": "49",
+            "source": "50"
+        },
+        {
+            "dest": "51",
+            "source": "49"
+        },
+        {
+            "dest": "34",
+            "source": "51"
+        },
+        {
+            "dest": "30",
+            "source": "52",
+            "oneway": true
+        },
+        {
+            "dest": "49",
+            "source": "52"
+        }
+    ],
+    "nodes": [
+        {
+            "y": "290",
+            "x": "350",
+            "type": "node",
+            "id": 1
+        },
+        {
+            "y": "190",
+            "x": "210",
+            "type": "node",
+            "id": 2
+        },
+        {
+            "y": "190",
+            "x": "290",
+            "type": "node",
+            "id": 3
+        },
+        {
+            "y": "230",
+            "x": "290",
+            "type": "node",
+            "id": 4
+        },
+        {
+            "y": "190",
+            "x": "370",
+            "type": "node",
+            "id": 5
+        },
+        {
+            "y": "230",
+            "x": "370",
+            "type": "joint",
+            "id": 6
+        },
+        {
+            "y": "230",
+            "x": "210",
+            "type": "node",
+            "id": 7
+        },
+        {
+            "y": "150",
+            "x": "250",
+            "type": "node",
+            "id": 8
+        },
+        {
+            "y": "150",
+            "x": "330",
+            "type": "node",
+            "id": 9
+        },
+        {
+            "y": "150",
+            "x": "210",
+            "type": "joint",
+            "id": 10
+        },
+        {
+            "y": "110",
+            "x": "270",
+            "type": "node",
+            "id": 11
+        },
+        {
+            "y": "110",
+            "x": "250",
+            "type": "joint",
+            "id": 12
+        },
+        {
+            "y": "110",
+            "x": "330",
+            "type": "joint",
+            "id": 13
+        },
+        {
+            "y": "150",
+            "x": "370",
+            "type": "node",
+            "id": 14
+        },
+        {
+            "y": "150",
+            "x": "290",
+            "type": "node",
+            "id": 15
+        },
+        {
+            "y": "190",
+            "x": "410",
+            "type": "joint",
+            "id": 16
+        },
+        {
+            "y": "230",
+            "x": "410",
+            "type": "joint",
+            "id": 17
+        },
+        {
+            "y": "230",
+            "x": "450",
+            "type": "joint",
+            "id": 18
+        },
+        {
+            "y": "190",
+            "x": "450",
+            "type": "joint",
+            "id": 19
+        },
+        {
+            "y": "190",
+            "x": "490",
+            "type": "node",
+            "id": 20
+        },
+        {
+            "y": "150",
+            "x": "410",
+            "type": "joint",
+            "id": 21
+        },
+        {
+            "y": "150",
+            "x": "450",
+            "type": "joint",
+            "id": 22
+        },
+        {
+            "y": "110",
+            "x": "410",
+            "type": "joint",
+            "id": 23
+        },
+        {
+            "y": "110",
+            "x": "450",
+            "type": "joint",
+            "id": 24
+        },
+        {
+            "y": "150",
+            "x": "490",
+            "type": "node",
+            "id": 25
+        },
+        {
+            "y": "130",
+            "x": "470",
+            "type": "node",
+            "id": 26
+        },
+        {
+            "y": "130",
+            "x": "390",
+            "type": "node",
+            "id": 27
+        },
+        {
+            "y": "210",
+            "x": "470",
+            "type": "node",
+            "id": 28
+        },
+        {
+            "y": "210",
+            "x": "390",
+            "type": "node",
+            "id": 29
+        },
+        {
+            "y": "290",
+            "x": "290",
+            "type": "node",
+            "id": 30
+        },
+        {
+            "y": "250",
+            "x": "150",
+            "type": "node",
+            "id": 31
+        },
+        {
+            "y": "190",
+            "x": "150",
+            "type": "joint",
+            "id": 32
+        },
+        {
+            "y": "290",
+            "x": "150",
+            "type": "joint",
+            "id": 33
+        },
+        {
+            "y": "290",
+            "x": "210",
+            "type": "node",
+            "id": 34
+        },
+        {
+            "y": "350",
+            "x": "390",
+            "type": "node",
+            "id": 35
+        },
+        {
+            "y": "350",
+            "x": "350",
+            "type": "joint",
+            "id": 36
+        },
+        {
+            "y": "290",
+            "x": "390",
+            "type": "node",
+            "id": 37
+        },
+        {
+            "y": "250",
+            "x": "430",
+            "type": "node",
+            "id": 38
+        },
+        {
+            "y": "250",
+            "x": "390",
+            "type": "joint",
+            "id": 39
+        },
+        {
+            "y": "250",
+            "x": "490",
+            "type": "joint",
+            "id": 40
+        },
+        {
+            "y": "150",
+            "x": "550",
+            "type": "node",
+            "id": 41
+        },
+        {
+            "y": "190",
+            "x": "550",
+            "type": "joint",
+            "id": 42
+        },
+        {
+            "y": "290",
+            "x": "470",
+            "type": "joint",
+            "id": 43
+        },
+        {
+            "y": "330",
+            "x": "170",
+            "type": "node",
+            "id": 44
+        },
+        {
+            "y": "330",
+            "x": "210",
+            "type": "joint",
+            "id": 45
+        },
+        {
+            "y": "290",
+            "x": "90",
+            "type": "node",
+            "id": 46
+        },
+        {
+            "y": "250",
+            "x": "90",
+            "type": "joint",
+            "id": 47
+        },
+        {
+            "y": "330",
+            "x": "90",
+            "type": "joint",
+            "id": 48
+        },
+        {
+            "y": "370",
+            "x": "250",
+            "type": "node",
+            "id": 49
+        },
+        {
+            "y": "370",
+            "x": "170",
+            "type": "joint",
+            "id": 50
+        },
+        {
+            "y": "290",
+            "x": "250",
+            "type": "joint",
+            "id": 51
+        },
+        {
+            "y": "370",
+            "x": "290",
+            "type": "joint",
+            "id": 52
+        }
+    ]
+}

@@ -17,13 +17,12 @@
 
     @author: Vincent Petry <PVince81@yahoo.fr>
 '''
-from nodereviver.game import Game
-from nodereviver.editor import Editor
 from nodereviver.config import Config
 import optparse
 
 def main():
-    
+    config = Config()
+
     parser = optparse.OptionParser(description='Node Reviver')
     parser.add_option('--enable-sound', action="store_true",
                         dest='enableSound',
@@ -34,26 +33,31 @@ def main():
     parser.add_option('--editor', action="store_true", default=False,
                         dest='editor',
                         help='runs the level editor (buggy)')
-    parser.add_option('--fullscreen', action="store_true", default=False,
+    parser.add_option('--fullscreen', action="store_true", default=config.fullScreen,
                         dest='fullScreen',
                         help='runs the game in full screen mode')
     parser.add_option('--startlevel', action="store", default=1,
                         dest='startLevel', type=int,
                         help='specifies the start level number (cheat mode)')
-    parser.add_option('--datapath', action="store", default='data/',
+    parser.add_option('--datapath', action="store", default=config.dataPath,
                         dest='dataPath', type=str,
                         help='specifies the data path')
+    parser.add_option('--controls', action="store_true", default=config.controls,
+                        dest='controls',
+                        help='Displays UI buttons (suitable for touch screens)')
     (args, rest) = parser.parse_args()
-    
-    config = Config()
+
     config.startLevel = args.startLevel
     config.sound = args.enableSound
     config.dataPath = args.dataPath
     config.fullScreen = args.fullScreen
+    config.controls = args.controls
     if args.editor:
+        from nodereviver.editor import Editor
         editor = Editor(config)
         editor.run()
     elif args.game:
+        from nodereviver.game import Game
         game = Game(config)
         game.run()
 

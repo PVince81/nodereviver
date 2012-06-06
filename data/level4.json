@@ -1,0 +1,290 @@
+{
+    "subtitle": "We need music to motivate ourselves.\\nBeware of the drone, it seems to like you !",
+    "title": "The 12.1 Audio System has been hacked",
+    "endtext": "Boom tss boom tss boom tss...",
+    "entities": [
+        {
+            "node": "1",
+            "type": "player"
+        },
+        {
+            "node": "10",
+            "type": "foe",
+            "foeType": "tracking"
+        }
+    ],
+    "edges": [
+        {
+            "dest": "14",
+            "source": "2"
+        },
+        {
+            "dest": "1",
+            "source": "14"
+        },
+        {
+            "dest": "15",
+            "source": "3"
+        },
+        {
+            "dest": "1",
+            "source": "15"
+        },
+        {
+            "dest": "4",
+            "source": "3"
+        },
+        {
+            "dest": "5",
+            "source": "4"
+        },
+        {
+            "dest": "16",
+            "source": "2"
+        },
+        {
+            "dest": "6",
+            "source": "16"
+        },
+        {
+            "dest": "17",
+            "source": "6"
+        },
+        {
+            "dest": "2",
+            "source": "17"
+        },
+        {
+            "dest": "18",
+            "source": "3"
+        },
+        {
+            "dest": "6",
+            "source": "18"
+        },
+        {
+            "dest": "9",
+            "source": "4"
+        },
+        {
+            "dest": "10",
+            "source": "9"
+        },
+        {
+            "dest": "5",
+            "source": "10"
+        },
+        {
+            "dest": "19",
+            "source": "8"
+        },
+        {
+            "dest": "2",
+            "source": "19"
+        },
+        {
+            "dest": "20",
+            "source": "12"
+        },
+        {
+            "dest": "8",
+            "source": "20"
+        },
+        {
+            "dest": "21",
+            "source": "11"
+        },
+        {
+            "dest": "8",
+            "source": "21"
+        },
+        {
+            "dest": "22",
+            "source": "11"
+        },
+        {
+            "dest": "13",
+            "source": "22"
+        },
+        {
+            "dest": "23",
+            "source": "7"
+        },
+        {
+            "dest": "13",
+            "source": "23"
+        },
+        {
+            "dest": "24",
+            "source": "7"
+        },
+        {
+            "dest": "3",
+            "source": "24"
+        },
+        {
+            "dest": "25",
+            "source": "6"
+        },
+        {
+            "dest": "7",
+            "source": "25"
+        },
+        {
+            "dest": "12",
+            "source": "11"
+        }
+    ],
+    "nodes": [
+        {
+            "y": "0",
+            "x": "40",
+            "type": "node",
+            "id": 1
+        },
+        {
+            "y": "40",
+            "x": "100",
+            "type": "node",
+            "id": 2
+        },
+        {
+            "y": "80",
+            "x": "0",
+            "type": "node",
+            "id": 3
+        },
+        {
+            "y": "80",
+            "x": "140",
+            "type": "node",
+            "id": 4
+        },
+        {
+            "y": "80",
+            "x": "220",
+            "type": "node",
+            "id": 5
+        },
+        {
+            "y": "100",
+            "x": "40",
+            "type": "node",
+            "id": 6
+        },
+        {
+            "y": "160",
+            "x": "-40",
+            "type": "node",
+            "id": 7
+        },
+        {
+            "y": "140",
+            "x": "160",
+            "type": "node",
+            "id": 8
+        },
+        {
+            "y": "160",
+            "x": "140",
+            "type": "node",
+            "id": 9
+        },
+        {
+            "y": "160",
+            "x": "220",
+            "type": "node",
+            "id": 10
+        },
+        {
+            "y": "180",
+            "x": "100",
+            "type": "node",
+            "id": 11
+        },
+        {
+            "y": "180",
+            "x": "200",
+            "type": "node",
+            "id": 12
+        },
+        {
+            "y": "200",
+            "x": "40",
+            "type": "node",
+            "id": 13
+        },
+        {
+            "y": "0",
+            "x": "100",
+            "type": "joint",
+            "id": 14
+        },
+        {
+            "y": "0",
+            "x": "0",
+            "type": "joint",
+            "id": 15
+        },
+        {
+            "y": "100",
+            "x": "100",
+            "type": "joint",
+            "id": 16
+        },
+        {
+            "y": "40",
+            "x": "40",
+            "type": "joint",
+            "id": 17
+        },
+        {
+            "y": "100",
+            "x": "0",
+            "type": "joint",
+            "id": 18
+        },
+        {
+            "y": "40",
+            "x": "160",
+            "type": "joint",
+            "id": 19
+        },
+        {
+            "y": "140",
+            "x": "200",
+            "type": "joint",
+            "id": 20
+        },
+        {
+            "y": "140",
+            "x": "100",
+            "type": "joint",
+            "id": 21
+        },
+        {
+            "y": "200",
+            "x": "100",
+            "type": "joint",
+            "id": 22
+        },
+        {
+            "y": "200",
+            "x": "-40",
+            "type": "joint",
+            "id": 23
+        },
+        {
+            "y": "80",
+            "x": "-40",
+            "type": "joint",
+            "id": 24
+        },
+        {
+            "y": "160",
+            "x": "40",
+            "type": "joint",
+            "id": 25
+        }
+    ]
+}

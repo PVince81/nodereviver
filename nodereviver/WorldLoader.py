@@ -23,7 +23,7 @@ import model
 class WorldLoader(object):
     def __init__(self, dataPath = "data/"):
         self.dataPath = dataPath
-    
+
     def _processNodes(self, world, nodesElement):
         nodes = {}
         for nodeElement in nodesElement.getchildren():
@@ -39,7 +39,7 @@ class WorldLoader(object):
             if id:
                 nodes[id] = node
         return nodes
-    
+
     def _processEdges(self, world, nodes, edgesElement):
         for edgeElement in edgesElement.getchildren():
             if not edgeElement.tag == "edge":
@@ -54,7 +54,7 @@ class WorldLoader(object):
                 print "Warning: dest node %i not found" % dest
             else:
                 world.connectNodeWithJoint(nodes[source], nodes[dest], reverse, oneWay)
-    
+
     def _processEntities(self, world, nodes, entitiesElement):
         for entityElement in entitiesElement.getchildren():
             startNodeId = entityElement.get("node")
@@ -69,8 +69,8 @@ class WorldLoader(object):
                 if foeType == "simple" or foeType == "0":
                     world.createSimpleFoe(startNode)
                 else:
-                    world.createTrackingFoe(startNode)          
-    
+                    world.createTrackingFoe(startNode)
+
     def loadWorld(self, num):
         tree = ET.parse("%slevel%i.xml" % (self.dataPath, num))
         root = tree.getroot()
@@ -114,9 +114,9 @@ class WorldSaver(object):
         nodesElement = ET.SubElement(root, "nodes")
         edgesElement = ET.SubElement(root, "edges")
         entitiesElement = ET.SubElement(root, "entities")
-        
+
         nodeId = 1
-        
+
         for node in world.nodes:
             tagName = "node"
             if node.type == model.Node.JOINT:
@@ -133,7 +133,7 @@ class WorldSaver(object):
             #   edgeElement.set("reverse", "true")
             if edge.oneWay:
                 edgeElement.set("oneway", "true")
-            
+
         ET.SubElement(entitiesElement, "player", {"node": str(world.startNode.id)})
         for entity in world.entities:
             if entity.entityType == 1:
@@ -142,6 +142,6 @@ class WorldSaver(object):
                     foeElement.set("type", "simple")
                 else:
                     foeElement.set("type", "tracking")
-            
+
         tree = ET.ElementTree(root)
         tree.write(filename)

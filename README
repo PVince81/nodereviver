@@ -5,7 +5,28 @@ Node Reviver was developed by Vincent Petry <PVince81@yahoo.fr> for MiniLD #33.
 Website: http://vincentpetry.net/games/nodereviver
 GitHub: http://github.com/PVince81/nodereviver
 
-This game was written in Python and uses Pygame internally.
+This game was written in Python and uses Pygame.
+
+
+Requirements
+------------
+
+- Pygame
+- To run on Maemo (Nokia N900), requires python-simplejson
+
+
+Running
+-------
+
+To start the game, simply run
+
+./nodereviver.py
+
+
+If using a mobile device without keyboard, you can enable touch screen
+support and fullscreen mode by adding this:
+
+./nodereviver.py --controls --fullscreen
 
 
 Game Rules
