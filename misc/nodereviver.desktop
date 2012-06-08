@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Node Reviver
+Categories=Game;ArcadeGame;
+Comment=Revive all nodes by traversing their connections and avoiding drones
+Exec=nodereviver
+Icon=nodereviver
+Terminal=false
+Type=Application
+
