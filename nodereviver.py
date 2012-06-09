@@ -24,9 +24,9 @@ def main():
     config = Config()
 
     parser = optparse.OptionParser(description='Node Reviver')
-    parser.add_option('--enable-sound', action="store_true",
-                        dest='enableSound',
-                        default=True, help='enable sound')
+    parser.add_option('--disable-sound', action="store_true",
+                        dest='disableSound',
+                        default=False, help='disable sound')
     parser.add_option('--game', action="store_true", default=True,
                         dest='game',
                         help='runs the game (default)')
@@ -48,7 +48,7 @@ def main():
     (args, rest) = parser.parse_args()
 
     config.startLevel = args.startLevel
-    config.sound = args.enableSound
+    config.sound = not args.disableSound
     config.dataPath = args.dataPath
     config.fullScreen = args.fullScreen
     config.controls = args.controls
