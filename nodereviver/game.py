@@ -256,7 +256,6 @@ class Game:
                 self._gameUI.setControlsVisibility(False)
             self._display.setUI(self._gameUI)
         self._display.setWorld(self._world, self._player)
-        self._display.addEntityView( view.PlayerView(self._player) )
         self._world.addEntity(self._player)
 
         # set tracking foes to track the player

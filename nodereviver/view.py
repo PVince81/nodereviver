@@ -226,6 +226,9 @@ class Display(object):
         self._world = world
         self._player = player
         self._worldView = WorldView(self.context, world)
+        playerParticles = ParticlesView(self._player, int(self.context.config.particlesRatio * 40), int(1.0/ self.context.config.particlesRatio))
+        self.addEntityView(playerParticles)
+        self.addEntityView( PlayerView(self._player, playerParticles) )
         for entity in world.entities:
             # entities are all foes for now (except player)
             self.addEntityView(FoeView(entity))
@@ -234,6 +237,7 @@ class Display(object):
             self._ui.dirty = True
         if self._uiSurface:
             self._worldView.setBackground(self._uiSurface)
+
 
     def renderUI(self):
         # TODO: move to separate class ?
@@ -491,6 +495,8 @@ class Particle(object):
         self.movement = (0, 0)
         self.lifeTime = 0
         self.size = 3
+        self.color = (0, 0, 0)
+        self.currentColor = self.color
 
     def update(self):
         self.lifeTime -= 1
@@ -500,13 +506,13 @@ class Particle(object):
         # decelerate
         self.movement = vectorFactor(self.movement, 0.95)
         self.size = self.size * 0.9
+        value = self.lifeTime / 60.0
+        self.currentColor = (int(self.color[0] * value), int(self.color[1] * value), int(self.color[2] * value))
 
     def render(self, screen):
         d = int(self.size)
-        colorValue = int(self.lifeTime / 60.0 * 255.0)
-        color = (0, colorValue, colorValue)
         rect = (int(self.pos[0]) - d, int(self.pos[1]) - d, d * 2, d * 2)
-        pygame.draw.rect(screen, color, rect)
+        pygame.draw.rect(screen, self.currentColor, rect)
 
     def reset(self):
         self.lifeTime = 60 # one second
@@ -520,53 +526,20 @@ class EntityView(object):
     def update(self):
         pass
 
-    def render(self):
+    def render(self, surface):
         pass
 
 class PlayerView(EntityView):
-    def __init__(self, entity):
+    def __init__(self, entity, particlesView):
         EntityView.__init__(self, entity)
-        self._particles = []
-        while len(self._particles) < 40:
-            particle = Particle()
-            particle.visible = False
-            self._particles.append(particle)
-
-    def _makeParticles(self):
-        toRevive = 1
-        for particle in self._particles:
-            if toRevive == 0:
-                break
-            if not particle.visible:
-                # revive it
-                particle.reset()
-                particle.movement = (random.random() * 4.0 - 2.0, random.random() * 4.0 - 2.0)
-                particle.pos = self._entity.pos
-                toRevive -= 1
-
-    def _renderParticles(self, screen):
-        screen.lock()
-        for particle in self._particles:
-            if not particle.visible:
-                continue
-            particle.render(screen)
-        screen.unlock()
+        self.particlesView = particlesView
 
     def update(self):
-        if _gameState.pause:
-            return
-
         if self._entity.currentEdge and not self._entity.currentEdge.marked:
             # Marking in progress
-            self._makeParticles()
+            self.particlesView.makeParticles((0, 255, 255))
 
-        # update particle position
-        for particle in self._particles:
-            if not particle.visible:
-                continue
-            particle.update()
-
-    def render(self, screen):
+    def render(self, surface):
         offset = (-10,-10)
         alpha = 255
         if _gameState.state == GameState.LEVEL_START:
@@ -577,21 +550,70 @@ class PlayerView(EntityView):
             offset = vectorAdd(offset, (random.randint(-3, 3), random.randint(-3, 3)))
             alpha = 255 - int(_gameState.getProgress() * 255)
 
-        self._renderParticles(screen)
         pos = vectorAdd(self._entity.pos, offset)
-        drawSprite(screen, SPRITE_PLAYER, pos, alpha)
+        drawSprite(surface, SPRITE_PLAYER, pos, alpha)
 
 class FoeView(EntityView):
     def __init__(self, entity):
         EntityView.__init__(self, entity)
 
-    def render(self, screen):
+    def render(self, surface):
         if self._entity.foeType == 0:
             sprite = SPRITE_FOE1
         else:
             sprite = SPRITE_FOE2
         pos = vectorAdd(self._entity.pos, (-10, -10))
-        drawSprite(screen, sprite, pos)
+        drawSprite(surface, sprite, pos)
+
+class ParticlesView(EntityView):
+    def __init__(self, entity, amount, frequency):
+        EntityView.__init__(self, entity)
+        self._frequency = frequency
+        self._freqCounter = frequency
+        self._activeParticles = 0
+        self._particles = []
+        while len(self._particles) < amount:
+            particle = Particle()
+            particle.visible = False
+            self._particles.append(particle)
+
+    def makeParticles(self, color):
+        if self._freqCounter > 0:
+            self._freqCounter -= 1
+            return
+        self._freqCounter = self._frequency
+
+        toRevive = 1
+        for particle in self._particles:
+            if toRevive == 0:
+                break
+            if not particle.visible:
+                # revive it
+                particle.reset()
+                particle.color = color
+                particle.movement = (random.random() * 4.0 - 2.0, random.random() * 4.0 - 2.0)
+                particle.pos = self._entity.pos
+                toRevive -= 1
+
+    def update(self):
+        self._activeParticles = 0
+        # update particle position
+        for particle in self._particles:
+            if not particle.visible:
+                continue
+            particle.update()
+            self._activeParticles += 1
+
+    def render(self, surface):
+        if self._activeParticles == 0:
+            return
+
+        surface.lock()
+        for particle in self._particles:
+            if not particle.visible:
+                continue
+            particle.render(surface)
+        surface.unlock()
 
 class SelectionView():
     def __init__(self):

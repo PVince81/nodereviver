@@ -42,3 +42,5 @@ class Config:
         self.cheat = False
         # Display UI controls
         self.controls = False
+        # Number of particles to generate (0.5 half, 2.0 twice more)
+        self.particlesRatio = 1.0
