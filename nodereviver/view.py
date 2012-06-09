@@ -138,11 +138,11 @@ def makeTextSurfaces(text, font, color = (255, 255, 255)):
         surfaces.append( font.render(row, False, color) )
     return surfaces
 
-def blitTextSurfaces(targetSurface, surfaces, fontHeight, globalOffset = (0, 0), center = True):
+def blitTextSurfaces(targetSurface, surfaces, fontHeight, globalOffset = (0, 0), centerInViewport = None):
     offsetY = globalOffset[1]
-    if center:
+    if centerInViewport:
         for surface in surfaces:
-            offset = globalOffset[0] + int(targetSurface.get_width() / 2 - surface.get_width() / 2)
+            offset = globalOffset[0] + int(centerInViewport[0] / 2 - surface.get_width() / 2)
             targetSurface.blit(surface, (offset, offsetY))
             offsetY += fontHeight
     else:
@@ -165,6 +165,14 @@ def drawLine(surface, color, src, dest, width = 1):
 class ViewContext(object):
     def __init__(self, config, screen, gameState):
         self.config = config
+        # Size of the game board (world + texts), without UI
+        if config.controls:
+            # Restrict the board to the left of the screen to allow some
+            # space for the UI
+            self.boardSize = (640, 480)
+        else:
+            # No UI, just center
+            self.boardSize = (screen.get_width(), screen.get_height())
         self.screen = screen
         self.gameState = gameState
         fontFile = "DejaVuSansMono.ttf"
@@ -176,7 +184,7 @@ class ViewContext(object):
 
 class Display(object):
     def __init__(self, config, screen, gameState):
-        self._context = ViewContext(config, screen, gameState)
+        self.context = ViewContext(config, screen, gameState)
         if config.cheat:
             global _endGameText
             _endGameText = _cheatEndGameText
@@ -184,12 +192,12 @@ class Display(object):
         self._background.fill((0, 0, 0))
         self._entities = []
         self._worldView = None
-        self._titleScreen = TitleScreen(self._context)
+        self._titleScreen = TitleScreen(self.context)
         self._gameState = gameState
-        self._hud = Hud(self._context)
+        self._hud = Hud(self.context)
         self._uiSurface = None
         self._ui = None
-        self._story = Story(self._context, _storyText)
+        self._story = Story(self.context, _storyText)
         self._endStory = None
         self.selectionView = SelectionView()
         self._edgeView = EdgeView()
@@ -215,7 +223,7 @@ class Display(object):
         world.dirty = True
         self._world = world
         self._player = player
-        self._worldView = WorldView(self._context, world)
+        self._worldView = WorldView(self.context, world)
         for entity in world.entities:
             # entities are all foes for now (except player)
             self.addEntityView(FoeView(entity))
@@ -230,7 +238,7 @@ class Display(object):
         if not self._ui or not self._ui.dirty:
             return
         self._ui.dirty = False
-        surface = self._context.screen.copy()
+        surface = self.context.screen.copy()
         surface.fill((0, 0, 0))
         ui = self._ui
 
@@ -239,7 +247,7 @@ class Display(object):
                 continue
             pygame.draw.rect(surface, (80, 80, 80), widget.rect, 1)
             if widget.text:
-                textSurface = self._context.smallFont.render(widget.text, False, (80, 80, 80))
+                textSurface = self.context.normalFont.render(widget.text, False, (80, 80, 80))
                 pos = ( widget.rect[0] + widget.rect[2] / 2 - textSurface.get_width() / 2,
                         widget.rect[1] + widget.rect[3] / 2 - textSurface.get_height() / 2 )
                 surface.blit(textSurface, pos)
@@ -248,10 +256,10 @@ class Display(object):
             self._worldView.setBackground(self._uiSurface)
 
     def render(self):
-        surface = self._context.screen
+        surface = self.context.screen
         if _gameState.state == GameState.QUIT:
             surface.blit(self._background, (0,0))
-            textSurface = self._context.bigFont.render("Caught signal SIGKILL...", False, (0, 192, 0))
+            textSurface = self.context.bigFont.render("Caught signal SIGKILL...", False, (0, 192, 0))
             surface.blit(textSurface, (10, 10))
             return
         elif _gameState.state == GameState.STORY:
@@ -262,10 +270,10 @@ class Display(object):
         elif _gameState.state == GameState.ENDGAME:
             if self._endStory == None:
                 a = []
-                timeString = makeTimeString(self._gameState.elapsed / self._context.config.fps)
+                timeString = makeTimeString(self._gameState.elapsed / self.context.config.fps)
                 for text in _endGameText:
                     a.append(text.replace("%time%", timeString))
-                self._endStory = Story(self._context, a)
+                self._endStory = Story(self.context, a)
 
             surface.blit(self._background, (0,0))
             self._endStory.update()
@@ -460,7 +468,7 @@ class Story(object):
 
     def render(self, screen):
         fontHeight = self._font.get_height()
-        offsetY = blitTextSurfaces(screen, self._textSurfaces, fontHeight, (10, 10), False)
+        offsetY = blitTextSurfaces(screen, self._textSurfaces, fontHeight, (10, 10))
         # cursor
         pygame.draw.rect(screen, (0, 255, 0), (10 + self._textSurfaces[-1].get_width(), offsetY - fontHeight, fontHeight / 2 - 2, fontHeight - 2))
 
@@ -584,8 +592,8 @@ class Hud(object):
     '''
     '''
 
-    def __init__(self, context ):
-        self._screen = context.screen
+    def __init__(self, context):
+        self._context = context
         self._gameState = context.gameState
         self._font = context.biggerFont
         self._font2 = context.mediumFont
@@ -630,14 +638,14 @@ class Hud(object):
         if self._gameState.state == GameState.TITLE:
             return
 
-        offsetY = blitTextSurfaces(self._screen, self._titleSurfaces, self._font.get_height(), (0, 10))
+        offsetY = blitTextSurfaces(self._context.screen, self._titleSurfaces, self._font.get_height(), (0, 10), self._context.boardSize)
 
         if self._gameState.state == GameState.LEVEL_END and self._endtext:
-            offsetY = self._screen.get_height() - self._font2.get_height() * len(self._endtextSurfaces) - 10
-            blitTextSurfaces(self._screen, self._endtextSurfaces, self._font2.get_height(), (0, offsetY))
+            offsetY = self._context.boardSize[1] - self._font2.get_height() * len(self._endtextSurfaces) - 10
+            blitTextSurfaces(self._context.screen, self._endtextSurfaces, self._font2.get_height(), (0, offsetY), self._context.boardSize)
         else:
-            offsetY = self._screen.get_height() - self._font2.get_height() * len(self._subtitleSurfaces) - 10
-            blitTextSurfaces(self._screen, self._subtitleSurfaces, self._font2.get_height(), (0, offsetY))
+            offsetY = self._context.boardSize[1] - self._font2.get_height() * len(self._subtitleSurfaces) - 10
+            blitTextSurfaces(self._context.screen, self._subtitleSurfaces, self._font2.get_height(), (0, offsetY), self._context.boardSize)
 
         #if self._lastScore != self._gameState.score:
         #    self._lastScore = self._gameState.score
@@ -654,9 +662,9 @@ class TitleScreen(object):
         self._text2Surface = self._font2.render("Copyright \xa9 2012 Vincent Petry (for MiniLD #33)", False, (0, 192, 0))
         rect = self._textSurface.get_rect()
         screenRect = context.screen.get_rect()
-        self._pos = (screenRect[2] / 2 - rect[2] / 2, 195)
+        self._pos = (context.boardSize[0] / 2 - rect[2] / 2, 195)
         rect = self._text2Surface.get_rect()
-        self._pos2 = (screenRect[2] - rect[2] - 20, screenRect[3] - fontHeight - 20)
+        self._pos2 = (context.boardSize[0] - rect[2] - 20, screenRect[3] - fontHeight - 20)
 
     def render(self):
         self._screen.blit(self._textSurface, self._pos)

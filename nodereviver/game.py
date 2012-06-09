@@ -247,7 +247,7 @@ class Game:
             sound.soundManager.enable(False)
         else:
             self._world = self._worldLoader.loadWorld(worldNum)
-        self._world.centerInView(self._config.screenSize)
+        self._world.centerInView(self._display.context.boardSize)
         self._player.setCurrentNode(self._world.startNode)
         if self._gameUI:
             if self._gameState.state in [GameState.LEVEL_START, GameState.NEXT_LEVEL]:
