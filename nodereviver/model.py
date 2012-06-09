@@ -136,6 +136,7 @@ class Edge(object):
         return self.marked
 
     def setMarked(self, marked):
+        markedNodes = []
         if self.marked != marked:
             self.marked = True
             self.world.markedEdges += 1
@@ -152,8 +153,8 @@ class Edge(object):
                         break
                 if allMarked:
                     node.marked = True
-                    sound.soundManager.play(sound.soundManager.DRAW)
-
+                    markedNodes.append(node)
+        return markedNodes
 
     def __str__(self):
         return "Edge{id=%i,src=%s,dst=%s,len=%i}" % (self.id, self.source.__str__(), self.destination.__str__(), self.length)
@@ -414,7 +415,9 @@ class Player(Entity):
 
     def onEdgeComplete(self, edge):
         if not edge.isMarked():
-            edge.setMarked(True)
+            markedNodes = edge.setMarked(True)
+            if len(markedNodes) > 0:
+                sound.soundManager.play(sound.soundManager.DRAW)
 
     def onStopMoving(self):
         if self.currentNode.type != Node.JOINT:

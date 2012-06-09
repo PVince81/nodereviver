@@ -183,6 +183,7 @@ class ViewContext(object):
         self.mediumFont = pygame.font.Font(config.dataPath + fontFile, 15)
         self.bigFont = pygame.font.Font(config.dataPath + fontFile, 18)
         self.biggerFont = pygame.font.Font(config.dataPath + fontFile, 20)
+        self._particlesViews = []
 
 class Display(object):
     def __init__(self, config, screen, gameState):
@@ -202,7 +203,7 @@ class Display(object):
         self._story = Story(self.context, _storyText)
         self._endStory = None
         self.selectionView = SelectionView()
-        self._edgeView = EdgeView()
+        self._edgeView = EdgeView(None, self.context)
 
         # UGLY, I know... but I'm tired to pass everything along
         global _spriteSurface
@@ -225,6 +226,7 @@ class Display(object):
         world.dirty = True
         self._world = world
         self._player = player
+        self.context._particlesViews = []
         self._worldView = WorldView(self.context, world)
         playerParticles = ParticlesView(self._player, int(self.context.config.particlesRatio * 40), int(1.0/ self.context.config.particlesRatio))
         self.addEntityView(playerParticles)
@@ -280,6 +282,10 @@ class Display(object):
         self._worldView.render()
         self._hud.render()
         self._edgeView.render(surface)
+
+        for particleView in self.context._particlesViews:
+            particleView.render(surface)
+
         for entity in self._entities:
             entity.render(surface)
         if self._gameState.state == GameState.TITLE:
@@ -301,6 +307,15 @@ class Display(object):
             self._endStory.update()
             return
         self._edgeView.update(self._player.currentEdge)
+        countActive = 0
+        for particleView in self.context._particlesViews:
+            particleView.update()
+            if particleView.isActive():
+                countActive += 1
+        if countActive == 0:
+            # clean up
+            self.context._particlesViews = []
+
         for entity in self._entities:
             entity.update()
 
@@ -407,16 +422,33 @@ class WorldView(object):
         self._context.screen.blit(self._worldSurface, (0, 0))
 
 class EdgeView(object):
-    def __init__(self, edge = None):
+    def __init__(self, edge, context):
         self.edge = edge
+        self._context = context
+        self.nodeStates = None
 
     def update(self, edge):
         if self.edge != edge:
             self.edge = edge
+
+            # we just finished an edge ?
+            if self.nodeStates:
+                for states in self.nodeStates:
+                    if states[0].marked and states[1] != states[0].marked:
+                        particlesCount = self._context.config.particlesRatio * 10
+                        particleView = ParticlesView(states[0], particlesCount)
+                        particleView.makeParticles((255, 255, 0), particlesCount)
+                        self._context._particlesViews.append(particleView)
+
             if self.edge:
                 self.nodes = [node for node in [edge.source, edge.destination] if node.type != model.Node.JOINT]
+                self.nodeStates = [(node,node.marked) for node in self.nodes]
                 self.posSource = vectorAdd(edge.source.pos, (-1, -1))
                 self.posDest = vectorAdd(edge.destination.pos, (-1, -1))
+            else:
+                # check which nodes have changed state
+                self.nodes = None
+                self.nodeStates = None
 
     def render(self, screen):
         if not self.edge or self.edge.marked:
@@ -566,7 +598,7 @@ class FoeView(EntityView):
         drawSprite(surface, sprite, pos)
 
 class ParticlesView(EntityView):
-    def __init__(self, entity, amount, frequency):
+    def __init__(self, entity, amount, frequency = 0):
         EntityView.__init__(self, entity)
         self._frequency = frequency
         self._freqCounter = frequency
@@ -577,13 +609,13 @@ class ParticlesView(EntityView):
             particle.visible = False
             self._particles.append(particle)
 
-    def makeParticles(self, color):
+    def makeParticles(self, color, amount = 1):
         if self._freqCounter > 0:
             self._freqCounter -= 1
             return
         self._freqCounter = self._frequency
 
-        toRevive = 1
+        toRevive = amount
         for particle in self._particles:
             if toRevive == 0:
                 break
@@ -614,6 +646,9 @@ class ParticlesView(EntityView):
                 continue
             particle.render(surface)
         surface.unlock()
+
+    def isActive(self):
+        return self._activeParticles > 0
 
 class SelectionView():
     def __init__(self):
