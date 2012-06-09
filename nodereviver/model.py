@@ -533,9 +533,19 @@ class GameState(object):
         self.elapsed = 0
 
     def setState(self, state, duration = None, nextState = 1):
+        """
+        Sets the current game state.
+        @param state: target state
+        @param duration: duration in ms of that state
+        @param nextState: state to switch back to after the duration has
+        elapsed
+        """
         self.state = state
-        self.duration = duration
-        self.maxDuration = duration
+        if duration:
+            self.duration = int(duration * 60.0 / 1000.0)
+        else:
+            self.duration = None
+        self.maxDuration = self.duration
         self.nextState = nextState
         self.dirty = True
 

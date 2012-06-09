@@ -185,7 +185,7 @@ class Game:
                     return;
             state.dirty = True
             self._initWorld(state.worldNum)
-            state.setState(GameState.LEVEL_START, self._config.fps)
+            state.setState(GameState.LEVEL_START, 1000)
 
         if state.state == GameState.TITLE:
             # plays title demo
@@ -194,7 +194,7 @@ class Game:
         if state.pause:
             return
 
-        self._gameState.elapsed += 1
+        self._gameState.elapsed += 60
 
         if state.state in [GameState.GAME, GameState.TITLE, GameState.LEVEL_END, GameState.LEVEL_START]:
             self._world.update()
@@ -210,14 +210,14 @@ class Game:
                 dist = vectorDiff(entity.pos, self._player.pos)
                 if abs(dist[0]) < 10 and abs(dist[1]) < 10:
                     self._player.die()
-                    state.setState(GameState.DEAD, self._config.fps, GameState.RESTART_LEVEL)
+                    state.setState(GameState.DEAD, 1000, GameState.RESTART_LEVEL)
                     sound.soundManager.play(sound.soundManager.DEAD)
 
     def onLevelEnd(self):
         if self._gameState.state == GameState.TITLE:
             self._startTitle()
             return
-        self._gameState.setState(GameState.LEVEL_END, self._config.fps, GameState.NEXT_LEVEL)
+        self._gameState.setState(GameState.LEVEL_END, 1000, GameState.NEXT_LEVEL)
 
     def _showStory(self):
         self._gameState.setState(GameState.STORY)
@@ -225,7 +225,7 @@ class Game:
     def _startGame(self, worldNum = None):
         if worldNum == None:
             worldNum = self._config.startLevel
-        self._gameState.setState(GameState.LEVEL_START, self._config.fps)
+        self._gameState.setState(GameState.LEVEL_START, 1000)
         self._gameState.worldNum = worldNum
         self._initWorld(self._gameState.worldNum)
         sound.soundManager.enable()
@@ -233,7 +233,7 @@ class Game:
     def _startTitle(self):
         self._gameState.state = GameState.TITLE
         self._initWorld(0)
-        
+
     def _quitGame(self):
         self._terminated = True
         self._gameState.state = GameState.QUIT
@@ -269,11 +269,26 @@ class Game:
         self._gameState.state = GameState.TITLE
         self._initWorld(self._gameState.worldNum)
 
+        lastTime = pygame.time.get_ticks()
+        deltaTime = 0
+        # desired fps is 60
+        fpsMax = 1000 / 60
         while not self._terminated:
             self._handleInput()
             if self._gameState.focus:
-                self._handleLogic()
+                # frameskip
+                newTime = pygame.time.get_ticks()
+                deltaTime = deltaTime + pygame.time.get_ticks() - lastTime
+                updateSteps = deltaTime / fpsMax
+                for x in range(updateSteps):
+                    self._handleLogic()
+
+                deltaTime = deltaTime % fpsMax
+                lastTime = newTime
+
                 if not self._gameState.pause:
+                    for x in range(updateSteps):
+                        self._display.update()
                     self._display.render()
                     pygame.display.flip()
 

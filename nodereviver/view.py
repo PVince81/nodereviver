@@ -142,12 +142,14 @@ def blitTextSurfaces(targetSurface, surfaces, fontHeight, globalOffset = (0, 0),
     offsetY = globalOffset[1]
     if centerInViewport:
         for surface in surfaces:
-            offset = globalOffset[0] + int(centerInViewport[0] / 2 - surface.get_width() / 2)
-            targetSurface.blit(surface, (offset, offsetY))
+            if surface:
+                offset = globalOffset[0] + int(centerInViewport[0] / 2 - surface.get_width() / 2)
+                targetSurface.blit(surface, (offset, offsetY))
             offsetY += fontHeight
     else:
         for surface in surfaces:
-            targetSurface.blit(surface, (globalOffset[0], offsetY))
+            if surface:
+                targetSurface.blit(surface, (globalOffset[0], offsetY))
             offsetY += fontHeight
 
     return offsetY
@@ -264,31 +266,39 @@ class Display(object):
             return
         elif _gameState.state == GameState.STORY:
             surface.blit(self._background, (0,0))
-            self._story.update()
             self._story.render(surface)
             return
         elif _gameState.state == GameState.ENDGAME:
-            if self._endStory == None:
-                a = []
-                timeString = makeTimeString(self._gameState.elapsed / self.context.config.fps)
-                for text in _endGameText:
-                    a.append(text.replace("%time%", timeString))
-                self._endStory = Story(self.context, a)
-
             surface.blit(self._background, (0,0))
-            self._endStory.update()
             self._endStory.render(surface)
             return
         self.renderUI()
         self._worldView.render()
         self._hud.render()
-        self._edgeView.update(self._player.currentEdge)
         self._edgeView.render(surface)
         for entity in self._entities:
             entity.render(surface)
         if self._gameState.state == GameState.TITLE:
             self._titleScreen.render()
         self.selectionView.render(surface)
+
+    def update(self):
+        if _gameState.state == GameState.STORY:
+            self._story.update()
+            return
+        elif _gameState.state == GameState.ENDGAME:
+            if self._endStory == None:
+                a = []
+                timeString = makeTimeString(self._gameState.elapsed)
+                for text in _endGameText:
+                    a.append(text.replace("%time%", timeString))
+                self._endStory = Story(self.context, a)
+
+            self._endStory.update()
+            return
+        self._edgeView.update(self._player.currentEdge)
+        for entity in self._entities:
+            entity.update()
 
     def addEntityView(self, entityView):
         self._entities.append(entityView)
@@ -470,9 +480,9 @@ class Story(object):
         fontHeight = self._font.get_height()
         offsetY = blitTextSurfaces(screen, self._textSurfaces, fontHeight, (10, 10))
         # cursor
-        pygame.draw.rect(screen, (0, 255, 0), (10 + self._textSurfaces[-1].get_width(), offsetY - fontHeight, fontHeight / 2 - 2, fontHeight - 2))
-
-        screen.blit(self._pressEnterSurface, (screen.get_width() / 2 - self._pressEnterSurface.get_width() / 2, screen.get_height() - fontHeight * 2))
+        if self._textSurfaces[-1]:
+            pygame.draw.rect(screen, (0, 255, 0), (10 + self._textSurfaces[-1].get_width(), offsetY - fontHeight, fontHeight / 2 - 2, fontHeight - 2))
+            screen.blit(self._pressEnterSurface, (screen.get_width() / 2 - self._pressEnterSurface.get_width() / 2, screen.get_height() - fontHeight * 2))
 
 class Particle(object):
     def __init__(self, pos = (0,0)):
@@ -503,9 +513,19 @@ class Particle(object):
         self.size = 3
         self.visible = True
 
-class PlayerView():
+class EntityView(object):
     def __init__(self, entity):
         self._entity = entity
+
+    def update(self):
+        pass
+
+    def render(self):
+        pass
+
+class PlayerView(EntityView):
+    def __init__(self, entity):
+        EntityView.__init__(self, entity)
         self._particles = []
         while len(self._particles) < 40:
             particle = Particle()
@@ -529,10 +549,22 @@ class PlayerView():
         for particle in self._particles:
             if not particle.visible:
                 continue
-            if not _gameState.pause:
-                particle.update()
             particle.render(screen)
         screen.unlock()
+
+    def update(self):
+        if _gameState.pause:
+            return
+
+        if self._entity.currentEdge and not self._entity.currentEdge.marked:
+            # Marking in progress
+            self._makeParticles()
+
+        # update particle position
+        for particle in self._particles:
+            if not particle.visible:
+                continue
+            particle.update()
 
     def render(self, screen):
         offset = (-10,-10)
@@ -545,16 +577,13 @@ class PlayerView():
             offset = vectorAdd(offset, (random.randint(-3, 3), random.randint(-3, 3)))
             alpha = 255 - int(_gameState.getProgress() * 255)
 
-        if self._entity.currentEdge and not self._entity.currentEdge.marked:
-            # Marking in progress
-            self._makeParticles()
         self._renderParticles(screen)
         pos = vectorAdd(self._entity.pos, offset)
         drawSprite(screen, SPRITE_PLAYER, pos, alpha)
 
-class FoeView():
+class FoeView(EntityView):
     def __init__(self, entity):
-        self._entity = entity
+        EntityView.__init__(self, entity)
 
     def render(self, screen):
         if self._entity.foeType == 0:
