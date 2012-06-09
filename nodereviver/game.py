@@ -250,7 +250,7 @@ class Game:
         self._world.centerInView(self._display.context.boardSize)
         self._player.setCurrentNode(self._world.startNode)
         if self._gameUI:
-            if self._gameState.state in [GameState.LEVEL_START, GameState.NEXT_LEVEL]:
+            if self._gameState.state in [GameState.LEVEL_START, GameState.NEXT_LEVEL, GameState.RESTART_LEVEL]:
                 self._gameUI.setControlsVisibility(True)
             else:
                 self._gameUI.setControlsVisibility(False)
