@@ -20,6 +20,7 @@ try:
     import json
 except:
     import simplejson as json
+import os
 
 from . import model
 
@@ -95,7 +96,8 @@ class WorldSaver(object):
         self.dataPath = dataPath
 
     def saveWorld(self, num, world):
-        filename = "%slevel%i_editor.json" % (self.dataPath, num)
+        filename = "%slevel%i.json" % (self.dataPath, num)
+        temporaryFilename = filename + ".tmp"
         output = {}
         if world.title:
             output["title"] = world.title
@@ -138,6 +140,9 @@ class WorldSaver(object):
                 else:
                     foeElement["foeType"] = "tracking"
 
-        f = open(filename, 'w')
-        json.dump(output, f, indent=4)
-        f.close()
+        with open(temporaryFilename, 'w') as f:
+            json.dump(output, f, indent=4)
+            f.flush()
+            os.fsync(f.fileno())
+        os.replace(temporaryFilename, filename)
+        return filename

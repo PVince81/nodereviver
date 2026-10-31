@@ -232,8 +232,8 @@ class Display(object):
         self.addEntityView(playerParticles)
         self.addEntityView( PlayerView(self._player, playerParticles) )
         for entity in world.entities:
-            # entities are all foes for now (except player)
-            self.addEntityView(FoeView(entity))
+            if entity.entityType == model.Foe.entityType:
+                self.addEntityView(FoeView(entity))
         self._hud.setTitle(world.title, world.subtitle, world.endtext)
         if self._ui:
             self._ui.dirty = True
@@ -412,6 +412,13 @@ class WorldView(object):
                 if debug:
                     textSurface = self._context.normalFont.render("%i" % node.id, False, (255, 255, 0))
                     surface.blit(textSurface, (node.pos[0] + 2, node.pos[1] + d * 2 + 2))
+            elif _gameState.state == GameState.EDITOR:
+                # Joints are hidden during play, but must remain visible and
+                # selectable while editing the level.
+                pygame.draw.rect(
+                    surface, (0, 160, 160),
+                    (node.pos[0] - 3, node.pos[1] - 3, 6, 6)
+                )
         self._world.dirty = False
 
     def render(self):
@@ -654,12 +661,16 @@ class SelectionView():
     def __init__(self):
         self._nodes = []
         self._edge = None
+        self._entity = None
 
     def setSelection(self, selection):
         self._nodes = selection
 
     def setEdgeSelection(self, edge):
         self._edge = edge
+
+    def setEntitySelection(self, entity):
+        self._entity = entity
 
     def render(self, screen):
         color = (255, 255, 0)
@@ -673,6 +684,13 @@ class SelectionView():
 
         if self._edge:
             pygame.draw.line(screen, color, self._edge.source.pos, self._edge.destination.pos, 1 )
+
+        if self._entity:
+            pygame.draw.rect(
+                screen, color,
+                (self._entity.pos[0] - 12, self._entity.pos[1] - 12, 24, 24),
+                1
+            )
 
 class Hud(object):
     '''

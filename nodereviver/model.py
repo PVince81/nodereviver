@@ -219,6 +219,8 @@ class World(object):
         return node
 
     def deleteNode(self, node):
+        if node not in self.nodes:
+            return
         node.deleted = True
         self.nodes.remove(node)
         for edge in list(node.edges):
@@ -226,12 +228,13 @@ class World(object):
         self.dirty = True
 
     def deleteEdge(self, edge):
-        if edge.source:
+        if edge.source and edge in edge.source.edges:
             edge.source.edges.remove(edge)
-        if edge.destination:
+        if edge.destination and edge in edge.destination.edges:
             edge.destination.edges.remove(edge)
         edge.deleted = True
-        self.edges.remove(edge)
+        if edge in self.edges:
+            self.edges.remove(edge)
         self.dirty = True
 
     def connectNode(self, node1, node2 ):
