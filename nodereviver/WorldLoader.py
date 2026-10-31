@@ -18,7 +18,7 @@
 '''
 from xml.etree import ElementTree as ET
 
-import model
+from . import model
 
 class WorldLoader(object):
     def __init__(self, dataPath = "data/"):
@@ -48,10 +48,10 @@ class WorldLoader(object):
             dest = edgeElement.get("dest")
             reverse = edgeElement.get("reverse", False)
             oneWay = edgeElement.get("oneway", False)
-            if not nodes.has_key(source):
-                print "Warning: source node %i not found" % source
-            elif not nodes.has_key(dest):
-                print "Warning: dest node %i not found" % dest
+            if source not in nodes:
+                print("Warning: source node %i not found" % source)
+            elif dest not in nodes:
+                print("Warning: dest node %i not found" % dest)
             else:
                 world.connectNodeWithJoint(nodes[source], nodes[dest], reverse, oneWay)
 
@@ -59,7 +59,7 @@ class WorldLoader(object):
         for entityElement in entitiesElement.getchildren():
             startNodeId = entityElement.get("node")
             startNode = None
-            if nodes.has_key(startNodeId):
+            if startNodeId in nodes:
                 startNode = nodes[startNodeId]
 
             if entityElement.tag == "player":

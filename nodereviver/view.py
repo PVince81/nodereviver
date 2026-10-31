@@ -17,11 +17,11 @@
     @author: Vincent Petry <PVince81@yahoo.fr>
 '''
 import pygame
-import model
+from . import model
 import random
 import math
-from util import *
-from model import GameState
+from .util import *
+from .model import GameState
 
 debug = False
 
@@ -130,7 +130,7 @@ def makeTextSurfaces(text, font, color = (255, 255, 255)):
     if not text:
         return []
     surfaces = []
-    if type(text) == "list":
+    if isinstance(text, list):
         rows = text
     else:
         rows = text.split("\\n")
@@ -256,8 +256,8 @@ class Display(object):
             pygame.draw.rect(surface, (80, 80, 80), widget.rect, 1)
             if widget.text:
                 textSurface = self.context.normalFont.render(widget.text, False, (80, 80, 80))
-                pos = ( widget.rect[0] + widget.rect[2] / 2 - textSurface.get_width() / 2,
-                        widget.rect[1] + widget.rect[3] / 2 - textSurface.get_height() / 2 )
+                pos = ( widget.rect[0] + widget.rect[2] // 2 - textSurface.get_width() // 2,
+                        widget.rect[1] + widget.rect[3] // 2 - textSurface.get_height() // 2 )
                 surface.blit(textSurface, pos)
         self._uiSurface = surface
         if self._worldView:
@@ -390,13 +390,13 @@ class WorldView(object):
                         aux = y1
                         y1 = y2
                         y2 = aux
-                    y = y1 + (y2 - y1) / 2 - 10
+                    y = y1 + (y2 - y1) // 2 - 10
                 else:
                     if x1 > x2:
                         aux = x1
                         x1 = x2
                         x2 = aux
-                    x = x1 + (x2 - x1) / 2 - 10
+                    x = x1 + (x2 - x1) // 2 - 10
                 surface.blit(textSurface, (x, y))
 
         # render nodes
@@ -517,8 +517,8 @@ class Story(object):
         offsetY = blitTextSurfaces(screen, self._textSurfaces, fontHeight, (10, 10))
         # cursor
         if self._textSurfaces[-1]:
-            pygame.draw.rect(screen, (0, 255, 0), (10 + self._textSurfaces[-1].get_width(), offsetY - fontHeight, fontHeight / 2 - 2, fontHeight - 2))
-            screen.blit(self._pressEnterSurface, (screen.get_width() / 2 - self._pressEnterSurface.get_width() / 2, screen.get_height() - fontHeight * 2))
+            pygame.draw.rect(screen, (0, 255, 0), (10 + self._textSurfaces[-1].get_width(), offsetY - fontHeight, fontHeight // 2 - 2, fontHeight - 2))
+            screen.blit(self._pressEnterSurface, (screen.get_width() // 2 - self._pressEnterSurface.get_width() // 2, screen.get_height() - fontHeight * 2))
 
 class Particle(object):
     def __init__(self, pos = (0,0)):
@@ -748,7 +748,7 @@ class TitleScreen(object):
         self._text2Surface = self._font2.render("Copyright \xa9 2012 Vincent Petry (for MiniLD #33)", False, (0, 192, 0))
         rect = self._textSurface.get_rect()
         screenRect = context.screen.get_rect()
-        self._pos = (context.boardSize[0] / 2 - rect[2] / 2, 195)
+        self._pos = (context.boardSize[0] // 2 - rect[2] // 2, 195)
         rect = self._text2Surface.get_rect()
         self._pos2 = (context.boardSize[0] - rect[2] - 20, screenRect[3] - fontHeight - 20)
 

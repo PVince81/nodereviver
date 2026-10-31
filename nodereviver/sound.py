@@ -43,7 +43,13 @@ class _SoundManager:
 
     def loadSounds(self):
         if self._config.sound:
-            #pygame.mixer.init()
+            if not pygame.mixer.get_init():
+                try:
+                    pygame.mixer.init()
+                except pygame.error as error:
+                    print("Warning: could not initialize sound: %s" % error)
+                    self._config.sound = False
+                    return
             for fileName in self.FILES:
                 self.sounds.append(pygame.mixer.Sound(self._config.dataPath + fileName))
 

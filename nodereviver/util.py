@@ -18,9 +18,9 @@
 '''
 def unitVector(vector):
     if vector[0] != 0:
-        return (vector[0] / abs(vector[0]), 0)
+        return (vector[0] // abs(vector[0]), 0)
     elif vector[1] != 0:
-        return (0, vector[1] / abs(vector[1]))
+        return (0, vector[1] // abs(vector[1]))
     return (0, 0)
 
 def vectorAdd(vector1, vector2):
@@ -47,9 +47,9 @@ def between(value, rangeStart, rangeEnd):
 
 def makeTimeString(elapsed):
     s = ""
-    minutes = elapsed / 60
+    minutes = elapsed // 60
     seconds = elapsed % 60
-    hours = minutes / 60
+    hours = minutes // 60
     minutes = minutes % 60
     if hours > 0:
         s = "%i hour" % hours

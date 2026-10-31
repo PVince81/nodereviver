@@ -17,9 +17,9 @@
     @author: Vincent Petry <PVince81@yahoo.fr>
 '''
 import random
-import sound
-from util import *
-from algo import PathFinder
+from . import sound
+from .util import *
+from .algo import PathFinder
 
 pathFinder = PathFinder()
 
@@ -47,7 +47,7 @@ class Node(object):
         '''
         for edge in self.edges:
             if edge.getOther(self) == otherNode:
-                print "Warning: node %s already connected to %s through %s" % (self, otherNode, edge)
+                print("Warning: node %s already connected to %s through %s" % (self, otherNode, edge))
                 return None
         edge = Edge(self.world, self, otherNode, oneWay)
         self.edges.append(edge)
@@ -192,7 +192,7 @@ class World(object):
 
     def createSimpleFoe(self, startNode):
         if not startNode:
-            print "Missing startNode"
+            print("Missing startNode")
             return
         foe = SimpleFoe(startNode)
         self.entities.append(foe)
@@ -200,7 +200,7 @@ class World(object):
 
     def createTrackingFoe(self, startNode):
         if not startNode:
-            print "Missing startNode"
+            print("Missing startNode")
             return
         foe = TrackingFoe(startNode)
         self.entities.append(foe)
@@ -210,7 +210,7 @@ class World(object):
         # check for overlap
         for node in self.nodes:
             if node.pos == pos:
-                print "Warning: node overlap with %s" % node.__str__()
+                print("Warning: node overlap with %s" % node.__str__())
                 return node
 
         node = Node(self, pos, nodeType)
@@ -259,7 +259,7 @@ class World(object):
             return
         for edge in self.edges:
             if edge.source.id == newEdge.source.id and edge.destination.id == newEdge.destination.id:
-                print "Warning: duplicate edge: %s" % edge.__str__()
+                print("Warning: duplicate edge: %s" % edge.__str__())
                 return
         self.edges.append(newEdge)
 
@@ -297,14 +297,14 @@ class World(object):
     def centerInView(self, viewport):
         rect = self.getRect()
         offset = (int((rect[2] - rect[0]) / 2), int((rect[3] - rect[1]) / 2))
-        offset = (viewport[0] / 2 - offset[0] - rect[0], viewport[1] / 2 - offset[1] - rect[1])
+        offset = (viewport[0] // 2 - offset[0] - rect[0], viewport[1] // 2 - offset[1] - rect[1])
         # offset must be a multiple of 20
-        offset = (offset[0] / 20 * 20, offset[1] / 20 * 20)
+        offset = (offset[0] // 20 * 20, offset[1] // 20 * 20)
         self.translate(offset)
 
     def alignNodes(self):
         for node in self.nodes:
-            node.pos = (node.pos[0] / 20 * 20, node.pos[1] / 20 * 20)
+            node.pos = (node.pos[0] // 20 * 20, node.pos[1] // 20 * 20)
         self.dirty = True
 
     def getRect(self):

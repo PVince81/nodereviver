@@ -16,7 +16,7 @@
 
     @author: Vincent Petry <PVince81@yahoo.fr>
 '''
-import model
+from . import model
 
 class PathFinder:
     '''
@@ -90,7 +90,7 @@ class PathFinder:
 
     def reconstruct_path(self, sourceNode, node):
         path = []
-        while self.came_from.has_key(node):
+        while node in self.came_from:
             edge = self.came_from[node]
             path.append(edge)
             node = edge.getOther(node)
@@ -111,8 +111,8 @@ class PathFinder:
         node = sourceNode
         for edge in edges:
             nodes.append(node)
-            print node
-            print edge
+            print(node)
+            print(edge)
             node = edge.getOther(node)
         nodes.append(node)
         return nodes
@@ -120,7 +120,7 @@ class PathFinder:
     def printPath(self, sourceNode, edges):
         node = sourceNode
         for edge in edges:
-            print node
-            print edge
+            print(node)
+            print(edge)
             node = edge.getOther(node)
-        print node
+        print(node)

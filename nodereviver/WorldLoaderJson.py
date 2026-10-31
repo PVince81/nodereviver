@@ -21,7 +21,7 @@ try:
 except:
     import simplejson as json
 
-import model
+from . import model
 
 class WorldLoader(object):
     def __init__(self, dataPath = "data/"):
@@ -47,12 +47,12 @@ class WorldLoader(object):
         for edgeElement in edgesElement:
             source = int(edgeElement["source"])
             dest = int(edgeElement["dest"])
-            reverse = edgeElement.has_key("reverse") and edgeElement["reverse"]
-            oneWay = edgeElement.has_key("oneway") and edgeElement["oneway"]
-            if not nodes.has_key(source):
-                print "Warning: source node %i not found" % source
-            elif not nodes.has_key(dest):
-                print "Warning: dest node %i not found" % dest
+            reverse = "reverse" in edgeElement and edgeElement["reverse"]
+            oneWay = "oneway" in edgeElement and edgeElement["oneway"]
+            if source not in nodes:
+                print("Warning: source node %i not found" % source)
+            elif dest not in nodes:
+                print("Warning: dest node %i not found" % dest)
             else:
                 world.connectNodeWithJoint(nodes[source], nodes[dest], reverse, oneWay)
 
@@ -60,7 +60,7 @@ class WorldLoader(object):
         for entityElement in entitiesElement:
             startNodeId = int(entityElement["node"])
             startNode = None
-            if nodes.has_key(startNodeId):
+            if startNodeId in nodes:
                 startNode = nodes[startNodeId]
             if entityElement["type"] == "player":
                 world.startNode = startNode
@@ -77,11 +77,11 @@ class WorldLoader(object):
         f.close()
 
         world = model.World()
-        if root.has_key("title"):
+        if "title" in root:
             world.title = root["title"]
-        if root.has_key("subtitle"):
+        if "subtitle" in root:
             world.subtitle = root["subtitle"]
-        if root.has_key("endtext"):
+        if "endtext" in root:
             world.endtext = root["endtext"]
 
         nodes = self._processNodes(world, root["nodes"])
@@ -141,4 +141,3 @@ class WorldSaver(object):
         f = open(filename, 'w')
         json.dump(output, f, indent=4)
         f.close()
-

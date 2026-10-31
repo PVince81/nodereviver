@@ -17,15 +17,15 @@
     @author: Vincent Petry <PVince81@yahoo.fr>
 '''
 import pygame
-import model
-import view
-import sound
+from . import model
+from . import view
+from . import sound
 import time
-import ui
-from util import *
-from config import Config
-from WorldLoaderJson import WorldLoader
-from model import GameState
+from . import ui
+from .util import *
+from .config import Config
+from .WorldLoaderJson import WorldLoader
+from .model import GameState
 
 class Game:
     titleDemo = [3,0,0,3,0,1,2,1,1,3,0,2,0,3,1,2,1,3,0,2,0,3,1,2,1,3,0,2,0,0,3,2,1,3,2,1,3,3,2,1,3,1,2,2,2,2,2,2,2,1,2,1,1,0,3,1,2,3,0,2,0,3,1,2,1,1,3,2,0,3,2,0,3,3,2,0,3,1,1,3,3,3,0,0,1,2,2,0,0,0,3,1,1,2,3,3,2,0,2,3,3,2,0,3,1,1,3,3,0,0,1,2,2,0,0,0,3,1,3,2,2,1,3,2,1,3,2,0,0,3,0,3,1,2,1,1,0,0,3,3,1,2,2,3,1,1,2]
@@ -47,7 +47,8 @@ class Game:
 
     def _init(self):
         sound.soundManager.init(self._config)
-        pygame.init()
+        pygame.display.init()
+        pygame.font.init()
         self._initDisplay()
         pygame.display.set_caption('Node Reviver - by Vincent Petry (MiniLD#33)')
         pygame.mouse.set_visible(False)
@@ -271,14 +272,14 @@ class Game:
         lastTime = pygame.time.get_ticks()
         deltaTime = 0
         # desired fps is 60
-        fpsMax = 1000 / 60
+        fpsMax = 1000 // 60
         while not self._terminated:
             self._handleInput()
             if self._gameState.focus:
                 # frameskip
                 newTime = pygame.time.get_ticks()
                 deltaTime = deltaTime + pygame.time.get_ticks() - lastTime
-                updateSteps = deltaTime / fpsMax
+                updateSteps = deltaTime // fpsMax
                 for x in range(updateSteps):
                     self._handleLogic()
 

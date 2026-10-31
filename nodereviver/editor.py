@@ -16,14 +16,14 @@
 
     @author: Vincent Petry <PVince81@yahoo.fr>
 '''
-from game import Game
-from WorldLoaderJson import WorldSaver
+from .game import Game
+from .WorldLoaderJson import WorldSaver
 import pygame
-import view
-import model
-from config import Config
-from model import GameState
-from algo import PathFinder
+from . import view
+from . import model
+from .config import Config
+from .model import GameState
+from .algo import PathFinder
 
 class Editor(Game):
     def __init__(self, config):
@@ -40,7 +40,7 @@ class Editor(Game):
         self._gameUI = None
 
     def _saveWorld(self):
-        print "Saving world"
+        print("Saving world")
         self._worldSaver.saveWorld(self._gameState.worldNum, self._world)
 
     def _movePlayer(self, direction):
@@ -57,7 +57,7 @@ class Editor(Game):
         if event.type == pygame.locals.MOUSEBUTTONDOWN:
             if event.button == 3:
                 # add node
-                pos = (event.pos[0] / 20 * 20, event.pos[1] / 20 * 20)
+                pos = (event.pos[0] // 20 * 20, event.pos[1] // 20 * 20)
                 node = self._world.getNodeAt(event.pos, 15)
                 if not node:
                     node = self._world.createNode(pos)
@@ -149,7 +149,7 @@ class Editor(Game):
             return
         # Test the pathfinding algo from player to selection
         pathfinder = PathFinder()
-        print "Path finder from %i to %i" % (self._player.currentNode.id, self._selectedNodes[0].id )
+        print("Path finder from %i to %i" % (self._player.currentNode.id, self._selectedNodes[0].id ))
         path = pathfinder.findShortestPath(self._player.currentNode, self._selectedNodes[0])
         pathfinder.printPath(self._player.currentNode, path)
         self._selectedNodes = pathfinder.getPathNodes(self._player.currentNode, path)
