@@ -1,89 +1,325 @@
 {
-    "subtitle": "Use the arrow keys or WASD to move from node to node.\\nYou can only change direction when standing on a node.\\n\\nFixing the coffee machine is your first and most important task...\\nI mean... Yeah, just fix it...",
     "title": "The Coffee Machine has been hacked",
+    "subtitle": "Use the arrow keys or WASD to move from node to node.\\nYou can only change direction when standing on a node.\\n\\nFixing the coffee machine is your first and most important task...\\nI mean... Yeah, just fix it...",
     "endtext": "Productivity restored !",
-    "entities": [
+    "nodes": [
         {
-            "node": "1",
-            "type": "player"
+            "id": 1,
+            "type": "node",
+            "x": "280",
+            "y": "240"
+        },
+        {
+            "id": 2,
+            "type": "node",
+            "x": "320",
+            "y": "220"
+        },
+        {
+            "id": 3,
+            "type": "joint",
+            "x": "280",
+            "y": "220"
+        },
+        {
+            "id": 4,
+            "type": "joint",
+            "x": "320",
+            "y": "240"
+        },
+        {
+            "id": 5,
+            "type": "node",
+            "x": "400",
+            "y": "220"
+        },
+        {
+            "id": 6,
+            "type": "node",
+            "x": "140",
+            "y": "240"
+        },
+        {
+            "id": 7,
+            "type": "node",
+            "x": "140",
+            "y": "280"
+        },
+        {
+            "id": 8,
+            "type": "node",
+            "x": "220",
+            "y": "320"
+        },
+        {
+            "id": 9,
+            "type": "joint",
+            "x": "140",
+            "y": "320"
+        },
+        {
+            "id": 10,
+            "type": "node",
+            "x": "280",
+            "y": "300"
+        },
+        {
+            "id": 11,
+            "type": "joint",
+            "x": "280",
+            "y": "320"
+        },
+        {
+            "id": 12,
+            "type": "joint",
+            "x": "220",
+            "y": "300"
+        },
+        {
+            "id": 13,
+            "type": "node",
+            "x": "340",
+            "y": "140"
+        },
+        {
+            "id": 14,
+            "type": "node",
+            "x": "340",
+            "y": "220"
+        },
+        {
+            "id": 15,
+            "type": "joint",
+            "x": "400",
+            "y": "140"
+        },
+        {
+            "id": 16,
+            "type": "joint",
+            "x": "140",
+            "y": "140"
+        },
+        {
+            "id": 17,
+            "type": "node",
+            "x": "400",
+            "y": "280"
+        },
+        {
+            "id": 18,
+            "type": "joint",
+            "x": "400",
+            "y": "300"
+        },
+        {
+            "id": 19,
+            "type": "node",
+            "x": "440",
+            "y": "260"
+        },
+        {
+            "id": 20,
+            "type": "joint",
+            "x": "440",
+            "y": "280"
+        },
+        {
+            "id": 21,
+            "type": "node",
+            "x": "500",
+            "y": "320"
+        },
+        {
+            "id": 22,
+            "type": "joint",
+            "x": "500",
+            "y": "260"
+        },
+        {
+            "id": 23,
+            "type": "node",
+            "x": "440",
+            "y": "360"
+        },
+        {
+            "id": 24,
+            "type": "joint",
+            "x": "500",
+            "y": "360"
+        },
+        {
+            "id": 25,
+            "type": "node",
+            "x": "440",
+            "y": "320"
+        },
+        {
+            "id": 26,
+            "type": "node",
+            "x": "400",
+            "y": "320"
+        },
+        {
+            "id": 27,
+            "type": "node",
+            "x": "340",
+            "y": "100"
+        },
+        {
+            "id": 28,
+            "type": "node",
+            "x": "500",
+            "y": "100"
+        },
+        {
+            "id": 29,
+            "type": "node",
+            "x": "500",
+            "y": "220"
         }
     ],
     "edges": [
         {
-            "dest": "4",
-            "source": "1"
+            "source": "1",
+            "dest": "3"
         },
         {
-            "dest": "2",
-            "source": "4"
+            "source": "3",
+            "dest": "2"
         },
         {
-            "dest": "5",
-            "source": "1"
+            "source": "1",
+            "dest": "4"
         },
         {
-            "dest": "2",
-            "source": "5"
+            "source": "4",
+            "dest": "2"
         },
         {
-            "dest": "6",
-            "source": "2"
+            "source": "6",
+            "dest": "1"
         },
         {
-            "dest": "3",
-            "source": "6"
+            "source": "7",
+            "dest": "6"
         },
         {
-            "dest": "7",
-            "source": "1"
+            "source": "7",
+            "dest": "9"
         },
         {
-            "dest": "3",
-            "source": "7"
+            "source": "9",
+            "dest": "8"
+        },
+        {
+            "source": "10",
+            "dest": "11"
+        },
+        {
+            "source": "8",
+            "dest": "11"
+        },
+        {
+            "source": "8",
+            "dest": "12"
+        },
+        {
+            "source": "12",
+            "dest": "10"
+        },
+        {
+            "source": "13",
+            "dest": "14"
+        },
+        {
+            "source": "14",
+            "dest": "2"
+        },
+        {
+            "source": "14",
+            "dest": "5"
+        },
+        {
+            "source": "5",
+            "dest": "15"
+        },
+        {
+            "source": "15",
+            "dest": "13"
+        },
+        {
+            "source": "6",
+            "dest": "16"
+        },
+        {
+            "source": "16",
+            "dest": "13"
+        },
+        {
+            "source": "5",
+            "dest": "17"
+        },
+        {
+            "source": "17",
+            "dest": "18"
+        },
+        {
+            "source": "18",
+            "dest": "10"
+        },
+        {
+            "source": "19",
+            "dest": "20"
+        },
+        {
+            "source": "20",
+            "dest": "17"
+        },
+        {
+            "source": "21",
+            "dest": "22"
+        },
+        {
+            "source": "22",
+            "dest": "19"
+        },
+        {
+            "source": "21",
+            "dest": "24"
+        },
+        {
+            "source": "24",
+            "dest": "23"
+        },
+        {
+            "source": "25",
+            "dest": "23"
+        },
+        {
+            "source": "26",
+            "dest": "25"
+        },
+        {
+            "source": "27",
+            "dest": "13"
+        },
+        {
+            "source": "28",
+            "dest": "27"
+        },
+        {
+            "source": "28",
+            "dest": "29"
+        },
+        {
+            "source": "29",
+            "dest": "5"
         }
     ],
-    "nodes": [
+    "entities": [
         {
-            "y": "40",
-            "x": "40",
-            "type": "node",
-            "id": 1
-        },
-        {
-            "y": "20",
-            "x": "80",
-            "type": "node",
-            "id": 2
-        },
-        {
-            "y": "100",
-            "x": "120",
-            "type": "node",
-            "id": 3
-        },
-        {
-            "y": "20",
-            "x": "40",
-            "type": "joint",
-            "id": 4
-        },
-        {
-            "y": "40",
-            "x": "80",
-            "type": "joint",
-            "id": 5
-        },
-        {
-            "y": "20",
-            "x": "120",
-            "type": "joint",
-            "id": 6
-        },
-        {
-            "y": "100",
-            "x": "40",
-            "type": "joint",
-            "id": 7
+            "type": "player",
+            "node": "8"
         }
     ]
 }
